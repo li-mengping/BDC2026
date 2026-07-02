@@ -1,4 +1,5 @@
 import multiprocessing as mp
+from functools import partial
 
 import numpy as np
 import pandas as pd
@@ -43,15 +44,11 @@ FEATURE_COLUMNS = {
     ],
 }
 FEATURE_COLUMNS.update(WINDOW_FEATURE_COLUMNS)
-FEATURE_COLUMNS['39+window_12'] = FEATURE_COLUMNS['39'] + [
-    col for col in WINDOW_FEATURE_COLUMNS['window_12'] if col != 'instrument' and col not in FEATURE_COLUMNS['39']
-]
-FEATURE_COLUMNS['158+39+window_12'] = FEATURE_COLUMNS['158+39'] + [
-    col for col in WINDOW_FEATURE_COLUMNS['window_12'] if col != 'instrument' and col not in FEATURE_COLUMNS['158+39']
-]
-FEATURE_COLUMNS['158+39+window_multi_cross'] = FEATURE_COLUMNS['158+39'] + [
-    col for col in WINDOW_FEATURE_COLUMNS['window_multi_cross'] if col != 'instrument' and col not in FEATURE_COLUMNS['158+39']
-]
+for base_feature_num in ('39', '158+39'):
+    for window_feature_num, window_columns in WINDOW_FEATURE_COLUMNS.items():
+        FEATURE_COLUMNS[f'{base_feature_num}+{window_feature_num}'] = FEATURE_COLUMNS[base_feature_num] + [
+            col for col in window_columns if col != 'instrument' and col not in FEATURE_COLUMNS[base_feature_num]
+        ]
 
 
 CROSS_SECTIONAL_SPECS = (
@@ -354,33 +351,29 @@ def merge_window_features(base: pd.DataFrame, window: pd.DataFrame, window_featu
     return merged.loc[:, ~merged.columns.duplicated()].replace([np.inf, -np.inf], np.nan).fillna(0.0)
 
 
-def engineer_features_39plus_window12(df: pd.DataFrame) -> pd.DataFrame:
-    """基础技术指标加 12 周窗口因子。"""
-    return merge_window_features(engineer_features_39(df), WINDOW_FEATURE_ENGINEERS['window_12'](df), 'window_12')
-
-
-def engineer_features_158plus39_window12(df: pd.DataFrame) -> pd.DataFrame:
-    """Alpha+技术指标加 12 周窗口因子。"""
-    return merge_window_features(engineer_features_158plus39(df), WINDOW_FEATURE_ENGINEERS['window_12'](df), 'window_12')
-
-
-def engineer_features_158plus39_windowmulti_cross(df: pd.DataFrame) -> pd.DataFrame:
-    """Alpha+技术指标加多窗口与跨窗口交互因子。"""
-    return merge_window_features(
-        engineer_features_158plus39(df),
-        WINDOW_FEATURE_ENGINEERS['window_multi_cross'](df),
-        'window_multi_cross',
-    )
+def engineer_features_with_window(df: pd.DataFrame, base_feature_num: str, window_feature_num: str) -> pd.DataFrame:
+    """把基础因子和指定输入窗口因子合并。"""
+    if base_feature_num == '39':
+        base = engineer_features_39(df)
+    elif base_feature_num == '158+39':
+        base = engineer_features_158plus39(df)
+    else:
+        raise ValueError(f'unsupported base feature: {base_feature_num}')
+    return merge_window_features(base, WINDOW_FEATURE_ENGINEERS[window_feature_num](df), window_feature_num)
 
 
 FEATURE_ENGINEERS = {
     '39': engineer_features_39,
     '158+39': engineer_features_158plus39,
-    '39+window_12': engineer_features_39plus_window12,
-    '158+39+window_12': engineer_features_158plus39_window12,
-    '158+39+window_multi_cross': engineer_features_158plus39_windowmulti_cross,
 }
 FEATURE_ENGINEERS.update(WINDOW_FEATURE_ENGINEERS)
+for base_feature_num in ('39', '158+39'):
+    for window_feature_num in WINDOW_FEATURE_ENGINEERS:
+        FEATURE_ENGINEERS[f'{base_feature_num}+{window_feature_num}'] = partial(
+            engineer_features_with_window,
+            base_feature_num=base_feature_num,
+            window_feature_num=window_feature_num,
+        )
 
 
 def resolve_feature_num(feature_num: str) -> tuple[str, bool]:

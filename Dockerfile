@@ -27,17 +27,15 @@ RUN pip install --no-cache-dir uv
 # Set working directory
 WORKDIR /app
 
-# Copy dependency files
+# # Install dependency files
 COPY pyproject.toml uv.lock ./
-
-# Install dependencies
 RUN uv sync --frozen
 
 # Copy the application code
 COPY . .
+ENV PATH="/app/.venv/bin:$PATH"
 
 # Set environment to use the virtual environment
-ENV PATH="/app/.venv/bin:$PATH"
 ENV LD_LIBRARY_PATH="/usr/lib:/usr/local/lib"
 
 # Keep container running idle; execute train/predict manually via docker exec.

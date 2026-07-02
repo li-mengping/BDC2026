@@ -3,31 +3,34 @@ config = {
     'data_path': './data',
     'full_data_file': 'stock_data.csv',
 
-    # 输出目录只服务当前 LambdaRankIC-XGBoost 方法。
-    'output_dir': './model/lambdarankic_xgb',
+    # 输出目录保存按 模型_特征_迭代 命名的排序模型。
+    'output_dir': './model/xgboost',
 
     # 所有窗口单位都是交易周，test_date 是目标周起点，目标周行情未知。
     'start_date': '2023-01-02',
     'test_date': '2026-06-29',
-    'feature_num': '158+39+window_multi_cross+xsec',
-    'input_window': 12,
-    'num_validation_weeks': 8, # 用于调参/选迭代。
-    'num_test_weeks': 4, # 只用于最终 holdout 表现报告。
-    'min_group_size': 30, # only train/evaluate a target week if at least 30 stocks have valid features and labels for that week.
+    'min_group_size': 30, # 只训练/评估至少 30 只股票特征和标签有效的目标周。
     'seed': 42,
 
     'num_boost_round': 300,
-    'rolling_cv_folds': 4,
-    'rolling_cv_validation_weeks': 4,
-    'rolling_cv_gap_weeks': 1,
-    'rolling_cv_min_train_weeks': 120,
-    'rolling_cv_num_boost_round': 150,
+    'validation': {
+        # holdout 是正式训练模式；rolling_kfold 供 notebook 实验使用。
+        'mode': 'holdout',
+        'num_validation_weeks': 8,
+        'num_test_weeks': 4,
+        'rolling_folds': 4,
+        'rolling_validation_weeks': 4,
+        'rolling_gap_weeks': 0,
+        'rolling_min_train_weeks': 120,
+    },
     'model_names': [
-        'lambdarankic',
+        # 'lambdarankic',
         'xgb_rank_pairwise',
     ],
-    'xgb_params': {
+    'model_params': {
         'lambdarankic': {
+            'input_window': 12,
+            'feature_type': '158+39+window_multi_cross+xsec',
             'device': 'cuda',
             'booster': 'gbtree',
             'tree_method': 'hist',
@@ -43,6 +46,8 @@ config = {
             'verbosity': 1,
         },
         'xgb_rank_pairwise': {
+            'input_window': 12,
+            'feature_type': '158+39+window_multi_cross+xsec',
             'device': 'cuda',
             'booster': 'gbtree',
             'objective': 'rank:pairwise',

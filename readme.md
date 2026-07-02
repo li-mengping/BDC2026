@@ -13,8 +13,8 @@
 - 使用数据文件: `data/stock_data.csv`
 - 数据内容: 沪深 300 股票日频行情，字段包含股票代码、日期、开盘、收盘、最高、最低、成交量、成交额、振幅、涨跌额、换手率、涨跌幅。
 - 未使用额外公开数据、外部词典、embedding 或联网下载数据。
-- 训练、验证和预测切分由 `code/utils/runtime_split.py` 按完整自然交易周为单位生成。
-- 单个训练和推理样本为，(12个历史周,1个未来标签周)
+- 训练、验证和预测切分由 `code/utils/validation.py` 按完整自然交易周为单位生成。
+- 单个训练和推理样本由模型配置中的 `input_window` 决定；当前 XGBoost 配置为 (12个历史周,1个未来标签周)
 
 ## 算法
 
@@ -23,8 +23,8 @@
 - 尝试其他不同窗口长度的因子、横截面特征等，效果不是很好
 - 后续可尝试深度学习方法提前特征
 
-### 模型 `code/ranker`
-主要模型：xgboost ranker
+### 模型 `code/models/xgboost`
+主要模型：xgboost ranking model
 - LambdaRankIC 自定义目标损失的 XGBoost 模型。
 - XGBoost `rank:pairwise` 排序模型。
 rankic 选出的排名更为稳定
@@ -39,7 +39,8 @@ pairwise 选出的排名上限更高，测试平均值略高
 
 - 输入窗口: 12 个完整交易周。
 - validation window: 8 个目标周。
-- 训练轮数: 200，按照验证集结果（best top5 return）选择最佳迭代次数
+- 生产训练轮数: 300，按照验证集结果（best top5 return）选择最佳迭代次数
+- Notebook 实验必须使用 rolling kfold、每折使用验证周之前全部历史、训练轮数不少于 100。
 - 固定随机种子: 42。
 
 ## 训练流程

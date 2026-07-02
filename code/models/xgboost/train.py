@@ -9,10 +9,12 @@ import pandas as pd
 import xgboost as xgb
 
 from .config import config
-from ..features.baseline import date_group_sizes, preprocess_stock_data_samples
-from ..utils.runtime_split import load_market_data, split_runtime_data
-from .lambdarankic import lambdarankic_objective
-from .rankic import (
+from ...features.baseline import date_group_sizes, preprocess_stock_data_samples
+from ...features.windows import feature_num_for_window
+from ...utils.runtime_split import load_market_data
+from ...utils.validation import build_validation_plan
+from .loss import (
+    lambdarankic_objective,
     topk_return_metrics,
     xgb_rank_ic_metric,
     xgb_rank_return_metrics,
@@ -61,20 +63,30 @@ def target_range(df: pd.DataFrame) -> tuple[str, str]:
 
 def train_one_model(
     name: str,
-    dtrain: xgb.DMatrix,
-    dval: xgb.DMatrix,
-    val_groups: list[int],
-    dholdout: xgb.DMatrix,
-    holdout_groups: list[int],
+    input_window: int,
+    feature_type: str,
+    feature_num: str,
+    train_df: pd.DataFrame,
+    val_df: pd.DataFrame,
+    holdout_df: pd.DataFrame,
+    features: list[str],
     output_dir: Path,
 ) -> dict:
     """训练一个排序模型并保存。"""
-    params = dict(config['xgb_params'][name])
+    model_config = dict(config['model_params'][name])
+    params = {key: value for key, value in model_config.items() if key not in {'input_window', 'feature_type'}}
     params['disable_default_eval_metric'] = 1
     if name == 'lambdarankic':
         obj = lambdarankic_objective
     else:
         obj = None
+
+    dtrain, train_groups = make_dmatrix(train_df, features)
+    dval, val_groups = make_dmatrix(val_df, features)
+    dholdout, holdout_groups = make_dmatrix(holdout_df, features)
+    print(f"{name} Train Samples: {len(train_groups)} | rows={dtrain.num_row()}")
+    print(f"{name} Validation Samples: {len(val_groups)} | rows={dval.num_row()}")
+    print(f"{name} Holdout Test Samples: {len(holdout_groups)} | rows={dholdout.num_row()}")
 
     model_dir = output_dir / 'models'
     model_dir.mkdir(parents=True, exist_ok=True)
@@ -105,9 +117,10 @@ def train_one_model(
     holdout_top5 = topk_return_metrics(holdout_pred, dholdout.get_label(), holdout_groups, top_k=5)
     holdout_top10 = topk_return_metrics(holdout_pred, dholdout.get_label(), holdout_groups, top_k=10)
 
-    model_path = model_dir / f'{name}.json'
+    artifact = f'{name}_w{input_window}_{feature_num}_{best_iteration}'
+    model_path = model_dir / f'{artifact}.json'
     booster.save_model(model_path)
-    with open(model_dir / f'{name}_evals.json', 'w', encoding='utf-8') as f:
+    with open(model_dir / f'{artifact}_evals.json', 'w', encoding='utf-8') as f:
         json.dump(evals_result, f, ensure_ascii=False, indent=2)
 
     print(f"saved {name}: {model_path}")
@@ -122,8 +135,13 @@ def train_one_model(
 
     return {
         'name': name,
+        'artifact_name': artifact,
+        'input_window': input_window,
+        'feature_type': feature_type,
+        'feature_num': feature_num,
+        'features': features,
         'path': str(model_path.relative_to(output_dir)),
-        'xgb_params': params,
+        'model_params': model_config,
         'best_iteration': best_iteration,
         'best_selection_metric': 'validation_top5_return',
         'best_selection_score': selection['top5_return'],
@@ -148,72 +166,88 @@ def main() -> float:
     stock_ids = sorted(raw_df['股票代码'].unique())
     stockid2idx = {sid: idx for idx, sid in enumerate(stock_ids)}
 
-    runtime = split_runtime_data(raw_df, config)
-    train_samples = runtime.get_train_samples()
-    validation_samples = runtime.get_validation_samples()
-    holdout_samples = runtime.get_test_samples()
-    prediction_samples = runtime.get_prediction_samples()
-    train_df, features = preprocess_stock_data_samples(
-        train_samples,
-        config['feature_num'],
-        stockid2idx,
-    )
-    val_df, _ = preprocess_stock_data_samples(
-        validation_samples,
-        config['feature_num'],
-        stockid2idx,
-    )
-    holdout_df, _ = preprocess_stock_data_samples(
-        holdout_samples,
-        config['feature_num'],
-        stockid2idx,
-    )
-    train_df = train_df.dropna(subset=['label']).sort_values(['日期', '股票代码']).reset_index(drop=True)
-    val_df = val_df.dropna(subset=['label']).sort_values(['日期', '股票代码']).reset_index(drop=True)
-    holdout_df = holdout_df.dropna(subset=['label']).sort_values(['日期', '股票代码']).reset_index(drop=True)
+    validation_plan = build_validation_plan(raw_df, config)
+    holdout_fold = validation_plan.holdout_split()
+    model_names = list(config['model_names'])
+    model_bindings = []
+    for name in model_names:
+        model_config = config['model_params'][name]
+        input_window = int(model_config['input_window'])
+        feature_type = model_config['feature_type']
+        feature_num = feature_num_for_window(input_window, feature_type)
+        model_bindings.append((name, input_window, feature_type, feature_num))
+
+    datasets = {}
+    for input_window, feature_num in sorted({(item[1], item[3]) for item in model_bindings}):
+        train_samples = validation_plan.get_train_samples(holdout_fold, input_window)
+        validation_samples = validation_plan.get_validation_samples(holdout_fold, input_window)
+        holdout_samples = validation_plan.get_test_samples(input_window)
+        train_df, features = preprocess_stock_data_samples(train_samples, feature_num, stockid2idx)
+        val_df, _ = preprocess_stock_data_samples(validation_samples, feature_num, stockid2idx)
+        holdout_df, _ = preprocess_stock_data_samples(holdout_samples, feature_num, stockid2idx)
+        train_df = train_df.dropna(subset=['label']).sort_values(['日期', '股票代码']).reset_index(drop=True)
+        val_df = val_df.dropna(subset=['label']).sort_values(['日期', '股票代码']).reset_index(drop=True)
+        holdout_df = holdout_df.dropna(subset=['label']).sort_values(['日期', '股票代码']).reset_index(drop=True)
+        datasets[(input_window, feature_num)] = (train_df, val_df, holdout_df, features)
+
+    _, first_input_window, _, first_feature_num = model_bindings[0]
+    train_df, val_df, holdout_df, _ = datasets[(first_input_window, first_feature_num)]
     train_start, train_end = target_range(train_df)
     validation_start, validation_end = target_range(val_df)
     holdout_start, holdout_end = target_range(holdout_df)
+    prediction_samples = validation_plan.get_prediction_samples(first_input_window)
 
     print(f"Data: {raw_df['日期'].min().date()} to {raw_df['日期'].max().date()} | rows={len(raw_df)} | stocks={raw_df['股票代码'].nunique()}")
-    print(f"Train: {train_start} to {train_end} ")
+    print(f"Train: {train_start} to {train_end}")
     print(f"Validation: {validation_start} to {validation_end}")
     print(f"Holdout Test: {holdout_start} to {holdout_end}")
-    print(f"Prediction: target={runtime.test_date.date()} | input={runtime.test_input_start.date()} to {(runtime.test_date - pd.Timedelta(days=3)).date()} | stocks={len(prediction_samples)}")
+    print(
+        f"Prediction: target={validation_plan.test_date.date()} | "
+        f"input={validation_plan.input_start(validation_plan.test_date, first_input_window).date()} to "
+        f"{(validation_plan.test_date - pd.Timedelta(days=3)).date()} | stocks={len(prediction_samples)}"
+    )
 
-    dtrain, train_groups = make_dmatrix(train_df, features)
-    dval, val_groups = make_dmatrix(val_df, features)
-    dholdout, holdout_groups = make_dmatrix(holdout_df, features)
-    print(f"Train Samples: {len(train_groups)} | rows={dtrain.num_row()}")
-    print(f"Validation Samples: {len(val_groups)} | rows={dval.num_row()}")
-    print(f"Holdout Test Samples: {len(holdout_groups)} | rows={dholdout.num_row()}")
-
-    model_names = list(config['model_names'])
-    missing_params = [name for name in model_names if name not in config['xgb_params']]
-    if missing_params:
-        raise ValueError(f'missing xgb params: {missing_params}')
-    models = [
-        train_one_model(name, dtrain, dval, val_groups, dholdout, holdout_groups, output_dir)
-        for name in model_names
-    ]
+    models = []
+    for name, input_window, feature_type, feature_num in model_bindings:
+        train_df, val_df, holdout_df, features = datasets[(input_window, feature_num)]
+        print(f"{name} input_window={input_window} feature_type={feature_type} feature_num={feature_num} | features={len(features)}")
+        models.append(train_one_model(
+            name,
+            input_window,
+            feature_type,
+            feature_num,
+            train_df,
+            val_df,
+            holdout_df,
+            features,
+            output_dir,
+        ))
     best_model = max(models, key=lambda item: item['validation_score'])
 
     metadata = {
-        'model_type': 'xgboost_rankers',
+        'model_type': 'xgboost_models',
         'model_names': model_names,
         'models': models,
-        'features': features,
         'stock_ids': stock_ids,
         'config': config,
-        'input_window': runtime.input_window,
-        'num_validation_weeks': runtime.num_validation_weeks,
-        'num_test_weeks': runtime.num_test_weeks,
-        'validation_input_start': str(runtime.validation_input_start.date()),
-        'validation_target_start': str(runtime.validation_target_start.date()),
-        'holdout_test_input_start': str(runtime.holdout_test_input_start.date()),
-        'holdout_test_target_start': str(runtime.holdout_test_target_start.date()),
-        'test_input_start': str(runtime.test_input_start.date()),
-        'test_date': str(runtime.test_date.date()),
+        'validation_mode': config['validation']['mode'],
+        'num_validation_weeks': validation_plan.num_validation_weeks,
+        'num_test_weeks': validation_plan.num_test_weeks,
+        'validation_target_start': str(validation_plan.validation_target_start.date()),
+        'holdout_test_target_start': str(validation_plan.holdout_test_target_start.date()),
+        'test_date': str(validation_plan.test_date.date()),
+        'model_windows': [
+            {
+                'name': name,
+                'input_window': input_window,
+                'feature_type': feature_type,
+                'feature_num': feature_num,
+                'validation_input_start': str(validation_plan.input_start(holdout_fold.validation_start, input_window).date()),
+                'holdout_test_input_start': str(validation_plan.input_start(validation_plan.holdout_test_target_start, input_window).date()),
+                'test_input_start': str(validation_plan.input_start(validation_plan.test_date, input_window).date()),
+            }
+            for name, input_window, feature_type, feature_num in model_bindings
+        ],
         'best_model': best_model['name'],
         'validation_rank_ic': best_model['validation_rank_ic'],
         'validation_score': best_model['validation_score'],
@@ -225,6 +259,10 @@ def main() -> float:
 
     with open(output_dir / 'final_score.txt', 'w', encoding='utf-8') as f:
         for model in models:
+            f.write(f"{model['name']} artifact: {model['artifact_name']}.json\n")
+            f.write(f"{model['name']} input_window: {model['input_window']}\n")
+            f.write(f"{model['name']} feature_type: {model['feature_type']}\n")
+            f.write(f"{model['name']} feature_num: {model['feature_num']}\n")
             f.write(f"{model['name']} best iteration: {model['best_iteration']}\n")
             f.write(f"{model['name']} best selection metric: {model['best_selection_metric']}\n")
             f.write(f"{model['name']} best selection score: {model['best_selection_score']:.8f}\n")
@@ -249,4 +287,4 @@ def main() -> float:
 if __name__ == '__main__':
     mp.set_start_method('spawn', force=True)
     score = main()
-    print(f"\n########## rankers done, best validation top5: {score:.6f} ##########")
+    print(f"\n########## models done, best validation top5: {score:.6f} ##########")

@@ -6,29 +6,29 @@ Keep minimal code style, delete all useless or unused variables, functions, clas
 Always write comments(chinese)
 Use uv run, keep Modular, Data-Centric, Declarative config, Readability
 
-## 目标任务：预测一个未来交易周，收益最好的 1-5 只股票和持仓比例
+Structure:
+    Features + Models + Postprocess.
+    Models only provide standard structure/train/predict interface. For ML methods, prefer sklearn style,for DL methods, prefer torch style.
+    Do model experiments in JupyterNotebook when there are actual experiments.
 
-核心任务： 排序
-数据：日k线数据
+## Core Task：Choose a portfolio(5 stocks and weights) for the next week to get best return.
 
-输入：单股的历史特征
-输出：未来交易周的收益排名
-数据样本：(12个历史周,1个未来标签周)
-
-验证：必须重点关注模型在验证集上的实际收益表现，每次训练迭代必须显示loss，验证集收益情况
-（目前采用4周作为测试，8周作为验证，后续切换到rolling_cv滚动验证）
+Core: ranking
+Data: day level k line data for each stock
+Sample: (n weeks input window, 1 week for prediction and label)
 
 Defination:
-    stock_week: a natual stock week with 5 stock trading day.
+    stock_week: a natual stock week with 5 stock trading day
     stock_data: a sample that includes past history weeks as input and a future week for label
     window: the number of week that a stock_data history has
 
-Current ranker:
+## Current Method
+Feature:
+    baseline 39+158
+Model:
     xgboost + lambdarankic/pairwise loss
-
-We now use different loss to train different models.
-We can gather the top10s from each model.
-We do a postprocess to get the final top5 and weights.
+Portfolio:
+    top10 from models and top5 from MeanVariance
 
 Improvement direction:
 feature: 
@@ -38,3 +38,11 @@ feature:
 architecture:
     Mixture of features for one model?
     Mixture of models?
+
+Current config:
+    model_params bind input_window with feature_type, (input_window,feature_type)
+    windows.py resolves each pair to feature_num
+    utils/validation.py provides holdout and rolling_kfold validation modes
+    code/models/xgboost provides standard train/predict interface
+    model experiment code belongs in notebooks, not production modules
+    notebook experiments use rolling_kfold, all history before each validation fold, and at least 100 rounds

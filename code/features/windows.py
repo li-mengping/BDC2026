@@ -421,12 +421,46 @@ WINDOW_FACTOR_CLASSES['window_multi'] = WindowMultiFactors
 WINDOW_FACTOR_CLASSES['window_multi_cross'] = WindowMultiCrossFactors
 
 
-def feature_num_for_window(input_window: int) -> str:
-    """把输入周数映射到特征配置名。"""
-    feature_num = f'window_{int(input_window):02d}'
-    if feature_num not in WINDOW_FACTOR_CLASSES:
-        raise ValueError(f'unsupported input_window for window factors: {input_window}')
-    return feature_num
+WINDOW_BOUND_FEATURE_TYPES = {
+    'window': '{window_feature_num}',
+    '39+window': '39+{window_feature_num}',
+    '158+39+window': '158+39+{window_feature_num}',
+}
+
+WINDOW_12_FEATURE_TYPES = {
+    'window_multi',
+    'window_multi_cross',
+    '39+window_multi',
+    '39+window_multi_cross',
+    '158+39+window_multi',
+    '158+39+window_multi_cross',
+}
+
+STATIC_FEATURE_TYPES = {
+    '39',
+    '158+39',
+}
+
+
+def feature_num_for_window(input_window: int, feature_type: str) -> str:
+    """把模型配置里的输入周数和特征类型绑定为特征配置名。"""
+    window = int(input_window)
+    suffix = '+xsec' if feature_type.endswith('+xsec') else ''
+    base_type = feature_type.removesuffix('+xsec')
+
+    if base_type in WINDOW_BOUND_FEATURE_TYPES:
+        window_feature_num = f'window_{window:02d}'
+        if window_feature_num not in WINDOW_FACTOR_CLASSES:
+            raise ValueError(f'unsupported input_window for window factors: {input_window}')
+        return WINDOW_BOUND_FEATURE_TYPES[base_type].format(window_feature_num=window_feature_num) + suffix
+
+    if base_type in WINDOW_12_FEATURE_TYPES and window != 12:
+        raise ValueError(f'{feature_type} requires input_window=12')
+
+    if base_type in WINDOW_12_FEATURE_TYPES or base_type in STATIC_FEATURE_TYPES:
+        return base_type + suffix
+
+    raise ValueError(f'unsupported feature_type: {feature_type}')
 
 
 def engineer_window_features(df: pd.DataFrame, feature_num: str) -> pd.DataFrame:

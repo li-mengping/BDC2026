@@ -1,7 +1,7 @@
 [project]
 name = "lambdarankic-submit"
 version = "0.1.0"
-description = "LambdaRankIC two-ranker submission"
+description = "LambdaRankIC two-model submission"
 readme = "README_SUBMIT.md"
 requires-python = ">=3.10,<3.13"
 dependencies = [
@@ -9,4 +9,5 @@ dependencies = [
     "ta-lib>=0.6.8",
     "tqdm>=4.67.1",
     "xgboost>=3.0.2",
+    "baostock>=0.9.2"
 ]

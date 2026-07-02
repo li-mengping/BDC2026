@@ -1,2 +1,1 @@
-"""Portfolio post-processing for ranker outputs."""
-
+"""Portfolio post-processing for model outputs."""
