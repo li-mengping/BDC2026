@@ -1,3 +1,5 @@
+"""股票周数据对象；StockWeek/StockData 是训练、验证、预测的基础样本接口。"""
+
 from dataclasses import dataclass
 
 import pandas as pd

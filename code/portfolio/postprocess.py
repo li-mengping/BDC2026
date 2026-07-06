@@ -1,3 +1,5 @@
+"""组合后处理；从模型分数构建候选池并输出最终五只股票权重。"""
+
 from dataclasses import dataclass
 
 import numpy as np

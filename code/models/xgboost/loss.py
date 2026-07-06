@@ -1,3 +1,5 @@
+"""XGBoost 排序目标和评估指标；训练模块复用 RankIC/TopK 指标。"""
+
 import numpy as np
 import xgboost as xgb
 
@@ -61,7 +63,7 @@ def xgb_rank_ic_metric(pred: np.ndarray, dmatrix: xgb.DMatrix) -> tuple[str, flo
 
 
 def xgb_rank_return_metrics(pred: np.ndarray, dmatrix: xgb.DMatrix) -> list[tuple[str, float]]:
-    """训练日志指标：RankIC、Top5 收益、Top10 收益。"""
+    """训练日志指标：RankIC、TopK 收益、超额收益、Precision。"""
     ptr = group_ptr_from_dmatrix(dmatrix)
     groups = np.diff(ptr).astype(int).tolist()
     labels = dmatrix.get_label()
@@ -69,13 +71,24 @@ def xgb_rank_return_metrics(pred: np.ndarray, dmatrix: xgb.DMatrix) -> list[tupl
     top10 = topk_return_metrics(pred, labels, groups, top_k=10)
     return [
         ('rank_ic', rank_ic_score(pred, labels, ptr)),
+        ('universe_return', top5['benchmark_top5_return_avg']),
         ('top5_return', top5['pred_top5_return_avg']),
+        ('top5_excess_return', top5['pred_top5_excess_return_avg']),
+        ('top5_excess_std', top5['pred_top5_excess_return_std']),
+        ('top5_excess_min', top5['pred_top5_excess_return_min']),
+        ('top5_excess_positive_rate', top5['pred_top5_excess_positive_rate']),
+        ('top5_precision', top5['pred_top5_precision_avg']),
         ('top10_return', top10['pred_top10_return_avg']),
+        ('top10_excess_return', top10['pred_top10_excess_return_avg']),
+        ('top10_excess_std', top10['pred_top10_excess_return_std']),
+        ('top10_excess_min', top10['pred_top10_excess_return_min']),
+        ('top10_excess_positive_rate', top10['pred_top10_excess_positive_rate']),
+        ('top10_precision', top10['pred_top10_precision_avg']),
     ]
 
 
 def topk_return_metrics(pred: np.ndarray, labels: np.ndarray, groups: list[int], top_k: int) -> dict[str, float]:
-    """计算验证集每组 top-k 等权收益和平均收益。"""
+    """计算每组 top-k 收益、相对全市场超额收益和命中率。"""
     if top_k <= 0:
         raise ValueError('top_k must be positive')
 
@@ -85,23 +98,44 @@ def topk_return_metrics(pred: np.ndarray, labels: np.ndarray, groups: list[int],
 
     pred_returns = []
     true_returns = []
+    benchmark_returns = []
+    excess_returns = []
+    precision_values = []
     for begin, end in zip(ptr[:-1], ptr[1:]):
         group_pred = pred[begin:end]
         group_label = labels[begin:end]
         if len(group_label) < top_k:
             continue
-        pred_returns.append(float(group_label[np.argsort(group_pred)[::-1][:top_k]].mean()))
-        true_returns.append(float(group_label[np.argsort(group_label)[::-1][:top_k]].mean()))
+        pred_top = np.argsort(-group_pred, kind='mergesort')[:top_k]
+        true_top = np.argsort(-group_label, kind='mergesort')[:top_k]
+        pred_return = float(group_label[pred_top].mean())
+        true_return = float(group_label[true_top].mean())
+        benchmark_return = float(group_label.mean())
+        pred_returns.append(pred_return)
+        true_returns.append(true_return)
+        benchmark_returns.append(benchmark_return)
+        excess_returns.append(pred_return - benchmark_return)
+        precision_values.append(float(np.intersect1d(pred_top, true_top, assume_unique=True).size / top_k))
 
     if not pred_returns:
         raise ValueError(f'no valid top{top_k} return group')
 
     prefix = f'top{top_k}'
+    excess = np.asarray(excess_returns, dtype=np.float64)
     return {
         f'pred_{prefix}_group_returns': pred_returns,
         f'true_{prefix}_group_returns': true_returns,
+        f'benchmark_{prefix}_group_returns': benchmark_returns,
+        f'pred_{prefix}_excess_group_returns': excess_returns,
+        f'pred_{prefix}_precision_by_week': precision_values,
         f'pred_{prefix}_return_avg': float(np.mean(pred_returns)),
         f'true_{prefix}_return_avg': float(np.mean(true_returns)),
+        f'benchmark_{prefix}_return_avg': float(np.mean(benchmark_returns)),
+        f'pred_{prefix}_excess_return_avg': float(np.mean(excess)),
+        f'pred_{prefix}_excess_return_std': float(np.std(excess)),
+        f'pred_{prefix}_excess_return_min': float(np.min(excess)),
+        f'pred_{prefix}_excess_positive_rate': float(np.mean(excess > 0.0)),
+        f'pred_{prefix}_precision_avg': float(np.mean(precision_values)),
     }
 
 

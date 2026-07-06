@@ -1,3 +1,5 @@
+"""时间验证计划；通过 `build_validation_plan` 生成 holdout 或 rolling_kfold 切分。"""
+
 from dataclasses import dataclass
 
 import numpy as np
@@ -51,6 +53,12 @@ class ValidationPlan:
         """holdout 测试周数。"""
         return int(self.validation_config['num_test_weeks'])
 
+    def week_boundary(self, pos: int) -> pd.Timestamp:
+        """把周位置转换为左闭右开切分边界。"""
+        if pos == self.target_pos:
+            return self.test_date
+        return pd.Timestamp(self.week_starts[pos]).normalize()
+
     def holdout_split(self) -> ValidationFold:
         """正式训练使用的 train/validation/test 前两段。"""
         return ValidationFold(
@@ -62,7 +70,7 @@ class ValidationPlan:
         )
 
     def rolling_splits(self) -> tuple[ValidationFold, ...]:
-        """从 holdout test 之前向前滚动生成 k fold 验证。"""
+        """滚动实验验证直接滚到 test_date 前，不预留 holdout test。"""
         folds = int(self.validation_config['rolling_folds'])
         validation_weeks = int(self.validation_config['rolling_validation_weeks'])
         gap_weeks = int(self.validation_config['rolling_gap_weeks'])
@@ -71,17 +79,17 @@ class ValidationPlan:
         result = []
 
         for fold_idx in range(folds):
-            validation_end_pos = self.holdout_test_start_pos - fold_idx * validation_weeks
+            validation_end_pos = self.target_pos - fold_idx * validation_weeks
             validation_start_pos = validation_end_pos - validation_weeks
             train_end_pos = validation_start_pos - gap_weeks
             if train_end_pos - start_pos < min_train_weeks:
                 raise ValueError('rolling fold train weeks less than rolling_min_train_weeks')
             result.append(ValidationFold(
                 name='rolling',
-                train_start=pd.Timestamp(self.week_starts[start_pos]).normalize(),
-                train_end=pd.Timestamp(self.week_starts[train_end_pos]).normalize(),
-                validation_start=pd.Timestamp(self.week_starts[validation_start_pos]).normalize(),
-                validation_end=pd.Timestamp(self.week_starts[validation_end_pos]).normalize(),
+                train_start=self.week_boundary(start_pos),
+                train_end=self.week_boundary(train_end_pos),
+                validation_start=self.week_boundary(validation_start_pos),
+                validation_end=self.week_boundary(validation_end_pos),
             ))
 
         return tuple(

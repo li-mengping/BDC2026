@@ -1,1 +1,1 @@
-"""XGBoost ranking model."""
+"""XGBoost 排序模型；核心接口是 XGBoostRankModel。"""

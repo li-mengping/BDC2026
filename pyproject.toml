@@ -1,5 +1,5 @@
 [project]
-name = "lambdarankic-submit"
+name = "BDC2026"
 version = "0.1.0"
 description = "LambdaRankIC two-model submission"
 readme = "README_SUBMIT.md"

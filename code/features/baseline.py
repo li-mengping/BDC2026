@@ -1,10 +1,11 @@
+"""基础和组合特征工程；训练/预测入口调用 preprocess_* 生成周频样本特征。"""
+
 import multiprocessing as mp
 from functools import partial
 
 import numpy as np
 import pandas as pd
 import talib
-from tqdm import tqdm
 
 from .windows import WINDOW_FEATURE_COLUMNS, WINDOW_FEATURE_ENGINEERS
 
@@ -437,9 +438,7 @@ def preprocess_features(
     # 每只股票独立计算滚动特征，避免窗口跨股票泄漏。
     num_processes = min(10, mp.cpu_count(), len(groups))
     with mp.Pool(processes=num_processes) as pool:
-        processed_list = list(
-            tqdm(pool.imap(FEATURE_ENGINEERS[base_feature_num], groups), total=len(groups), desc='feature engineering')
-        )
+        processed_list = list(pool.imap(FEATURE_ENGINEERS[base_feature_num], groups))
 
     processed = pd.concat(processed_list, ignore_index=True)
     processed['股票代码'] = processed['股票代码'].astype(str).str.zfill(6)
@@ -480,7 +479,7 @@ def preprocess_stock_data_samples(samples: tuple, feature_num: str, stockid2idx:
         })
 
     sample_df = pd.DataFrame(sample_rows)
-    merged = sample_df.merge(feature_rows, on=['股票代码', 'feature_date'], how='inner')
+    merged = sample_df.merge(feature_rows, on=['股票代码', 'feature_date'], how='inner').copy()
     if len(merged) != len(sample_df):
         raise ValueError(f'missing sample features: {len(sample_df) - len(merged)}')
 
@@ -507,7 +506,7 @@ def preprocess_stock_history_samples(samples: tuple, feature_num: str, stockid2i
         })
 
     sample_df = pd.DataFrame(sample_rows)
-    merged = sample_df.merge(feature_rows, on=['股票代码', 'feature_date'], how='inner')
+    merged = sample_df.merge(feature_rows, on=['股票代码', 'feature_date'], how='inner').copy()
     if len(merged) != len(sample_df):
         raise ValueError(f'missing history features: {len(sample_df) - len(merged)}')
 

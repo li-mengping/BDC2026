@@ -1,3 +1,5 @@
+## this is for sbumit, please read code/readme.md only
+
 # 代码说明
 
 ## 环境配置
@@ -39,7 +41,7 @@ pairwise 选出的排名上限更高，测试平均值略高
 
 - 输入窗口: 12 个完整交易周。
 - validation window: 8 个目标周。
-- 生产训练轮数: 300，按照验证集结果（best top5 return）选择最佳迭代次数
+- 生产训练轮数: 300，按照验证集结果（best top5 excess return）选择最佳迭代次数
 - Notebook 实验必须使用 rolling kfold、每折使用验证周之前全部历史、训练轮数不少于 100。
 - 固定随机种子: 42。
 

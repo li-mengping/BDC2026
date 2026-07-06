@@ -1,3 +1,5 @@
+"""行情读取和样本构造；把日线数据切成完整周样本供特征和模型使用。"""
+
 from pathlib import Path
 
 import numpy as np

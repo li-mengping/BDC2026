@@ -1,0 +1,128 @@
+[NbConvertApp] Converting notebook code/model_feature_validation.ipynb to notebook
+Traceback (most recent call last):
+  File "/home/share/anaconda/bin/jupyter-nbconvert", line 11, in <module>
+    sys.exit(main())
+             ^^^^^^
+  File "/home/share/anaconda/lib/python3.12/site-packages/jupyter_core/application.py", line 283, in launch_instance
+    super().launch_instance(argv=argv, **kwargs)
+  File "/home/share/anaconda/lib/python3.12/site-packages/traitlets/config/application.py", line 1075, in launch_instance
+    app.start()
+  File "/home/share/anaconda/lib/python3.12/site-packages/nbconvert/nbconvertapp.py", line 412, in start
+    self.convert_notebooks()
+  File "/home/share/anaconda/lib/python3.12/site-packages/nbconvert/nbconvertapp.py", line 590, in convert_notebooks
+    self.convert_single_notebook(notebook_filename)
+  File "/home/share/anaconda/lib/python3.12/site-packages/nbconvert/nbconvertapp.py", line 556, in convert_single_notebook
+    output, resources = self.export_single_notebook(
+                        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/share/anaconda/lib/python3.12/site-packages/nbconvert/nbconvertapp.py", line 479, in export_single_notebook
+    output, resources = self.exporter.from_filename(
+                        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/share/anaconda/lib/python3.12/site-packages/nbconvert/exporters/exporter.py", line 203, in from_filename
+    return self.from_file(f, resources=resources, **kw)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/share/anaconda/lib/python3.12/site-packages/nbconvert/exporters/exporter.py", line 222, in from_file
+    return self.from_notebook_node(
+           ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/share/anaconda/lib/python3.12/site-packages/nbconvert/exporters/notebook.py", line 36, in from_notebook_node
+    nb_copy, resources = super().from_notebook_node(nb, resources, **kw)
+                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/share/anaconda/lib/python3.12/site-packages/nbconvert/exporters/exporter.py", line 156, in from_notebook_node
+    nb_copy, resources = self._preprocess(nb_copy, resources)
+                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/share/anaconda/lib/python3.12/site-packages/nbconvert/exporters/exporter.py", line 354, in _preprocess
+    nbc, resc = preprocessor(nbc, resc)  # type:ignore[operator]
+                ^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/share/anaconda/lib/python3.12/site-packages/nbconvert/preprocessors/base.py", line 48, in __call__
+    return self.preprocess(nb, resources)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/share/anaconda/lib/python3.12/site-packages/nbconvert/preprocessors/execute.py", line 102, in preprocess
+    self.preprocess_cell(cell, resources, index)
+  File "/home/share/anaconda/lib/python3.12/site-packages/nbconvert/preprocessors/execute.py", line 123, in preprocess_cell
+    cell = self.execute_cell(cell, index, store_history=True)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/share/anaconda/lib/python3.12/site-packages/jupyter_core/utils/__init__.py", line 165, in wrapped
+    return loop.run_until_complete(inner)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/share/anaconda/lib/python3.12/asyncio/base_events.py", line 685, in run_until_complete
+    return future.result()
+           ^^^^^^^^^^^^^^^
+  File "/home/share/anaconda/lib/python3.12/site-packages/nbclient/client.py", line 1058, in async_execute_cell
+    await self._check_raise_for_error(cell, cell_index, exec_reply)
+  File "/home/share/anaconda/lib/python3.12/site-packages/nbclient/client.py", line 914, in _check_raise_for_error
+    raise CellExecutionError.from_cell_and_msg(cell, exec_reply_content)
+nbclient.exceptions.CellExecutionError: An error occurred while executing the following cell:
+------------------
+import copy
+import json
+import os
+import random
+import sys
+import time
+from pathlib import Path
+
+PROJECT_ROOT = Path.cwd()
+if not (PROJECT_ROOT / 'code').is_dir():
+    PROJECT_ROOT = PROJECT_ROOT.parent
+os.chdir(PROJECT_ROOT)
+sys.path.insert(0, str(PROJECT_ROOT))
+sys.modules.pop('code', None)
+
+import numpy as np
+import pandas as pd
+import xgboost as xgb
+
+from code.config import config as base_config
+from code.features.baseline import preprocess_stock_data_samples
+from code.features.windows import feature_num_for_window
+from code.models.xgboost.loss import topk_return_metrics, xgb_rank_ic_metric, xgb_rank_return_metrics
+from code.models.xgboost.model import TqdmTrainingCallback, choose_best_iteration, make_dmatrix, target_range
+from code.utils.log import get_logger, log_json
+from code.utils.runtime_split import load_market_data
+from code.utils.validation import build_validation_plan
+
+config = copy.deepcopy(base_config)
+config['validation'] = {**config['validation'], 'mode': 'rolling_kfold'}
+
+MODEL_NAME = 'xgb_rank_pairwise'
+FEATURE_TYPES = (
+    '39',
+    '158+39',
+    'xsec',
+    'window_multi_cross+',
+    'window_multi+xsec',
+    '158+39+window_multi_cross',
+    '158+39+xsec',
+    '39+xsec'
+    '158+39+window_multi_cross+xsec',
+)
+OUTPUT_PATH = Path('output/xgb_pairwise_feature_validation_rolling_kfold.json')
+LOG_PATH = Path('output/xgb_pairwise_feature_validation_rolling_kfold.log')
+logger = get_logger('xgb_pairwise_feature_validation_rolling_kfold', LOG_PATH)
+
+------------------
+
+----- stderr -----
+/home/share/anaconda/lib/python3.12/site-packages/pandas/core/computation/expressions.py:23: UserWarning: Pandas requires version '2.10.2' or newer of 'numexpr' (version '2.8.7' currently installed).
+  from pandas.core.computation.check import NUMEXPR_INSTALLED
+/home/share/anaconda/lib/python3.12/site-packages/pandas/core/arrays/masked.py:56: UserWarning: Pandas requires version '1.4.2' or newer of 'bottleneck' (version '1.3.7' currently installed).
+  from pandas.core import (
+------------------
+
+[0;31m---------------------------------------------------------------------------[0m
+[0;31mModuleNotFoundError[0m                       Traceback (most recent call last)
+Cell [0;32mIn[1], line 21[0m
+[1;32m     18[0m [38;5;28;01mimport[39;00m[38;5;250m [39m[38;5;21;01mxgboost[39;00m[38;5;250m [39m[38;5;28;01mas[39;00m[38;5;250m [39m[38;5;21;01mxgb[39;00m
+[1;32m     20[0m [38;5;28;01mfrom[39;00m[38;5;250m [39m[38;5;21;01mcode[39;00m[38;5;21;01m.[39;00m[38;5;21;01mconfig[39;00m[38;5;250m [39m[38;5;28;01mimport[39;00m config [38;5;28;01mas[39;00m base_config
+[0;32m---> 21[0m [38;5;28;01mfrom[39;00m[38;5;250m [39m[38;5;21;01mcode[39;00m[38;5;21;01m.[39;00m[38;5;21;01mfeatures[39;00m[38;5;21;01m.[39;00m[38;5;21;01mbaseline[39;00m[38;5;250m [39m[38;5;28;01mimport[39;00m preprocess_stock_data_samples
+[1;32m     22[0m [38;5;28;01mfrom[39;00m[38;5;250m [39m[38;5;21;01mcode[39;00m[38;5;21;01m.[39;00m[38;5;21;01mfeatures[39;00m[38;5;21;01m.[39;00m[38;5;21;01mwindows[39;00m[38;5;250m [39m[38;5;28;01mimport[39;00m feature_num_for_window
+[1;32m     23[0m [38;5;28;01mfrom[39;00m[38;5;250m [39m[38;5;21;01mcode[39;00m[38;5;21;01m.[39;00m[38;5;21;01mmodels[39;00m[38;5;21;01m.[39;00m[38;5;21;01mxgboost[39;00m[38;5;21;01m.[39;00m[38;5;21;01mloss[39;00m[38;5;250m [39m[38;5;28;01mimport[39;00m topk_return_metrics, xgb_rank_ic_metric, xgb_rank_return_metrics
+
+File [0;32m/data/zzj/BDC2026/code/features/baseline.py:8[0m
+[1;32m      6[0m [38;5;28;01mimport[39;00m[38;5;250m [39m[38;5;21;01mnumpy[39;00m[38;5;250m [39m[38;5;28;01mas[39;00m[38;5;250m [39m[38;5;21;01mnp[39;00m
+[1;32m      7[0m [38;5;28;01mimport[39;00m[38;5;250m [39m[38;5;21;01mpandas[39;00m[38;5;250m [39m[38;5;28;01mas[39;00m[38;5;250m [39m[38;5;21;01mpd[39;00m
+[0;32m----> 8[0m [38;5;28;01mimport[39;00m[38;5;250m [39m[38;5;21;01mtalib[39;00m
+[1;32m     10[0m [38;5;28;01mfrom[39;00m[38;5;250m [39m[38;5;21;01m.[39;00m[38;5;21;01mwindows[39;00m[38;5;250m [39m[38;5;28;01mimport[39;00m WINDOW_FEATURE_COLUMNS, WINDOW_FEATURE_ENGINEERS
+[1;32m     13[0m EPS [38;5;241m=[39m [38;5;241m1e-12[39m
+
+[0;31mModuleNotFoundError[0m: No module named 'talib'
+

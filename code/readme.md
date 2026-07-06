@@ -1,15 +1,17 @@
 ## Coding Principle
-No any fallbacks, compatability, legacy code, tries
-No any useless helper functions, normalizers, type checks
-No any useless args， we prefer micros
-Keep minimal code style, delete all useless or unused variables, functions, classes etc. 
-Always write comments(chinese)
-Use uv run, keep Modular, Data-Centric, Declarative config, Readability
+- No any fallbacks, compatability, legacy code, tries
+- Keep minimal code style, no any useless helper functions, normalizers, type checks, delete all useless or unused variables, functions, classes etc. 
+- Always write comments(chinese)
+- Keep Modular, Data-Centric, Declarative config, Readability
 
-Structure:
+## Experiment Principle
+- Always use local uv venv, always use GPU/cuda(pick less used).
+- Always do experiments in JupyterNotebook, use time rolling kfold at validation.py to test new features or models.
+- Utilize the stored variable in JupyterNotebook to avoid reloading data and redoing preprocessing, use subagent to monitor experiments to avoid frequent checks or just handover the button to me.
+
+## Structure:
     Features + Models + Postprocess.
     Models only provide standard structure/train/predict interface. For ML methods, prefer sklearn style,for DL methods, prefer torch style.
-    Do model experiments in JupyterNotebook when there are actual experiments.
 
 ## Core Task：Choose a portfolio(5 stocks and weights) for the next week to get best return.
 

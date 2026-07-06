@@ -1,1 +1,1 @@
-"""Portfolio post-processing for model outputs."""
+"""组合后处理包；把模型分数转换为最终股票和权重。"""
