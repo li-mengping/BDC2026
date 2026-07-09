@@ -6,8 +6,9 @@
 
 ## Experiment Principle
 - Always use local uv venv, always use GPU/cuda(pick less used).
-- Always do experiments in JupyterNotebook, use time rolling kfold at validation.py to test new features or models.
-- Utilize the stored variable in JupyterNotebook to avoid reloading data and redoing preprocessing, use subagent to monitor experiments to avoid frequent checks or just handover the button to me.
+- Always do experiments with time rolling kfold at validation.py to test new features or models.
+- Use subagent to monitor experiments to avoid frequent checks or just handover the button to me.
+- Write the params/settings of model that can possibly be used later under code/models/configs/*.yaml, when experimenting, keep that config file to SOTA.
 
 ## Structure:
     Features + Models + Postprocess.
@@ -26,25 +27,14 @@ Defination:
 
 ## Current Method
 Feature:
-    baseline 39+158
+    baseline 39
 Model:
-    xgboost + lambdarankic/pairwise loss
+    xgboost + pairwise loss
 Portfolio:
     top10 from models and top5 from MeanVariance
 
-Improvement direction:
-feature: 
-    use different factors/features for different windows 
-    DL representation for those features
-    cross-section feature between stocks
-architecture:
-    Mixture of features for one model?
-    Mixture of models?
+current experiments shows input window 12 with 30 features wins a good result, and feature length for such model should not be very long. the quality of factor matters more than numbers.
 
-Current config:
-    model_params bind input_window with feature_type, (input_window,feature_type)
-    windows.py resolves each pair to feature_num
-    utils/validation.py provides holdout and rolling_kfold validation modes
-    code/models/xgboost provides standard train/predict interface
-    model experiment code belongs in notebooks, not production modules
-    notebook experiments use rolling_kfold, all history before each validation fold, and at least 100 rounds
+next move:
+    try different ranking model and loss.
+    try use DL model to get better features

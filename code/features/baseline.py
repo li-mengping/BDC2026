@@ -1,7 +1,6 @@
 """基础和组合特征工程；训练/预测入口调用 preprocess_* 生成周频样本特征。"""
 
 import multiprocessing as mp
-from functools import partial
 
 import numpy as np
 import pandas as pd
@@ -45,11 +44,6 @@ FEATURE_COLUMNS = {
     ],
 }
 FEATURE_COLUMNS.update(WINDOW_FEATURE_COLUMNS)
-for base_feature_num in ('39', '158+39'):
-    for window_feature_num, window_columns in WINDOW_FEATURE_COLUMNS.items():
-        FEATURE_COLUMNS[f'{base_feature_num}+{window_feature_num}'] = FEATURE_COLUMNS[base_feature_num] + [
-            col for col in window_columns if col != 'instrument' and col not in FEATURE_COLUMNS[base_feature_num]
-        ]
 
 
 CROSS_SECTIONAL_SPECS = (
@@ -61,26 +55,42 @@ CROSS_SECTIONAL_SPECS = (
     ('RET_10', 'return_10'),
     ('VOL_10', 'volatility_10'),
     ('VOL_20', 'volatility_20'),
+    ('WF_RET_2', 'WF_RET_2'),
     ('WF_RET_5', 'WF_RET_5'),
     ('WF_RET_10', 'WF_RET_10'),
     ('WF_RET_20', 'WF_RET_20'),
-    ('WF_RET_40', 'WF_RET_40'),
-    ('WF_RET_60', 'WF_RET_60'),
+    ('WF_REV_2', 'WF_REV_2'),
+    ('WF_REV_5', 'WF_REV_5'),
+    ('WF_IR_5', 'WF_RET_IR_5'),
+    ('WF_IR_10', 'WF_RET_IR_10'),
     ('WF_IR_20', 'WF_RET_IR_20'),
-    ('WF_IR_40', 'WF_RET_IR_40'),
-    ('WF_IR_60', 'WF_RET_IR_60'),
+    ('WF_VOL_5', 'WF_VOL_5'),
+    ('WF_VOL_10', 'WF_VOL_10'),
     ('WF_VOL_20', 'WF_VOL_20'),
-    ('WF_VOL_40', 'WF_VOL_40'),
-    ('WF_VOL_60', 'WF_VOL_60'),
-    ('WF_MDD_20', 'WF_MDD_20'),
-    ('WF_MDD_40', 'WF_MDD_40'),
-    ('WF_MDD_60', 'WF_MDD_60'),
+    ('WF_RSV_5', 'WF_RSV_5'),
+    ('WF_RSV_10', 'WF_RSV_10'),
     ('WF_RSV_20', 'WF_RSV_20'),
-    ('WF_RSV_40', 'WF_RSV_40'),
-    ('WF_RSV_60', 'WF_RSV_60'),
+    ('WF_TURN_5', 'WF_TURN_MEAN_5'),
+    ('WF_TURN_10', 'WF_TURN_MEAN_10'),
     ('WF_TURN_20', 'WF_TURN_MEAN_20'),
-    ('WF_TURN_40', 'WF_TURN_MEAN_40'),
-    ('WF_TURN_60', 'WF_TURN_MEAN_60'),
+    ('W1_RET_1', 'W1_RET_1'),
+    ('W1_RET_5', 'W1_RET_5'),
+    ('W1_REV_5', 'W1_REV_5'),
+    ('W1_GAP', 'W1_GAP'),
+    ('W1_INTRADAY', 'W1_INTRADAY'),
+    ('W1_RSV_5', 'W1_RSV_5'),
+    ('W1_CLV_5', 'W1_CLV_MEAN_5'),
+    ('W1_POS_5', 'W1_HIGH_DIST_5'),
+    ('W1_VOL_5', 'W1_RET_STD_5'),
+    ('W1_PARK_5', 'W1_PARKINSON_MEAN_5'),
+    ('W1_GK_5', 'W1_GARMAN_KLASS_MEAN_5'),
+    ('W1_TURN_5', 'W1_TURN_MEAN_5'),
+    ('W1_AMT_5', 'W1_AMOUNT_MEAN_5'),
+    ('W1_ILLIQ_5', 'W1_AMIHUD_MEAN_5'),
+    ('W1_MFLOW_5', 'W1_MONEY_FLOW_5'),
+    ('W1_MAXRET_5', 'W1_RET_MAX_5'),
+    ('W1_TREND_5', 'W1_TREND_SLOPE_5'),
+    ('W1_EFF_5', 'W1_EFFICIENCY_5'),
 )
 
 MARKET_STATE_SPECS = (
@@ -90,8 +100,21 @@ MARKET_STATE_SPECS = (
     ('RET_10', 'return_10'),
     ('TURN', '换手率'),
     ('VOL_20', 'volatility_20'),
+    ('WF_RET_5', 'WF_RET_5'),
+    ('WF_RET_10', 'WF_RET_10'),
     ('WF_RET_20', 'WF_RET_20'),
+    ('WF_VOL_5', 'WF_VOL_5'),
+    ('WF_VOL_10', 'WF_VOL_10'),
     ('WF_VOL_20', 'WF_VOL_20'),
+    ('WF_TURN_5', 'WF_TURN_MEAN_5'),
+    ('W1_RET_1', 'W1_RET_1'),
+    ('W1_RET_5', 'W1_RET_5'),
+    ('W1_GAP', 'W1_GAP'),
+    ('W1_VOL_5', 'W1_RET_STD_5'),
+    ('W1_PARK_5', 'W1_PARKINSON_MEAN_5'),
+    ('W1_TURN_5', 'W1_TURN_MEAN_5'),
+    ('W1_ILLIQ_5', 'W1_AMIHUD_MEAN_5'),
+    ('W1_MFLOW_5', 'W1_MONEY_FLOW_5'),
 )
 
 
@@ -341,40 +364,11 @@ def engineer_features_158plus39(df: pd.DataFrame) -> pd.DataFrame:
     return merged.loc[:, ~merged.columns.duplicated()].replace([np.inf, -np.inf], np.nan).fillna(0.0)
 
 
-def merge_window_features(base: pd.DataFrame, window: pd.DataFrame, window_feature_num: str) -> pd.DataFrame:
-    """把窗口特征追加到已有特征，保留同名基础行情列一份。"""
-    window_cols = [
-        col
-        for col in WINDOW_FEATURE_COLUMNS[window_feature_num]
-        if col != 'instrument' and col in window.columns and col not in base.columns
-    ]
-    merged = pd.concat([base, window[window_cols]], axis=1)
-    return merged.loc[:, ~merged.columns.duplicated()].replace([np.inf, -np.inf], np.nan).fillna(0.0)
-
-
-def engineer_features_with_window(df: pd.DataFrame, base_feature_num: str, window_feature_num: str) -> pd.DataFrame:
-    """把基础因子和指定输入窗口因子合并。"""
-    if base_feature_num == '39':
-        base = engineer_features_39(df)
-    elif base_feature_num == '158+39':
-        base = engineer_features_158plus39(df)
-    else:
-        raise ValueError(f'unsupported base feature: {base_feature_num}')
-    return merge_window_features(base, WINDOW_FEATURE_ENGINEERS[window_feature_num](df), window_feature_num)
-
-
 FEATURE_ENGINEERS = {
     '39': engineer_features_39,
     '158+39': engineer_features_158plus39,
 }
 FEATURE_ENGINEERS.update(WINDOW_FEATURE_ENGINEERS)
-for base_feature_num in ('39', '158+39'):
-    for window_feature_num in WINDOW_FEATURE_ENGINEERS:
-        FEATURE_ENGINEERS[f'{base_feature_num}+{window_feature_num}'] = partial(
-            engineer_features_with_window,
-            base_feature_num=base_feature_num,
-            window_feature_num=window_feature_num,
-        )
 
 
 def resolve_feature_num(feature_num: str) -> tuple[str, bool]:

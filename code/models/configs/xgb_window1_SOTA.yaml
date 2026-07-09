@@ -1,0 +1,33 @@
+# 当前 window=1 SOTA：旧 window_01+xsec all_window，强正则 XGBoost pairwise。
+name: xgb_window1_SOTA
+family: xgboost
+enabled: true
+output_dir: ./model/xgboost
+num_boost_round: 220
+features:
+  input_window: 1
+  feature_type: window+xsec
+params:
+  device: cuda
+  booster: gbtree
+  objective: rank:pairwise
+  tree_method: hist
+  max_depth: 4
+  eta: 0.02
+  subsample: 0.9
+  colsample_bytree: 0.75
+  min_child_weight: 55.0
+  lambda: 30.0
+  alpha: 0.2
+  max_delta_step: 1.0
+  seed: 42
+  verbosity: 1
+validation:
+  source: output/xgb_window1_strategy_stable_220.summary.csv
+  mode: rolling_kfold
+  folds: 4
+  target_metric: validation_top5_excess_return
+  top5_excess: 0.049694
+  worst_fold: 0.036905
+  top10_excess: 0.026393
+  rank_ic: 0.057289

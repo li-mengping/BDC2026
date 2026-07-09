@@ -127,7 +127,7 @@ class XGBoostRankModel:
     def train_one(self, name, input_window, feature_type, feature_num, train_df, val_df, holdout_df, features) -> dict:
         """训练单个排序模型并保存模型文件。"""
         model_config = dict(config['model_params'][name])
-        params = {key: value for key, value in model_config.items() if key not in {'input_window', 'feature_type'}}
+        params = {key: value for key, value in model_config.items() if key not in {'input_window', 'feature_type', 'num_boost_round'}}
         params['disable_default_eval_metric'] = 1
         obj = lambdarankic_objective if name == 'lambdarankic' else None
 
@@ -141,7 +141,7 @@ class XGBoostRankModel:
         model_dir = self.output_dir / 'models'
         model_dir.mkdir(parents=True, exist_ok=True)
         evals_result = {}
-        num_boost_round = int(config['num_boost_round'])
+        num_boost_round = int(model_config.get('num_boost_round', config['num_boost_round']))
         booster = xgb.train(
             params=params,
             dtrain=dtrain,

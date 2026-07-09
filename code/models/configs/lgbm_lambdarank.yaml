@@ -1,0 +1,29 @@
+# LightGBM LambdaRank 排序模型配置。
+name: lgbm_lambdarank
+family: lightgbm
+enabled: true
+output_dir: ./model/lightgbm
+num_boost_round: 20
+features:
+  input_window: 12
+  feature_type: "39"
+params:
+  max_relevance: 30
+  objective: lambdarank
+  metric: "None"
+  boosting_type: gbdt
+  device_type: cpu
+  lambdarank_truncation_level: 30
+  max_bin: 63
+  num_leaves: 15
+  max_depth: 4
+  learning_rate: 0.025
+  bagging_fraction: 0.8
+  bagging_freq: 1
+  feature_fraction: 0.75
+  min_data_in_leaf: 60
+  lambda_l1: 0.2
+  lambda_l2: 18.0
+  num_threads: 8
+  seed: 42
+  verbosity: -1
