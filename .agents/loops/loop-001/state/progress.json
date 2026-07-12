@@ -1,0 +1,15 @@
+{
+  "status": "local_release_validated",
+  "phase": "structure_checkpoint_rotation",
+  "iteration": 6,
+  "stale_count": 0,
+  "baseline_validated": true,
+  "candidate_validated": true,
+  "data_validated": true,
+  "holdout_baseline_completed": true,
+  "holdout_independent": false,
+  "offline_double_run_validated": true,
+  "docker_validated": false,
+  "structure_candidate_validated": true,
+  "next_loop": "loop-002"
+}

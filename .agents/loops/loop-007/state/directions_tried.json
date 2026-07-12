@@ -1,0 +1,15 @@
+{
+  "directions": [
+    {
+      "id": "release-host-docker-remote",
+      "status": "achieved",
+      "host_result_sha256": "5ca8d9b49a3a4ab5b06aa81380f843ab593170f92c3b00f6fd940c50b0ded381",
+      "docker_result_sha256": "a9a37ad63764d89798d7b979da4326f24ca0f498400f6ffad0b6e3b8be6c8252",
+      "docker_image_bytes": 584324299,
+      "remote": "KRPCT/BDC2026",
+      "remote_default_branch": "dev",
+      "remote_heads": ["refs/heads/dev"],
+      "evidence": ".agents/loops/loop-007/evidence"
+    }
+  ]
+}

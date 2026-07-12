@@ -1,0 +1,16 @@
+{
+  "status": "validated",
+  "repository": "KRPCT/BDC2026",
+  "url": "https://github.com/KRPCT/BDC2026",
+  "visibility": "PRIVATE",
+  "default_branch": "dev",
+  "remote_heads": [
+    "refs/heads/dev"
+  ],
+  "verified_commit": "276aad6344e1a21ac0203128f7858c6debaa3342",
+  "verified_at": "2026-07-12",
+  "commands": [
+    "gh repo view KRPCT/BDC2026 --json nameWithOwner,visibility,defaultBranchRef,url",
+    "git ls-remote --heads origin"
+  ]
+}

@@ -1,0 +1,16 @@
+{
+  "selected_next": "model-family-catboost",
+  "proposals": [
+    {
+      "id": "model-family-catboost",
+      "hypothesis": "YetiRankPairwise 的随机化排序偏置可改善最差折",
+      "local_evidence_needed": ["XGBoost baseline curves", "CatBoost 四折逐轮曲线"],
+      "first_action": "运行单一 CatBoost 配置 crossfit",
+      "acceptance_gate": "mean/worst 不下降、std 不上升且至少一项严格改善",
+      "stop_rule": "无 Pareto 改善即冻结模型结构族",
+      "risk": "GPU YetiRank 可能有平台确定性限制",
+      "anti_pattern_avoided": "无互补证据继续扩张模型族",
+      "status": "rejected_no_full_pareto_improvement"
+    }
+  ]
+}

@@ -1,0 +1,16 @@
+{
+  "selected_next": "structure-robust-checkpoint",
+  "proposals": [
+    {
+      "id": "structure-robust-checkpoint",
+      "hypothesis": "cross-fitted round 仍能保留无 instrument 的 Pareto 改善",
+      "local_evidence_needed": ["四折逐轮 Top5 excess", "每折 other-fold round 选择记录"],
+      "first_action": "训练两个变体并执行 leave-one-fold-out round selection",
+      "acceptance_gate": "mean/worst 不下降、std 不上升且至少一项严格改善",
+      "stop_rule": "无 Pareto 改善即拒绝无 instrument 推广并轮换目标",
+      "risk": "四折数量有限，cross-fitted round 仍有抽样方差",
+      "anti_pattern_avoided": "在同一 validation 折选择并汇报 checkpoint",
+      "status": "validated_candidate"
+    }
+  ]
+}

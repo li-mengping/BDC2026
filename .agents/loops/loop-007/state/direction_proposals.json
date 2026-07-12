@@ -1,0 +1,16 @@
+{
+  "selected_next": "release-host-docker-remote",
+  "proposals": [
+    {
+      "id": "release-host-docker-remote",
+      "hypothesis": "冻结候选可在宿主与无网络 Docker 中确定性复现并安全发布",
+      "local_evidence_needed": ["宿主双跑哈希", "Docker code/runtime audit", "remote heads"],
+      "first_action": "锁依赖并清理 artifact",
+      "acceptance_gate": "全部 Done 条件通过",
+      "stop_rule": "任一核心门禁失败即保持 unmet 并修复发布路径",
+      "risk": "Linux CUDA wheel 与 Windows 宿主实现差异",
+      "anti_pattern_avoided": "只验证宿主或只验证镜像构建",
+      "status": "achieved"
+    }
+  ]
+}

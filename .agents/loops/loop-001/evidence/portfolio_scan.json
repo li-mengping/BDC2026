@@ -1,0 +1,126 @@
+{
+  "experiment": "xgb_portfolio_candidate_pool_scan",
+  "selection_policy": "validation_only; holdout is reported after selection and cannot select a candidate",
+  "baseline": {
+    "validation": {
+      "candidate_top_k": 10,
+      "weeks": 8,
+      "return_mean": 0.026128955829497057,
+      "excess_mean": 0.027972136376859007,
+      "excess_worst": -0.008725308852325078,
+      "excess_std": 0.03253275266359356,
+      "positive_rate": 0.75
+    },
+    "holdout": {
+      "candidate_top_k": 10,
+      "weeks": 4,
+      "return_mean": 0.03439755441406665,
+      "excess_mean": 0.0340143100023878,
+      "excess_worst": 0.022398556014008145,
+      "excess_std": 0.00919914608170036,
+      "positive_rate": 1.0
+    }
+  },
+  "rows": [
+    {
+      "validation": {
+        "candidate_top_k": 5,
+        "weeks": 8,
+        "return_mean": 0.032676725991612324,
+        "excess_mean": 0.034519906538974285,
+        "excess_worst": -0.008725308852325078,
+        "excess_std": 0.04380785238287863,
+        "positive_rate": 0.875
+      },
+      "holdout": {
+        "candidate_top_k": 5,
+        "weeks": 4,
+        "return_mean": 0.05294020914904488,
+        "excess_mean": 0.052556964737366034,
+        "excess_worst": 0.03462404525616119,
+        "excess_std": 0.01300427441492848,
+        "positive_rate": 1.0
+      }
+    },
+    {
+      "validation": {
+        "candidate_top_k": 10,
+        "weeks": 8,
+        "return_mean": 0.026128955829497057,
+        "excess_mean": 0.027972136376859007,
+        "excess_worst": -0.008725308852325078,
+        "excess_std": 0.03253275266359356,
+        "positive_rate": 0.75
+      },
+      "holdout": {
+        "candidate_top_k": 10,
+        "weeks": 4,
+        "return_mean": 0.03439755441406665,
+        "excess_mean": 0.0340143100023878,
+        "excess_worst": 0.022398556014008145,
+        "excess_std": 0.00919914608170036,
+        "positive_rate": 1.0
+      }
+    },
+    {
+      "validation": {
+        "candidate_top_k": 15,
+        "weeks": 8,
+        "return_mean": 0.026128955829497057,
+        "excess_mean": 0.027972136376859007,
+        "excess_worst": -0.008725308852325078,
+        "excess_std": 0.03253275266359356,
+        "positive_rate": 0.75
+      },
+      "holdout": {
+        "candidate_top_k": 15,
+        "weeks": 4,
+        "return_mean": 0.03439755441406665,
+        "excess_mean": 0.0340143100023878,
+        "excess_worst": 0.022398556014008145,
+        "excess_std": 0.00919914608170036,
+        "positive_rate": 1.0
+      }
+    },
+    {
+      "validation": {
+        "candidate_top_k": 20,
+        "weeks": 8,
+        "return_mean": 0.026128955829497057,
+        "excess_mean": 0.027972136376859007,
+        "excess_worst": -0.008725308852325078,
+        "excess_std": 0.03253275266359356,
+        "positive_rate": 0.75
+      },
+      "holdout": {
+        "candidate_top_k": 20,
+        "weeks": 4,
+        "return_mean": 0.03439755441406665,
+        "excess_mean": 0.0340143100023878,
+        "excess_worst": 0.022398556014008145,
+        "excess_std": 0.00919914608170036,
+        "positive_rate": 1.0
+      }
+    }
+  ],
+  "selected": {
+    "validation": {
+      "candidate_top_k": 5,
+      "weeks": 8,
+      "return_mean": 0.032676725991612324,
+      "excess_mean": 0.034519906538974285,
+      "excess_worst": -0.008725308852325078,
+      "excess_std": 0.04380785238287863,
+      "positive_rate": 0.875
+    },
+    "holdout": {
+      "candidate_top_k": 5,
+      "weeks": 4,
+      "return_mean": 0.05294020914904488,
+      "excess_mean": 0.052556964737366034,
+      "excess_worst": 0.03462404525616119,
+      "excess_std": 0.01300427441492848,
+      "positive_rate": 1.0
+    }
+  }
+}

@@ -1,0 +1,21 @@
+Prediction: target=2026-06-29 | universe=300
+Candidate pool: model_topk_rows=5 | unique=5 | overlap=0 | xgb_rank_pairwise:5
+Model TopK:
+            model  model_rank stock_id    score  model_rank_norm
+xgb_rank_pairwise           1   300274 0.206279         1.000000
+xgb_rank_pairwise           2   300450 0.195752         0.996656
+xgb_rank_pairwise           3   300014 0.169481         0.993311
+xgb_rank_pairwise           4   300661 0.162207         0.989967
+xgb_rank_pairwise           5   300394 0.156083         0.986622
+Final Portfolio:
+ final_rank stock_id     source_models  final_weight  consensus_score       mu
+          1   300274 xgb_rank_pairwise           0.2         1.000000 0.150344
+          2   300450 xgb_rank_pairwise           0.2         0.996656 0.150344
+          3   300014 xgb_rank_pairwise           0.2         0.993311 0.150344
+          4   300661 xgb_rank_pairwise           0.2         0.989967 0.150221
+          5   300394 xgb_rank_pairwise           0.2         0.986622 0.134708
+result written to: output/result.csv
+top10 written to: output/top10_by_model.csv
+candidates written to: output/candidates.csv
+portfolio selection written to: output/portfolio_selection.csv
+

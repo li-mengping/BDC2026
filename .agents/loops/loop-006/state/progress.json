@@ -1,0 +1,11 @@
+{
+  "status": "achieved",
+  "phase": "optimization_stopped_release_next",
+  "iteration": 1,
+  "stale_count": 0,
+  "parent_loop": "loop-005",
+  "holdout_allowed_for_selection": false,
+  "candidate_accepted": false,
+  "optimization_stop_rule_triggered": true,
+  "next_loop": "loop-007"
+}

@@ -1,0 +1,16 @@
+{
+  "selected_next": "structure-top5-objective",
+  "proposals": [
+    {
+      "id": "promote-no-instrument-fixed-127",
+      "hypothesis": "cross-fitted 候选可在正式入口中确定性复现",
+      "local_evidence_needed": ["loop-002 crossfit evidence", "正式 metadata", "双跑哈希"],
+      "first_action": "冻结配置并训练正式 artifact",
+      "acceptance_gate": "38 特征、127 rounds、三重哈希一致、时限合规",
+      "stop_rule": "任一确定性或契约门禁失败即停止推广",
+      "risk": "正式 validation 分布与 rolling folds 不同",
+      "anti_pattern_avoided": "手工删除特征但不写入 artifact 契约",
+      "status": "rejected_latest_validation_regression"
+    }
+  ]
+}

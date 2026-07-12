@@ -1,0 +1,2 @@
+{"event":"loop_initialized","status":"implemented","parent_loop":"loop-002"}
+{"event":"formal_candidate_trained","status":"rejected","validation":0.017168720079612676,"observed_holdout":0.0110809276034585,"evidence":"../evidence/production_promotion_rejection.json"}

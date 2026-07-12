@@ -1,0 +1,2 @@
+{"event":"family_contract","status":"implemented","baseline":"xgboost rank:pairwise","candidate":"catboost YetiRankPairwise","devices":"0"}
+{"event":"optimization_audit","status":"stopped","reason":"consecutive no-Pareto structural directions","production_changed":false}

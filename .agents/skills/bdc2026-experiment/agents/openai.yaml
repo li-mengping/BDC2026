@@ -1,0 +1,4 @@
+interface:
+  display_name: "BDC2026 实验"
+  short_description: "执行证据门禁、Pareto 约束和反停滞规则下的模型优化循环"
+  default_prompt: "Use $bdc2026-experiment to propose and execute the next evidence-gated BDC2026 experiment."

@@ -1,0 +1,4 @@
+interface:
+  display_name: "BDC2026 审计"
+  short_description: "审计比赛约束、行情数据、标签口径、代码与实验基线证据"
+  default_prompt: "Use $bdc2026-audit to audit the current BDC2026 repository against competition constraints."

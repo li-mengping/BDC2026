@@ -1,0 +1,11 @@
+{
+  "status": "unmet",
+  "phase": "rotate_to_top5_objective",
+  "iteration": 1,
+  "stale_count": 0,
+  "parent_loop": "loop-002",
+  "offline_double_run_validated": false,
+  "candidate_rejected": true,
+  "production_config_restored": true,
+  "next_loop": "loop-004"
+}

@@ -1,0 +1,11 @@
+{
+  "status": "achieved",
+  "phase": "rotate_to_production_and_objective",
+  "iteration": 1,
+  "stale_count": 0,
+  "parent_loop": "loop-001",
+  "holdout_allowed_for_selection": false,
+  "candidate_validated": true,
+  "production_round": 127,
+  "next_loop": "loop-003"
+}

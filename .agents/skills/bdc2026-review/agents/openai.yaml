@@ -1,0 +1,4 @@
+interface:
+  display_name: "BDC2026 审查"
+  short_description: "独立复核 BDC2026 模型证据状态迁移和发布前风险"
+  default_prompt: "Use $bdc2026-review to challenge a BDC2026 change before release."

@@ -1,0 +1,2 @@
+{"event":"production_config_changed","status":"implemented","exclude_features":["instrument"],"fixed_boost_round":127}
+{"event":"production_config_restored","status":"validated","reason":"latest validation regression"}

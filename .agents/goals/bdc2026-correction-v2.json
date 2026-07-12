@@ -1,0 +1,64 @@
+{
+  "id": "bdc2026-correction-v2",
+  "title": "BDC2026 口径、模型架构与 Agent Harness V2 闭环",
+  "objective": "在冻结数据和比赛真实评分口径下，建立可分发的 Codex/Claude Agent Harness，公平复现官方结构基线，完成共享排名 spine、E0-E6 证据实验与离线发布。",
+  "success_criteria": [
+    "比赛公式、官方评分器行为和训练日历政策分层且有验收测试",
+    "所有仓库 Agent 控制面只使用相对路径和可发现运行时",
+    "Goal、loop、claim、handoff、review、reflection、commit 和 release 状态可由新 Agent 恢复",
+    "官方 Transformer、XGBoost 与朴素基线使用同一数据、fold 和绝对组合收益比较",
+    "E0-E6 依次通过 smoke、rolling、review 或留下拒绝证据",
+    "最终 bundle 在无网络、16GB 内存和8GB显存预算下双跑并满足时间、体积和结果门禁"
+  ],
+  "verification": [
+    {
+      "command": "python .agents/agentctl.py doctor",
+      "pass_criteria": "Harness、skills、适配层和可分发性全部有效"
+    },
+    {
+      "command": "python -m pytest tests generated-acceptance-tests -q",
+      "pass_criteria": "所有 unit 与 ATDD acceptance tests 通过"
+    },
+    {
+      "command": "python .agents/scripts/docker_release_verify.py --loop loop-008",
+      "pass_criteria": "精确导出物离线双跑、时限、体积和哈希门禁通过"
+    }
+  ],
+  "constraints": [
+    "不得使用2026-06-29及之后行情做训练、验证或选型",
+    "不得修改全局 skill 或创建新 Python 环境",
+    "原始数据、模型、输出和发布 bundle 不提交 Git",
+    "生产配置只在完整 Pareto 证据通过后改变",
+    "远端保持私有且只有 dev 分支"
+  ],
+  "non_goals": [
+    "不声称数学全局最优",
+    "不复制无许可证的官方基准源码",
+    "不调用 Claude 服务发送私有仓库内容",
+    "不引入常驻服务、数据库或通用 NAS 平台"
+  ],
+  "blockers": [
+    "官方公开契约不足以 clean-room 复现且无法形成公平比较",
+    "目标规格 Docker 无法提供 GPU 或资源门禁无法测量",
+    "连续结构方向与受限 HPO 达到停止规则但仍无改进"
+  ],
+  "iteration_priority": [
+    "口径与泄漏禁区",
+    "可分发 Agent Harness",
+    "统一评估与模型 spine",
+    "结构实验与受限 HPO",
+    "离线 Docker 发布"
+  ],
+  "final_audit": {
+    "status": "pending",
+    "findings": [],
+    "evidence": []
+  },
+  "schema_version": "2",
+  "status": "active",
+  "created_at": "2026-07-12T07:04:43+00:00",
+  "updated_at": "2026-07-12T07:04:44+00:00",
+  "evidence": [],
+  "supersedes": "bdc2026-release-v1",
+  "superseded_by": null
+}

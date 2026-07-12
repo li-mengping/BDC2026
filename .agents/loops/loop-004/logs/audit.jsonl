@@ -1,0 +1,2 @@
+{"event":"objective_contract","status":"implemented","baseline":"rank:pairwise","candidate":"rank:ndcg topk=5"}
+{"event":"goal_audit","status":"achieved","candidate_promoted":false,"holdout_loaded":false}

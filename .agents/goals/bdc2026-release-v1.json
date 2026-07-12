@@ -1,0 +1,43 @@
+{
+  "id": "bdc2026-release-v1",
+  "title": "BDC2026 第一阶段可复现发布",
+  "objective": "按当时已声明的 XGBoost 搜索空间完成宿主、Docker 和私有 dev 远端发布。",
+  "success_criteria": [
+    "宿主与 Docker 内离线双跑确定性通过",
+    "私有远端只有 dev 且默认分支为 dev"
+  ],
+  "verification": [
+    {
+      "command": "python .agents/scripts/validate_loop.py",
+      "pass_criteria": "legacy loop 文件与 JSON/JSONL 可恢复"
+    }
+  ],
+  "constraints": [
+    "原始数据和模型不提交 Git"
+  ],
+  "non_goals": [
+    "不证明相对官方 Transformer baseline 的提升"
+  ],
+  "blockers": [],
+  "iteration_priority": [
+    "发布门禁"
+  ],
+  "final_audit": {
+    "status": "passed",
+    "findings": [
+      "当时声明的发布门禁已通过，后续更严格审计不改写历史事实"
+    ],
+    "evidence": [
+      ".agents/loops/loop-007/evidence/docker-release/docker-release-verification.json"
+    ]
+  },
+  "schema_version": "2",
+  "status": "achieved",
+  "created_at": "2026-07-12T07:04:43+00:00",
+  "updated_at": "2026-07-12T07:04:43+00:00",
+  "evidence": [
+    ".agents/loops/loop-007/evidence/docker-release/docker-release-verification.json"
+  ],
+  "supersedes": null,
+  "superseded_by": "bdc2026-correction-v2"
+}

@@ -1,0 +1,381 @@
+{
+  "claim_boundary": "smoke is directional only",
+  "config": {
+    "data_cutoff": "2026-06-29",
+    "folds": 1,
+    "hidden_dim": 8,
+    "history_days": 60,
+    "history_weeks": 12,
+    "label_mode": "t1_open_to_t5_open",
+    "learning_rate": 0.003,
+    "mode": "smoke",
+    "neural_epochs": 1,
+    "num_heads": 2,
+    "sample_calendar_policy": "full_monday_friday",
+    "seed": 42,
+    "sequence_features": [
+      "open_to_previous_close",
+      "close_to_open",
+      "high_to_open",
+      "low_to_open",
+      "close_to_previous_close",
+      "log_volume_change",
+      "log_amount_change",
+      "turnover_fraction"
+    ],
+    "top_k": 5,
+    "xgb_rounds": 20
+  },
+  "config_sha256": "6478cba4f85a4036e06e9db66dd39cd0658e9e10e6a4393c19aed48f56c5b544",
+  "data": {
+    "data_scope": "manifest-verified rows strictly before 2026-06-29; no post-cutoff or synthetic rows",
+    "date_max": "2026-06-26",
+    "file": "data/stock_data.csv",
+    "manifest": "data/manifest.json",
+    "non_price_missing_rows": {
+      "成交量": 276,
+      "成交额": 276,
+      "换手率": 276
+    },
+    "rows": 250233,
+    "sha256": "04d7e4da6a9d4915c61d635d1ab24d29e92c00363f4250c01dade8f35f6ccd87"
+  },
+  "data_kind": "real_frozen_market",
+  "effect_evidence": true,
+  "feature_contract": {
+    "close_to_open": "close[t] / open[t] - 1",
+    "close_to_previous_close": "close[t] / close[t-1] - 1; first row is 0",
+    "high_to_open": "high[t] / open[t] - 1",
+    "history": "12 contiguous full Monday-Friday weeks / 60 rows, strictly before target week",
+    "log_amount_change": "log1p(amount[t]) - log1p(amount[t-1]); first row is 0",
+    "log_volume_change": "log1p(volume[t]) - log1p(volume[t-1]); first row is 0",
+    "low_to_open": "low[t] / open[t] - 1",
+    "missing_non_price": "within-sequence forward fill using past rows only; leading missing values become 0",
+    "missing_price": "rejected",
+    "normalization": "fixed clipping to [-5, 5]; no validation or future statistics are fitted",
+    "open_to_previous_close": "open[t] / close[t-1] - 1; first row is 0",
+    "turnover_fraction": "turnover[t] / 100"
+  },
+  "folds": [
+    {
+      "name": "rolling_1",
+      "train_end_exclusive": "2026-01-26",
+      "train_rows": 36231,
+      "train_start": "2023-01-09",
+      "train_weeks": 122,
+      "validation_end_exclusive": "2026-03-09",
+      "validation_rows": 1196,
+      "validation_start": "2026-01-26",
+      "validation_weeks": 4
+    }
+  ],
+  "git": {
+    "commit": "8b680948a56956a7f2da472d1e12562c1ad3ce83",
+    "working_tree_dirty": true
+  },
+  "mode": "smoke",
+  "models": {
+    "e0_clean_room_official_contract_transformer": {
+      "aggregate": {
+        "mean_return": 0.011037486023269594,
+        "model_bytes": 3940,
+        "peak_vram_bytes": 34803200,
+        "positive_rate": 1.0,
+        "predict_seconds": 0.026434600003995,
+        "rank_ic": 0.15942208216318451,
+        "return_std": 0.010551134694408533,
+        "train_seconds": 1.4063389000948519,
+        "weekly_returns": [
+          0.0025912949815392492,
+          0.0009475359693169594,
+          0.02738956231623888,
+          0.013221550825983286
+        ],
+        "worst_return": 0.0009475359693169594
+      },
+      "folds": [
+        {
+          "metrics": {
+            "excess_return_diagnostic": 0.017292596298982884,
+            "mean_return": 0.011037486023269594,
+            "positive_rate": 1.0,
+            "rank_ic": 0.15942208216318451,
+            "return_std": 0.010551134694408533,
+            "universe_return": -0.00625511027571329,
+            "validation_weeks": [
+              "2026-01-26",
+              "2026-02-02",
+              "2026-02-09",
+              "2026-03-02"
+            ],
+            "weekly_rank_ic": [
+              0.26371561815375527,
+              0.22584857803416308,
+              0.015721553798879108,
+              0.13240257866594063
+            ],
+            "weekly_returns": [
+              0.0025912949815392492,
+              0.0009475359693169594,
+              0.02738956231623888,
+              0.013221550825983286
+            ],
+            "worst_return": 0.0009475359693169594
+          },
+          "runtime": {
+            "accelerator": "NVIDIA GeForce RTX 3090",
+            "model_bytes": 3940,
+            "peak_vram_bytes": 34803200,
+            "predict_seconds": 0.026434600003995,
+            "train_seconds": 1.4063389000948519
+          }
+        }
+      ]
+    },
+    "e2_causal_tcn": {
+      "aggregate": {
+        "mean_return": 0.012134563399013133,
+        "model_bytes": 2052,
+        "peak_vram_bytes": 24790528,
+        "positive_rate": 0.5,
+        "predict_seconds": 0.006438499898649752,
+        "rank_ic": 0.04749761159367735,
+        "return_std": 0.03928252998563436,
+        "train_seconds": 0.8643217000644654,
+        "weekly_returns": [
+          0.042072164639830587,
+          0.058051811158657075,
+          -0.013733922922983765,
+          -0.03785179927945137
+        ],
+        "worst_return": -0.03785179927945137
+      },
+      "folds": [
+        {
+          "metrics": {
+            "excess_return_diagnostic": 0.01838967367472642,
+            "mean_return": 0.012134563399013133,
+            "positive_rate": 0.5,
+            "rank_ic": 0.04749761159367735,
+            "return_std": 0.03928252998563436,
+            "universe_return": -0.00625511027571329,
+            "validation_weeks": [
+              "2026-01-26",
+              "2026-02-02",
+              "2026-02-09",
+              "2026-03-02"
+            ],
+            "weekly_rank_ic": [
+              0.025886544045269494,
+              -0.0657134519988328,
+              0.062543237022665,
+              0.16727411730560773
+            ],
+            "weekly_returns": [
+              0.042072164639830587,
+              0.058051811158657075,
+              -0.013733922922983765,
+              -0.03785179927945137
+            ],
+            "worst_return": -0.03785179927945137
+          },
+          "runtime": {
+            "accelerator": "NVIDIA GeForce RTX 3090",
+            "model_bytes": 2052,
+            "peak_vram_bytes": 24790528,
+            "predict_seconds": 0.006438499898649752,
+            "train_seconds": 0.8643217000644654
+          }
+        }
+      ]
+    },
+    "e3_cross_stock_attention": {
+      "aggregate": {
+        "mean_return": 0.004706668946892024,
+        "model_bytes": 2980,
+        "peak_vram_bytes": 44960768,
+        "positive_rate": 0.75,
+        "predict_seconds": 0.0054954999359324574,
+        "rank_ic": 0.05600811355754061,
+        "return_std": 0.005567676502672188,
+        "train_seconds": 0.750888800015673,
+        "weekly_returns": [
+          0.0022507091984152795,
+          0.013751726038753987,
+          0.004099422693252563,
+          -0.0012751821428537368
+        ],
+        "worst_return": -0.0012751821428537368
+      },
+      "folds": [
+        {
+          "metrics": {
+            "excess_return_diagnostic": 0.010961779222605312,
+            "mean_return": 0.004706668946892024,
+            "positive_rate": 0.75,
+            "rank_ic": 0.05600811355754061,
+            "return_std": 0.005567676502672188,
+            "universe_return": -0.00625511027571329,
+            "validation_weeks": [
+              "2026-01-26",
+              "2026-02-02",
+              "2026-02-09",
+              "2026-03-02"
+            ],
+            "weekly_rank_ic": [
+              0.0755647270782374,
+              0.050516037799375996,
+              0.06499975084706688,
+              0.03295193850548218
+            ],
+            "weekly_returns": [
+              0.0022507091984152795,
+              0.013751726038753987,
+              0.004099422693252563,
+              -0.0012751821428537368
+            ],
+            "worst_return": -0.0012751821428537368
+          },
+          "runtime": {
+            "accelerator": "NVIDIA GeForce RTX 3090",
+            "model_bytes": 2980,
+            "peak_vram_bytes": 44960768,
+            "predict_seconds": 0.0054954999359324574,
+            "train_seconds": 0.750888800015673
+          }
+        }
+      ]
+    },
+    "naive_60d_momentum": {
+      "aggregate": {
+        "mean_return": -0.037743941205553716,
+        "model_bytes": 0,
+        "peak_vram_bytes": 0,
+        "positive_rate": 0.25,
+        "predict_seconds": 0.0035739000886678696,
+        "rank_ic": -0.08271919085617323,
+        "return_std": 0.04359229381285081,
+        "train_seconds": 0.0,
+        "weekly_returns": [
+          -0.06067209988832474,
+          -0.0742371290922165,
+          0.036566344648599626,
+          -0.05263288049027324
+        ],
+        "worst_return": -0.0742371290922165
+      },
+      "folds": [
+        {
+          "metrics": {
+            "excess_return_diagnostic": -0.03148883092984042,
+            "mean_return": -0.037743941205553716,
+            "positive_rate": 0.25,
+            "rank_ic": -0.08271919085617323,
+            "return_std": 0.04359229381285081,
+            "universe_return": -0.00625511027571329,
+            "validation_weeks": [
+              "2026-01-26",
+              "2026-02-02",
+              "2026-02-09",
+              "2026-03-02"
+            ],
+            "weekly_rank_ic": [
+              -0.07316118659216957,
+              -0.3058189490696056,
+              0.13816925074994113,
+              -0.09006587851285887
+            ],
+            "weekly_returns": [
+              -0.06067209988832474,
+              -0.0742371290922165,
+              0.036566344648599626,
+              -0.05263288049027324
+            ],
+            "worst_return": -0.0742371290922165
+          },
+          "runtime": {
+            "accelerator": "cpu",
+            "model_bytes": 0,
+            "peak_vram_bytes": 0,
+            "predict_seconds": 0.0035739000886678696,
+            "train_seconds": 0.0
+          }
+        }
+      ]
+    },
+    "xgboost_rank_pairwise": {
+      "aggregate": {
+        "mean_return": 0.01196668471675366,
+        "model_bytes": 39130,
+        "peak_vram_bytes": 0,
+        "positive_rate": 0.5,
+        "predict_seconds": 0.0013201999245211482,
+        "rank_ic": -0.013419785408220572,
+        "return_std": 0.042893957075277836,
+        "train_seconds": 0.2664539999095723,
+        "weekly_returns": [
+          -0.0074934536591172215,
+          -0.0324313934892416,
+          0.0824363169260323,
+          0.005355269089341164
+        ],
+        "worst_return": -0.0324313934892416
+      },
+      "folds": [
+        {
+          "checkpoint": {
+            "best_iteration": 4,
+            "metric": "validation_top5_return",
+            "num_iterations": 20,
+            "score": 0.011967,
+            "selection_rule": "max_validation_top5_return_earliest_tie"
+          },
+          "feature_count": 39,
+          "metrics": {
+            "excess_return_diagnostic": 0.01822179499246695,
+            "mean_return": 0.01196668471675366,
+            "positive_rate": 0.5,
+            "rank_ic": -0.013419785408220572,
+            "return_std": 0.042893957075277836,
+            "universe_return": -0.00625511027571329,
+            "validation_weeks": [
+              "2026-01-26",
+              "2026-02-02",
+              "2026-02-09",
+              "2026-03-02"
+            ],
+            "weekly_rank_ic": [
+              -0.08629192811019243,
+              -0.23125016778771168,
+              0.08064082612337754,
+              0.1832221281416443
+            ],
+            "weekly_returns": [
+              -0.0074934536591172215,
+              -0.0324313934892416,
+              0.0824363169260323,
+              0.005355269089341164
+            ],
+            "worst_return": -0.0324313934892416
+          },
+          "runtime": {
+            "accelerator": "cuda",
+            "model_bytes": 39130,
+            "peak_vram_bytes": 0,
+            "peak_vram_note": "XGBoost does not expose allocator peak through its Python API",
+            "predict_seconds": 0.0013201999245211482,
+            "train_seconds": 0.2664539999095723
+          }
+        }
+      ]
+    }
+  },
+  "official_baseline_contract": {
+    "equivalence_boundary": "not source, preprocessing, checkpoint, or published-score parity",
+    "implementation": "clean_room_from_public_structure_and_scoring_contract",
+    "source_id": "EXT-001"
+  },
+  "production_config_changed": false,
+  "schema_version": 1,
+  "synthetic": false
+}

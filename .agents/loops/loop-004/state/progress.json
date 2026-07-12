@@ -1,0 +1,11 @@
+{
+  "status": "achieved",
+  "phase": "rotate_to_model_family",
+  "iteration": 1,
+  "stale_count": 0,
+  "parent_loop": "loop-003",
+  "holdout_allowed_for_selection": false,
+  "candidate_accepted": false,
+  "production_changed": false,
+  "next_loop": "loop-005"
+}

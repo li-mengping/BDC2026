@@ -1,0 +1,16 @@
+{
+  "selected_next": "model-family-lightgbm",
+  "proposals": [
+    {
+      "id": "model-family-lightgbm",
+      "hypothesis": "LightGBM LambdaRank 的叶子生长归纳偏置可改善最差折",
+      "local_evidence_needed": ["XGBoost baseline curves", "LightGBM 四折逐轮曲线"],
+      "first_action": "运行单一 LightGBM 配置 crossfit",
+      "acceptance_gate": "mean/worst 不下降、std 不上升且至少一项严格改善",
+      "stop_rule": "无 Pareto 改善即拒绝，不做 HPO",
+      "risk": "CPU 与 GPU 实现成本不可直接比较",
+      "anti_pattern_avoided": "无单模型证据直接堆叠 ensemble",
+      "status": "rejected_no_pareto_improvement"
+    }
+  ]
+}

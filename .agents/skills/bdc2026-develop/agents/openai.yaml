@@ -1,0 +1,4 @@
+interface:
+  display_name: "BDC2026 开发"
+  short_description: "驱动 BDC2026 审计实现实验测试反思和交接闭环"
+  default_prompt: "Use $bdc2026-develop to drive a BDC2026 change through evidence-backed implementation."

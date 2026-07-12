@@ -1,0 +1,44 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "BDC2026 Goal V2",
+  "type": "object",
+  "required": ["schema_version", "id", "title", "objective", "success_criteria", "verification", "constraints", "non_goals", "blockers", "iteration_priority", "final_audit", "status", "created_at", "updated_at", "evidence"],
+  "properties": {
+    "schema_version": {"const": "2"},
+    "id": {"type": "string", "pattern": "^[a-z0-9][a-z0-9._-]*$"},
+    "title": {"type": "string", "minLength": 1},
+    "objective": {"type": "string", "minLength": 1},
+    "success_criteria": {"type": "array", "minItems": 1, "items": {"type": "string", "minLength": 1}},
+    "verification": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "required": ["command", "pass_criteria"],
+        "properties": {"command": {"type": "string", "minLength": 1}, "pass_criteria": {"type": "string", "minLength": 1}},
+        "additionalProperties": false
+      }
+    },
+    "constraints": {"type": "array", "items": {"type": "string"}},
+    "non_goals": {"type": "array", "items": {"type": "string"}},
+    "blockers": {"type": "array", "items": {"type": "string"}},
+    "iteration_priority": {"type": "array", "minItems": 1, "items": {"type": "string"}},
+    "final_audit": {
+      "type": "object",
+      "required": ["status", "findings", "evidence"],
+      "properties": {
+        "status": {"enum": ["pending", "passed", "failed"]},
+        "findings": {"type": "array", "items": {"type": "string"}},
+        "evidence": {"type": "array", "items": {"type": "string"}}
+      },
+      "additionalProperties": false
+    },
+    "status": {"enum": ["planned", "active", "evidence_ready", "validated", "achieved", "rejected", "blocked", "superseded"]},
+    "created_at": {"type": "string", "minLength": 1},
+    "updated_at": {"type": "string", "minLength": 1},
+    "evidence": {"type": "array", "items": {"type": "string"}},
+    "supersedes": {"type": ["string", "null"]},
+    "superseded_by": {"type": ["string", "null"]}
+  },
+  "additionalProperties": false
+}

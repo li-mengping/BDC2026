@@ -1,0 +1,2 @@
+{"event":"family_contract","status":"implemented","baseline":"xgboost rank:pairwise","candidate":"lightgbm lambdarank"}
+{"event":"goal_audit","status":"achieved","candidate_promoted":false,"holdout_loaded":false}

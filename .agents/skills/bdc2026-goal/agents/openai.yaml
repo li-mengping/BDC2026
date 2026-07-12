@@ -1,0 +1,4 @@
+interface:
+  display_name: "BDC2026 Goal"
+  short_description: "管理 BDC2026 仓库内可恢复可审计的目标状态与证据闭环"
+  default_prompt: "Use $bdc2026-goal to create or validate a BDC2026 evidence-backed goal."

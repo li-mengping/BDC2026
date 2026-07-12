@@ -1,0 +1,50 @@
+{
+  "source": "automl-agent protocol adapted to BDC2026",
+  "selected_next": "structure-robust-checkpoint",
+  "proposals": [
+    {
+      "id": "structure-robust-checkpoint",
+      "hypothesis": "跨折统一的稳健 boosting round 比逐折 validation 峰值具有更低的选择方差",
+      "local_evidence_needed": ["四折逐轮 Top5 序列", "当前逐折 best iteration"],
+      "first_action": "聚合逐轮四折指标并选择统一 round",
+      "acceptance_gate": "均值不下降、最差折不下降且标准差下降",
+      "stop_rule": "两个候选窗口均无 Pareto 改善时停止",
+      "risk": "统一 round 可能牺牲部分阶段适应性",
+      "anti_pattern_avoided": "用更多 HPO trial 掩盖 checkpoint 过拟合",
+      "status": "selected"
+    },
+    {
+      "id": "structure-top5-objective",
+      "hypothesis": "top-heavy rank:ndcg 比全截面 rank:pairwise 更贴近 Top5 业务目标",
+      "local_evidence_needed": ["相同四折", "周内 relevance 转换", "原始收益评估"],
+      "first_action": "只比较一个 top-k NDCG 候选与正式 pairwise",
+      "acceptance_gate": "均值与最差折均不低于 pairwise，成本门禁通过",
+      "stop_rule": "不构成 Pareto 改善即拒绝，不进入 HPO",
+      "risk": "头部标签离散化可能放大周内噪声",
+      "anti_pattern_avoided": "先调参再证明目标结构有效",
+      "status": "proposed"
+    },
+    {
+      "id": "structure-stock-identity-ablation",
+      "hypothesis": "删除 instrument 可减少股票身份记忆并改善跨折稳定性",
+      "local_evidence_needed": ["39 特征四折基线", "无 instrument 四折结果"],
+      "first_action": "在同一参数、窗口和切分上仅删除 instrument",
+      "acceptance_gate": "最差折提高且均值不下降，或均值提高且标准差下降",
+      "stop_rule": "无 Pareto 改善即保留当前表示",
+      "risk": "固定比赛股票池下身份先验可能确有预测价值",
+      "anti_pattern_avoided": "未经消融直接引入 embedding 或 NAS",
+      "status": "validated_candidate"
+    },
+    {
+      "id": "structure-oof-rank-ensemble",
+      "hypothesis": "统一契约后的异构树排序模型可能具有 OOF 误差互补性",
+      "local_evidence_needed": ["三模型同折 OOF 分数", "误差相关矩阵", "运行成本"],
+      "first_action": "先统一跨模型 fold、标签、checkpoint 和 evidence schema",
+      "acceptance_gate": "简单 rank average 改善均值和最差折且成本合规",
+      "stop_rule": "误差高度相关或单模型无有效证据时停止",
+      "risk": "增加发布体积、推理时间和实现漂移",
+      "anti_pattern_avoided": "无互补证据堆叠模型",
+      "status": "deferred_until_common_spine"
+    }
+  ]
+}

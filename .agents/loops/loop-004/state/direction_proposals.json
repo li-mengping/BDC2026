@@ -1,0 +1,16 @@
+{
+  "selected_next": "structure-top5-objective",
+  "proposals": [
+    {
+      "id": "structure-top5-objective",
+      "hypothesis": "top-heavy NDCG 比全截面 pairwise 更贴近 Top5 收益",
+      "local_evidence_needed": ["四折逐轮原始收益", "cross-fitted checkpoint"],
+      "first_action": "比较一个 rank:ndcg top-k 候选",
+      "acceptance_gate": "mean/worst 不下降、std 不上升且至少一项严格改善",
+      "stop_rule": "无 Pareto 改善即拒绝，不做目标 HPO",
+      "risk": "relevance 离散化放大周内噪声",
+      "anti_pattern_avoided": "对未验证目标进行大规模调参",
+      "status": "rejected_no_pareto_improvement"
+    }
+  ]
+}

@@ -1,0 +1,15 @@
+{
+  "directions": [
+    {
+      "id": "structure-top5-objective",
+      "status": "rejected_no_pareto_improvement",
+      "baseline_mean": 0.006764126411609465,
+      "candidate_mean": 0.00912283002445416,
+      "baseline_worst": -0.004395035813516491,
+      "candidate_worst": -0.012620840492460653,
+      "baseline_std": 0.010586934259348011,
+      "candidate_std": 0.024392000700963617,
+      "evidence": ".agents/loops/loop-004/evidence/top5_objective.json"
+    }
+  ]
+}

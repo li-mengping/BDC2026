@@ -1,0 +1,62 @@
+{
+  "claim_boundary": "structure_smoke_only; must_not_be_used_as_market_performance_evidence",
+  "config": {
+    "epochs": 2,
+    "hidden_dim": 8,
+    "learning_rate": 0.01,
+    "mode": "smoke",
+    "num_heads": 2,
+    "trials": 1
+  },
+  "data_kind": "synthetic",
+  "effect_evidence": false,
+  "mode": "smoke",
+  "models": {
+    "e0_transformer": {
+      "absolute_top5_return": 0.1292223955504596,
+      "config_sha256": "8d94ca96b50977708b55047ac759f0bb930bca1f55cce8897e2bcce00a281727",
+      "epochs": 2,
+      "git_commit": "8b680948a56956a7f2da472d1e12562c1ad3ce83",
+      "runtime": {
+        "accelerator": "NVIDIA GeForce RTX 3090",
+        "model_bytes": 3812,
+        "peak_vram_bytes": 18832896,
+        "platform": "win32-AMD64",
+        "python": "3.10.19",
+        "torch": "2.6.0+cu124"
+      },
+      "train_seconds": 0.49740240001119673
+    },
+    "e2_tcn": {
+      "absolute_top5_return": 0.13764007566496728,
+      "config_sha256": "b9dd21f7855fb75562502b37a20514b9ddfbf22b53605ebb96272ff5919df381",
+      "epochs": 2,
+      "git_commit": "8b680948a56956a7f2da472d1e12562c1ad3ce83",
+      "runtime": {
+        "accelerator": "NVIDIA GeForce RTX 3090",
+        "model_bytes": 1924,
+        "peak_vram_bytes": 17219072,
+        "platform": "win32-AMD64",
+        "python": "3.10.19",
+        "torch": "2.6.0+cu124"
+      },
+      "train_seconds": 0.24466770002618432
+    },
+    "e3_cross_stock": {
+      "absolute_top5_return": 0.16215860499069096,
+      "config_sha256": "09d6320af70b9e402093ff70116b131a016ecc695453767f24cb72e1095684ae",
+      "epochs": 2,
+      "git_commit": "8b680948a56956a7f2da472d1e12562c1ad3ce83",
+      "runtime": {
+        "accelerator": "NVIDIA GeForce RTX 3090",
+        "model_bytes": 2596,
+        "peak_vram_bytes": 25833472,
+        "platform": "win32-AMD64",
+        "python": "3.10.19",
+        "torch": "2.6.0+cu124"
+      },
+      "train_seconds": 0.12577259994577616
+    }
+  },
+  "primary_metric": "absolute_top5_return"
+}

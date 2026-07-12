@@ -1,0 +1,21 @@
+{
+  "schema_version": "2",
+  "loop_id": "loop-008",
+  "entries": [
+    {
+      "path": ".agents/loops/loop-008/evidence/neural-structure-smoke.json",
+      "kind": "synthetic-smoke",
+      "sha256": "18ac93bb8f73b04d1228932c53bba81f8bd983f821d014e1723ed871cf44d196"
+    },
+    {
+      "path": ".agents/loops/loop-008/evidence/real-structure-smoke.json",
+      "kind": "real-market-smoke",
+      "sha256": "414b8b56540014239d225125b6453f32eacc136f0f5499f507c6584fd4185fa3"
+    },
+    {
+      "path": ".agents/loops/loop-008/evidence/e1-representation-nested.json",
+      "kind": "real-market-nested-rolling",
+      "sha256": "89310a7a709858c1013424ef401015ff0d8a44643fdd603f0911dd4d08ded6e4"
+    }
+  ]
+}

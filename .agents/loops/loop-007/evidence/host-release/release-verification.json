@@ -1,0 +1,43 @@
+{
+  "status": "validated",
+  "offline_guard": ".agents\\scripts\\offline_site",
+  "gates": {
+    "offline_guard_active": true,
+    "deterministic_result": true,
+    "deterministic_metadata": true,
+    "deterministic_model": true,
+    "under_train_limit": true,
+    "under_predict_limit": true,
+    "under_workspace_size_limit": true
+  },
+  "max_train_seconds": 72.66167410003254,
+  "max_predict_seconds": 11.529906900017522,
+  "repository_bytes_excluding_git_and_venv": 32734208,
+  "size_scope": "workspace_only; Docker image size is a separate release gate",
+  "runs": [
+    {
+      "run": 1,
+      "train_seconds": 72.66167410003254,
+      "predict_seconds": 10.932976300013252,
+      "result_sha256": "5ca8d9b49a3a4ab5b06aa81380f843ab593170f92c3b00f6fd940c50b0ded381",
+      "metadata_sha256": "5bf1e49127bc8180acb4a7208a42d6bef050bf0fd195cae7ebd8b16394d36062",
+      "model_artifact_sha256": {
+        "model\\xgboost\\models\\xgb_rank_pairwise_w12_39_178.json": "e3f825aa07273fda1bd9968b5e231de6680e8f160946e3ae26e52e3f21a55bf7"
+      },
+      "stock_count": 5,
+      "weight_sum": 1.0
+    },
+    {
+      "run": 2,
+      "train_seconds": 71.45977910002694,
+      "predict_seconds": 11.529906900017522,
+      "result_sha256": "5ca8d9b49a3a4ab5b06aa81380f843ab593170f92c3b00f6fd940c50b0ded381",
+      "metadata_sha256": "5bf1e49127bc8180acb4a7208a42d6bef050bf0fd195cae7ebd8b16394d36062",
+      "model_artifact_sha256": {
+        "model\\xgboost\\models\\xgb_rank_pairwise_w12_39_178.json": "e3f825aa07273fda1bd9968b5e231de6680e8f160946e3ae26e52e3f21a55bf7"
+      },
+      "stock_count": 5,
+      "weight_sum": 1.0
+    }
+  ]
+}

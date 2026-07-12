@@ -1,0 +1,23 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "BDC2026 Evidence Index V2",
+  "type": "object",
+  "required": ["schema_version", "loop_id", "entries"],
+  "properties": {
+    "schema_version": {"const": "2"},
+    "loop_id": {"type": "string", "pattern": "^loop-[0-9]{3,}$"},
+    "entries": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["path", "kind", "sha256"],
+        "properties": {
+          "path": {"type": "string", "pattern": "^(?![A-Za-z]:|/).+"},
+          "kind": {"type": "string"},
+          "sha256": {"type": "string", "pattern": "^[a-f0-9]{64}$"}
+        }
+      }
+    }
+  },
+  "additionalProperties": false
+}

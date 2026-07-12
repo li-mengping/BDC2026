@@ -1,0 +1,9 @@
+{
+  "schema_version": "2",
+  "id": "loop-008",
+  "goal_id": "bdc2026-correction-v2",
+  "status": "active",
+  "claimed_by": "experiment-runner",
+  "created_at": "2026-07-12T07:04:44+00:00",
+  "updated_at": "2026-07-12T09:06:56+00:00"
+}

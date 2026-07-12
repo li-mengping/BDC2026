@@ -1,0 +1,7 @@
+{"iteration":0,"phase":"audit","result":"initialized","stale":false}
+{"iteration":1,"phase":"baseline_holdout","result":"candidate","stale":false,"validation_top5_excess":0.03451991}
+{"iteration":2,"phase":"rolling_optuna","result":"candidate","stale":false,"trials":8,"mean":0.03671808117916167,"worst":0.02875237117413919}
+{"iteration":3,"phase":"window_factor_scan","result":"rejected_no_pareto_improvement","stale":true}
+{"iteration":4,"phase":"portfolio_scan","result":"validated_candidate","stale":false,"validation_excess":0.034519906538974285,"holdout_excess":0.052556964737366034}
+{"iteration":5,"phase":"release_and_structure_audit","result":"local_release_validated","stale":false,"holdout_independent":false,"next":"structure-stock-identity-ablation"}
+{"iteration":6,"phase":"stock_identity_ablation","result":"validated_candidate","stale":false,"mean":0.03224648171573004,"worst":0.023589082163956242,"std":0.0063898302110728545,"next":"loop-002/structure-robust-checkpoint"}

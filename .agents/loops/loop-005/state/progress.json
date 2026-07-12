@@ -1,0 +1,11 @@
+{
+  "status": "achieved",
+  "phase": "rotate_to_catboost",
+  "iteration": 1,
+  "stale_count": 0,
+  "parent_loop": "loop-004",
+  "holdout_allowed_for_selection": false,
+  "candidate_accepted": false,
+  "production_changed": false,
+  "next_loop": "loop-006"
+}

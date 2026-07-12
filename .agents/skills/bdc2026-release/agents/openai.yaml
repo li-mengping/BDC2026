@@ -1,0 +1,4 @@
+interface:
+  display_name: "BDC2026 发布验证"
+  short_description: "验证离线复现、确定性、提交格式、运行时、Docker 与体积门禁"
+  default_prompt: "Use $bdc2026-release to verify a BDC2026 submission candidate."

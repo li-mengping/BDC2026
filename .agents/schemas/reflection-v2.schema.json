@@ -1,0 +1,19 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "BDC2026 Reflection V2",
+  "type": "object",
+  "required": ["schema_version", "loop_id", "expectation", "observation", "difference", "failure_category", "learning", "action", "evidence", "created_at"],
+  "properties": {
+    "schema_version": {"const": "2"},
+    "loop_id": {"type": "string"},
+    "expectation": {"type": "string"},
+    "observation": {"type": "string"},
+    "difference": {"type": "string"},
+    "failure_category": {"type": "string"},
+    "learning": {"type": "string"},
+    "action": {"type": "string"},
+    "evidence": {"type": "array", "minItems": 1, "items": {"type": "string"}}
+    ,"created_at": {"type": "string", "minLength": 1}
+  },
+  "additionalProperties": false
+}

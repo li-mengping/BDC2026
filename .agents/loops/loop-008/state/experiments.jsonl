@@ -1,0 +1,7 @@
+{"schema_version": "2", "id": "e0-official-baselines", "loop_id": "loop-008", "hypothesis": "官方结构、XGBoost 与朴素策略在同一绝对收益协议下会暴露当前 baseline 声明偏差", "direction": "baseline-contract", "status": "proposed", "created_at": "2026-07-12T07:08:13+00:00"}
+{"schema_version": "2", "id": "e1-representation-identity", "loop_id": "loop-008", "hypothesis": "横截面稳健归一化与显式身份策略可减少量纲和身份记忆", "direction": "representation", "status": "proposed", "created_at": "2026-07-12T07:08:13+00:00"}
+{"schema_version": "2", "id": "e2-causal-tcn", "loop_id": "loop-008", "hypothesis": "低成本因果 TCN 可提取手工周末特征遗漏的时序模式", "direction": "temporal", "status": "proposed", "created_at": "2026-07-12T07:08:13+00:00"}
+{"schema_version": "2", "id": "e3-cross-stock-attention", "loop_id": "loop-008", "hypothesis": "置换等变跨股票 attention 可利用同期横截面关系", "direction": "cross-sectional", "status": "proposed", "created_at": "2026-07-12T07:08:13+00:00"}
+{"schema_version": "2", "id": "e4-ranking-objectives", "loop_id": "loop-008", "hypothesis": "在胜出结构上 Top5 对齐目标可改善绝对组合收益", "direction": "objective", "status": "proposed", "created_at": "2026-07-12T07:08:13+00:00"}
+{"schema_version": "2", "id": "e5-oof-ensemble", "loop_id": "loop-008", "hypothesis": "只有低相关 OOF 残差才可能产生有效 rank ensemble", "direction": "ensemble", "status": "proposed", "created_at": "2026-07-12T07:08:13+00:00"}
+{"schema_version": "2", "id": "e6-constrained-optuna", "loop_id": "loop-008", "hypothesis": "在胜出结构邻域内受限 HPO 可形成稳定 Pareto 改善", "direction": "hpo", "status": "proposed", "created_at": "2026-07-12T07:08:14+00:00"}

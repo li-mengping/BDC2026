@@ -1,0 +1,49 @@
+
+#0 building with "desktop-linux" instance using docker driver
+
+#1 [internal] load build definition from Dockerfile
+#1 transferring dockerfile: 424B done
+#1 DONE 0.0s
+
+#2 [internal] load metadata for docker.io/library/python:3.10-slim-bookworm@sha256:ff7161e2b8e2a56fc6a62a6099ff8feb72f1a6dbae9860cdcb9a6c65cf4c6be9
+#2 DONE 0.1s
+
+#3 [internal] load .dockerignore
+#3 transferring context: 244B done
+#3 DONE 0.0s
+
+#4 [internal] load build context
+#4 transferring context: 9.89kB 0.0s done
+#4 DONE 0.0s
+
+#5 [1/6] FROM docker.io/library/python:3.10-slim-bookworm@sha256:ff7161e2b8e2a56fc6a62a6099ff8feb72f1a6dbae9860cdcb9a6c65cf4c6be9
+#5 resolve docker.io/library/python:3.10-slim-bookworm@sha256:ff7161e2b8e2a56fc6a62a6099ff8feb72f1a6dbae9860cdcb9a6c65cf4c6be9 0.0s done
+#5 DONE 0.0s
+
+#6 [3/6] WORKDIR /app
+#6 CACHED
+
+#7 [5/6] RUN uv sync --frozen --no-dev
+#7 CACHED
+
+#8 [2/6] RUN pip install --no-cache-dir uv==0.10.6
+#8 CACHED
+
+#9 [4/6] COPY pyproject.toml uv.lock ./
+#9 CACHED
+
+#10 [6/6] COPY . .
+#10 CACHED
+
+#11 exporting to image
+#11 exporting layers done
+#11 exporting manifest sha256:59ffb972c81f555ba5fcc175914f7ef41773204ac2a9acf1416bd055f97bef57 done
+#11 exporting config sha256:1b031f4566047a250f68a9a277b3d7dbe4d94fb366788d8bfd6f602c4d557816 done
+#11 exporting attestation manifest sha256:adb59c29d1ff8b13513e6f0ba1eb4afcf9b42590d137eefc32f7d60939e279bd 0.0s done
+#11 exporting manifest list sha256:8769a7027e15c00b90dad9c6e3ef778182cd35175bff16e45bf1891b5a52a19e
+#11 exporting manifest list sha256:8769a7027e15c00b90dad9c6e3ef778182cd35175bff16e45bf1891b5a52a19e 0.0s done
+#11 naming to docker.io/library/bdc2026:latest done
+#11 unpacking to docker.io/library/bdc2026:latest 0.0s done
+#11 DONE 0.1s
+
+View build details: docker-desktop://dashboard/build/desktop-linux/desktop-linux/np5dw953kol5ylztv8ut0b6vg

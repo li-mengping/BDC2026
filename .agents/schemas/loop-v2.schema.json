@@ -1,0 +1,14 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "BDC2026 Loop V2",
+  "type": "object",
+  "required": ["schema_version", "id", "goal_id", "status", "claimed_by"],
+  "properties": {
+    "schema_version": {"const": "2"},
+    "id": {"type": "string", "pattern": "^loop-[0-9]{3,}$"},
+    "goal_id": {"type": "string"},
+    "status": {"enum": ["planned", "active", "evidence_ready", "validated", "achieved", "blocked"]},
+    "claimed_by": {"type": ["string", "null"]}
+  },
+  "additionalProperties": true
+}

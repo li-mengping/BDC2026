@@ -1,0 +1,16 @@
+{
+  "directions": [
+    {
+      "id": "structure-robust-checkpoint",
+      "status": "validated_candidate",
+      "baseline_mean": 0.00676425,
+      "candidate_mean": 0.022982,
+      "baseline_worst": -0.004395,
+      "candidate_worst": 0.016438,
+      "baseline_std": 0.010587161550080361,
+      "candidate_std": 0.004636035644815514,
+      "production_round": 127,
+      "evidence": ".agents/loops/loop-002/evidence/crossfit_checkpoint.json"
+    }
+  ]
+}

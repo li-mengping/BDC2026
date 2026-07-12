@@ -1,0 +1,35 @@
+{
+  "directions": [
+    {
+      "id": "xgb-39-optuna-rolling-8",
+      "status": "candidate",
+      "mean": 0.03671808117916167,
+      "worst": 0.02875237117413919,
+      "std": 0.010565397339493387,
+      "evidence": ".agents/loops/loop-001/evidence/xgb_optuna.json"
+    },
+    {
+      "id": "window-factor-scan",
+      "status": "rejected_no_pareto_improvement",
+      "evidence": ".agents/loops/loop-001/evidence/window_factor_scan.summary.csv"
+    },
+    {
+      "id": "portfolio-direct-top5",
+      "status": "validated_candidate",
+      "validation_excess": 0.034519906538974285,
+      "holdout_excess": 0.052556964737366034,
+      "evidence": ".agents/loops/loop-001/evidence/portfolio_scan.json"
+    },
+    {
+      "id": "structure-stock-identity-ablation",
+      "status": "validated_candidate",
+      "baseline_mean": 0.03156089723535056,
+      "candidate_mean": 0.03224648171573004,
+      "baseline_worst": 0.021054596096990195,
+      "candidate_worst": 0.023589082163956242,
+      "baseline_std": 0.013513101959469179,
+      "candidate_std": 0.0063898302110728545,
+      "evidence": ".agents/loops/loop-001/evidence/stock_identity_ablation.json"
+    }
+  ]
+}

@@ -1,0 +1,2 @@
+{"event":"smoke_audit","actor":"auditor","result":"hold","independent_review":false,"reason":"同一 Agent 顺序审计；发现 checkpoint 偏差、缺失策略差异和 Pareto 无支配","evidence":[".agents/loops/loop-008/evidence/real-structure-smoke.json"],"next":"E1 representation and nested selector"}
+{"event":"e1_skeptic_review","actor":"skeptic-reviewer-subagent","result":"hold","independent_review":true,"reason":"无完整 Pareto 胜出；声明边界需限定为同折隔离，峰值显存和发布证据缺失","evidence":[".agents/loops/loop-008/evidence/e1-representation-nested.json"],"next":"nested E0/E2/E3"}

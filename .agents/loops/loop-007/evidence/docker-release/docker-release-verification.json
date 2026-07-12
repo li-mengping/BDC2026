@@ -1,0 +1,32 @@
+{
+  "status": "validated",
+  "image": "bdc2026:latest",
+  "runtime_network": "none",
+  "container": "bdc2026-release-1783830290",
+  "gates": {
+    "container_code_audit": true,
+    "runtime_offline": true,
+    "deterministic_container_artifacts": true,
+    "under_train_limit": true,
+    "under_predict_limit": true,
+    "under_image_size_limit": true
+  },
+  "image_id": "sha256:8769a7027e15c00b90dad9c6e3ef778182cd35175bff16e45bf1891b5a52a19e",
+  "image_bytes": 584324299,
+  "build_seconds": 1.5895668999874033,
+  "train_seconds": 41.92035789997317,
+  "predict_seconds": 4.060242999985348,
+  "container_run_1_hashes": {
+    "model/xgboost/metadata.json": "f9b6bca30b9a659b8a4f86859e2b49cd9e7ef314cd9aff116a6d2918ff6ff6ef",
+    "model/xgboost/models/xgb_rank_pairwise_w12_39_178.json": "e3f825aa07273fda1bd9968b5e231de6680e8f160946e3ae26e52e3f21a55bf7",
+    "output/result.csv": "a9a37ad63764d89798d7b979da4326f24ca0f498400f6ffad0b6e3b8be6c8252"
+  },
+  "container_run_2_hashes": {
+    "model/xgboost/metadata.json": "f9b6bca30b9a659b8a4f86859e2b49cd9e7ef314cd9aff116a6d2918ff6ff6ef",
+    "model/xgboost/models/xgb_rank_pairwise_w12_39_178.json": "e3f825aa07273fda1bd9968b5e231de6680e8f160946e3ae26e52e3f21a55bf7",
+    "output/result.csv": "a9a37ad63764d89798d7b979da4326f24ca0f498400f6ffad0b6e3b8be6c8252"
+  },
+  "result_sha256": "a9a37ad63764d89798d7b979da4326f24ca0f498400f6ffad0b6e3b8be6c8252",
+  "stock_count": 5,
+  "weight_sum": 1.0
+}

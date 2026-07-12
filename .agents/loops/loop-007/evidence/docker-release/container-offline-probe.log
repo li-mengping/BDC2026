@@ -1,0 +1,8 @@
+
+Traceback (most recent call last):
+  File "<string>", line 1, in <module>
+  File "/usr/local/lib/python3.10/socket.py", line 857, in create_connection
+    raise err
+  File "/usr/local/lib/python3.10/socket.py", line 845, in create_connection
+    sock.connect(sa)
+OSError: [Errno 101] Network is unreachable

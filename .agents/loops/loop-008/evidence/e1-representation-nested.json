@@ -1,0 +1,1483 @@
+{
+  "claim_boundary": "four-fold nested walk-forward evidence; each outer window is isolated from its own fold training, but earlier outer windows may enter later-fold history; not an independent holdout",
+  "config": {
+    "device": "cuda",
+    "inner_validation_weeks": 4,
+    "max_rounds": 200,
+    "nthread": 8,
+    "outer_folds": 4,
+    "seed": 42,
+    "top_k": 5
+  },
+  "data": {
+    "date_max": "2026-06-26",
+    "file": "data/stock_data.csv",
+    "loaded_rows": 250233,
+    "manifest": "data/manifest.json",
+    "rows": 250233,
+    "sha256": "04d7e4da6a9d4915c61d635d1ab24d29e92c00363f4250c01dade8f35f6ccd87",
+    "shared_sample_rows": 41025,
+    "shared_sample_sha256": "1ed254e6ab621fe8c05fd5110df125083fdc981241481842ee2f1f971ecc4f76"
+  },
+  "data_cutoff": "2026-06-29",
+  "data_kind": "real_frozen_market",
+  "decisions": {
+    "categorical_identity": {
+      "baseline": false,
+      "observed_dimension_pareto_improvement": false,
+      "promote": false,
+      "reason": "not a complete Pareto improvement",
+      "regressions": [
+        "mean_return",
+        "worst_return",
+        "positive_rate",
+        "rank_ic",
+        "train_seconds"
+      ],
+      "resource_complete": false,
+      "resource_gap": [
+        "peak_vram_bytes"
+      ],
+      "strict_improvements": [
+        "return_std",
+        "predict_seconds",
+        "model_bytes"
+      ]
+    },
+    "cross_section_rank_identity_disabled": {
+      "baseline": false,
+      "observed_dimension_pareto_improvement": false,
+      "promote": false,
+      "reason": "not a complete Pareto improvement",
+      "regressions": [
+        "mean_return",
+        "positive_rate"
+      ],
+      "resource_complete": false,
+      "resource_gap": [
+        "peak_vram_bytes"
+      ],
+      "strict_improvements": [
+        "worst_return",
+        "rank_ic",
+        "return_std",
+        "train_seconds",
+        "predict_seconds",
+        "model_bytes"
+      ]
+    },
+    "cross_section_robust_zscore_identity_disabled": {
+      "baseline": false,
+      "observed_dimension_pareto_improvement": false,
+      "promote": false,
+      "reason": "not a complete Pareto improvement",
+      "regressions": [
+        "mean_return",
+        "worst_return",
+        "positive_rate",
+        "rank_ic"
+      ],
+      "resource_complete": false,
+      "resource_gap": [
+        "peak_vram_bytes"
+      ],
+      "strict_improvements": [
+        "return_std",
+        "train_seconds",
+        "predict_seconds",
+        "model_bytes"
+      ]
+    },
+    "identity_disabled": {
+      "baseline": false,
+      "observed_dimension_pareto_improvement": false,
+      "promote": false,
+      "reason": "not a complete Pareto improvement",
+      "regressions": [
+        "mean_return",
+        "train_seconds",
+        "predict_seconds"
+      ],
+      "resource_complete": false,
+      "resource_gap": [
+        "peak_vram_bytes"
+      ],
+      "strict_improvements": [
+        "worst_return",
+        "positive_rate",
+        "rank_ic",
+        "return_std",
+        "model_bytes"
+      ]
+    },
+    "raw_ordered_identity": {
+      "baseline": true,
+      "observed_dimension_pareto_improvement": false,
+      "promote": false,
+      "reason": "baseline",
+      "regressions": [],
+      "resource_complete": false,
+      "resource_gap": [
+        "peak_vram_bytes"
+      ],
+      "strict_improvements": []
+    }
+  },
+  "diagnostic_metrics": [
+    "excess_return",
+    "rank_ic"
+  ],
+  "effect_evidence": true,
+  "experiment": "e1_xgboost_representation_identity_nested_rolling",
+  "feature_type": "39",
+  "folds": [
+    {
+      "inner_train_rows": 35035,
+      "inner_train_scope_sha256": "9d4fa092abe444afd872339bb42195467bc02e3b52efd761a3dabd94b7f93c8e",
+      "inner_train_weeks": 118,
+      "inner_validation_end": "2026-01-19",
+      "inner_validation_rows": 1196,
+      "inner_validation_scope_sha256": "a845675df0d20cb332b4425497647199ff62624ddcd68d273c1fa3c0cf055d67",
+      "inner_validation_weeks": 4,
+      "name": "rolling_1",
+      "outer_train_rows": 36231,
+      "outer_train_scope_sha256": "bde7bb6d79f0b29b60709d6ab251e286cbba14861855b5432d703c1a7129e039",
+      "outer_validation_rows": 1196,
+      "outer_validation_scope_sha256": "9c7a5c552dc41b4381b9abce8c37469f8d42214203fa671d0d426a92925aa23d",
+      "outer_validation_start": "2026-01-26",
+      "outer_validation_weeks": 4
+    },
+    {
+      "inner_train_rows": 36231,
+      "inner_train_scope_sha256": "bde7bb6d79f0b29b60709d6ab251e286cbba14861855b5432d703c1a7129e039",
+      "inner_train_weeks": 122,
+      "inner_validation_end": "2026-03-02",
+      "inner_validation_rows": 1196,
+      "inner_validation_scope_sha256": "9c7a5c552dc41b4381b9abce8c37469f8d42214203fa671d0d426a92925aa23d",
+      "inner_validation_weeks": 4,
+      "name": "rolling_2",
+      "outer_train_rows": 37427,
+      "outer_train_scope_sha256": "de861755c149c9fbb6d75e2d7cbad6bd9998b8630b976c3a1f47324361d46ff4",
+      "outer_validation_rows": 1198,
+      "outer_validation_scope_sha256": "bf6eabb92f453057df5df5d7e28cc7377a92d28fe0d29b49dd576be0c8f1a9a6",
+      "outer_validation_start": "2026-03-09",
+      "outer_validation_weeks": 4
+    },
+    {
+      "inner_train_rows": 37427,
+      "inner_train_scope_sha256": "de861755c149c9fbb6d75e2d7cbad6bd9998b8630b976c3a1f47324361d46ff4",
+      "inner_train_weeks": 126,
+      "inner_validation_end": "2026-03-30",
+      "inner_validation_rows": 1198,
+      "inner_validation_scope_sha256": "bf6eabb92f453057df5df5d7e28cc7377a92d28fe0d29b49dd576be0c8f1a9a6",
+      "inner_validation_weeks": 4,
+      "name": "rolling_3",
+      "outer_train_rows": 38625,
+      "outer_train_scope_sha256": "fe5d201538ee387e48ec23109d518d9ff963f488fe862ae8dc9e1396242a0f96",
+      "outer_validation_rows": 1200,
+      "outer_validation_scope_sha256": "8fc6d2260dae9df1bd4b626ed775d7b4e2b1c2ca42a057818c268e59c6eff94a",
+      "outer_validation_start": "2026-04-13",
+      "outer_validation_weeks": 4
+    },
+    {
+      "inner_train_rows": 38625,
+      "inner_train_scope_sha256": "fe5d201538ee387e48ec23109d518d9ff963f488fe862ae8dc9e1396242a0f96",
+      "inner_train_weeks": 130,
+      "inner_validation_end": "2026-05-18",
+      "inner_validation_rows": 1200,
+      "inner_validation_scope_sha256": "8fc6d2260dae9df1bd4b626ed775d7b4e2b1c2ca42a057818c268e59c6eff94a",
+      "inner_validation_weeks": 4,
+      "name": "rolling_4",
+      "outer_train_rows": 39825,
+      "outer_train_scope_sha256": "fd642704ff76819be2b2697ed2ff47af1d5bc107cb2003e1a8d557c00594f23f",
+      "outer_validation_rows": 1200,
+      "outer_validation_scope_sha256": "f8b86724186c8ec34d54422b64895e38c6ec779f5161895ee5499c76e771f54b",
+      "outer_validation_start": "2026-05-25",
+      "outer_validation_weeks": 4
+    }
+  ],
+  "git": {
+    "commit": "db9c0c129c8ac18a085139400837c9dd456ba52d",
+    "working_tree_dirty": true
+  },
+  "identity_contract": {
+    "categorical_identity": "XGBoost native categorical split over canonical stock codes",
+    "cross_section_rank_identity_disabled": "date-local average rank in [-0.5, 0.5]; identity excluded",
+    "cross_section_robust_zscore_identity_disabled": "date-local median/MAD z-score clipped to [-5, 5]; identity excluded",
+    "identity_disabled": "stock identity excluded",
+    "raw_ordered_identity": "legacy numeric stock index; intentionally retained only as baseline"
+  },
+  "label_mode": "t1_open_to_t5_open",
+  "models": {
+    "categorical_identity": {
+      "aggregate": {
+        "mean_return": 0.01646440954864374,
+        "model_bytes": 168604,
+        "positive_rate": 0.625,
+        "predict_seconds": 0.018004699959419668,
+        "rank_ic": 0.07585372631554464,
+        "return_std": 0.026217335358912623,
+        "train_seconds": 9.185314300120808,
+        "weekly_returns": [
+          0.0251152066513896,
+          -0.0062781602144241335,
+          0.0583373962319456,
+          -0.02112555839121342,
+          0.022252468951046468,
+          -0.001103886216878891,
+          0.007575804647058248,
+          0.020103795337490737,
+          0.04822730720043182,
+          0.015334891434758902,
+          -0.02204033304005861,
+          -0.00038470663130283354,
+          -0.012035829620435834,
+          0.02239641360938549,
+          0.06824602540582418,
+          0.03880971742328256
+        ],
+        "worst_return": -0.02204033304005861
+      },
+      "folds": [
+        {
+          "categorical_identity": true,
+          "checkpoint": {
+            "best_iteration": 1,
+            "metric": "inner_validation_top5_return",
+            "num_iterations": 200,
+            "score": 0.023034,
+            "selection_rule": "max_inner_validation_top5_return_earliest_tie"
+          },
+          "checkpoint_train_scope_sha256": "9d4fa092abe444afd872339bb42195467bc02e3b52efd761a3dabd94b7f93c8e",
+          "checkpoint_validation_scope_sha256": "a845675df0d20cb332b4425497647199ff62624ddcd68d273c1fa3c0cf055d67",
+          "feature_count": 39,
+          "fold": "rolling_1",
+          "metrics": {
+            "excess_return_diagnostic": 0.020267331345137703,
+            "mean_return": 0.014012221069424414,
+            "positive_rate": 0.5,
+            "rank_ic": 0.008680927870941671,
+            "return_std": 0.030554707330008438,
+            "universe_return": -0.00625511027571329,
+            "validation_weeks": [
+              "2026-01-26",
+              "2026-02-02",
+              "2026-02-09",
+              "2026-03-02"
+            ],
+            "weekly_rank_ic": [
+              0.045371184569606794,
+              -0.20533499127701355,
+              0.05391710437787938,
+              0.14077041381329405
+            ],
+            "weekly_returns": [
+              0.0251152066513896,
+              -0.0062781602144241335,
+              0.0583373962319456,
+              -0.02112555839121342
+            ],
+            "worst_return": -0.02112555839121342
+          },
+          "outer_train_scope_sha256": "bde7bb6d79f0b29b60709d6ab251e286cbba14861855b5432d703c1a7129e039",
+          "runtime": {
+            "accelerator": "cuda",
+            "checkpoint_train_seconds": 2.298492999980226,
+            "model_bytes": 13231,
+            "outer_train_refit_seconds": 0.03835109993815422,
+            "peak_vram_bytes": null,
+            "peak_vram_note": "XGBoost Python API does not expose allocator peak memory",
+            "predict_seconds": 0.0025736999232321978,
+            "train_seconds": 2.3368440999183804
+          },
+          "sample_scope_sha256": "9c7a5c552dc41b4381b9abce8c37469f8d42214203fa671d0d426a92925aa23d"
+        },
+        {
+          "categorical_identity": true,
+          "checkpoint": {
+            "best_iteration": 3,
+            "metric": "inner_validation_top5_return",
+            "num_iterations": 200,
+            "score": 0.018186,
+            "selection_rule": "max_inner_validation_top5_return_earliest_tie"
+          },
+          "checkpoint_train_scope_sha256": "bde7bb6d79f0b29b60709d6ab251e286cbba14861855b5432d703c1a7129e039",
+          "checkpoint_validation_scope_sha256": "9c7a5c552dc41b4381b9abce8c37469f8d42214203fa671d0d426a92925aa23d",
+          "feature_count": 39,
+          "fold": "rolling_2",
+          "metrics": {
+            "excess_return_diagnostic": 0.017746208945843615,
+            "mean_return": 0.01220704567967914,
+            "positive_rate": 0.75,
+            "rank_ic": 0.07034856201016967,
+            "return_std": 0.009511814828361007,
+            "universe_return": -0.005539163266164473,
+            "validation_weeks": [
+              "2026-03-09",
+              "2026-03-16",
+              "2026-03-23",
+              "2026-03-30"
+            ],
+            "weekly_rank_ic": [
+              0.08364253262903815,
+              0.11463831506454696,
+              0.09245378039769667,
+              -0.00934038005060311
+            ],
+            "weekly_returns": [
+              0.022252468951046468,
+              -0.001103886216878891,
+              0.007575804647058248,
+              0.020103795337490737
+            ],
+            "worst_return": -0.001103886216878891
+          },
+          "outer_train_scope_sha256": "de861755c149c9fbb6d75e2d7cbad6bd9998b8630b976c3a1f47324361d46ff4",
+          "runtime": {
+            "accelerator": "cuda",
+            "checkpoint_train_seconds": 2.022356600034982,
+            "model_bytes": 17146,
+            "outer_train_refit_seconds": 0.05058060004375875,
+            "peak_vram_bytes": null,
+            "peak_vram_note": "XGBoost Python API does not expose allocator peak memory",
+            "predict_seconds": 0.0022279000841081142,
+            "train_seconds": 2.0729372000787407
+          },
+          "sample_scope_sha256": "bf6eabb92f453057df5df5d7e28cc7377a92d28fe0d29b49dd576be0c8f1a9a6"
+        },
+        {
+          "categorical_identity": true,
+          "checkpoint": {
+            "best_iteration": 81,
+            "metric": "inner_validation_top5_return",
+            "num_iterations": 200,
+            "score": 0.022212,
+            "selection_rule": "max_inner_validation_top5_return_earliest_tie"
+          },
+          "checkpoint_train_scope_sha256": "de861755c149c9fbb6d75e2d7cbad6bd9998b8630b976c3a1f47324361d46ff4",
+          "checkpoint_validation_scope_sha256": "bf6eabb92f453057df5df5d7e28cc7377a92d28fe0d29b49dd576be0c8f1a9a6",
+          "feature_count": 39,
+          "fold": "rolling_3",
+          "metrics": {
+            "excess_return_diagnostic": 0.008431487539049461,
+            "mean_return": 0.010284289740957318,
+            "positive_rate": 0.5,
+            "rank_ic": 0.10047149380509628,
+            "return_std": 0.02561195947660825,
+            "universe_return": 0.0018528022019078587,
+            "validation_weeks": [
+              "2026-04-13",
+              "2026-04-20",
+              "2026-05-11",
+              "2026-05-18"
+            ],
+            "weekly_rank_ic": [
+              0.06338583967696336,
+              -0.0228486918907968,
+              0.21867079767833236,
+              0.14267802975588617
+            ],
+            "weekly_returns": [
+              0.04822730720043182,
+              0.015334891434758902,
+              -0.02204033304005861,
+              -0.00038470663130283354
+            ],
+            "worst_return": -0.02204033304005861
+          },
+          "outer_train_scope_sha256": "fe5d201538ee387e48ec23109d518d9ff963f488fe862ae8dc9e1396242a0f96",
+          "runtime": {
+            "accelerator": "cuda",
+            "checkpoint_train_seconds": 1.9626582999480888,
+            "model_bytes": 168604,
+            "outer_train_refit_seconds": 0.42180680006276816,
+            "peak_vram_bytes": null,
+            "peak_vram_note": "XGBoost Python API does not expose allocator peak memory",
+            "predict_seconds": 0.008296199957840145,
+            "train_seconds": 2.384465100010857
+          },
+          "sample_scope_sha256": "8fc6d2260dae9df1bd4b626ed775d7b4e2b1c2ca42a057818c268e59c6eff94a"
+        },
+        {
+          "categorical_identity": true,
+          "checkpoint": {
+            "best_iteration": 33,
+            "metric": "inner_validation_top5_return",
+            "num_iterations": 200,
+            "score": 0.030036,
+            "selection_rule": "max_inner_validation_top5_return_earliest_tie"
+          },
+          "checkpoint_train_scope_sha256": "fe5d201538ee387e48ec23109d518d9ff963f488fe862ae8dc9e1396242a0f96",
+          "checkpoint_validation_scope_sha256": "8fc6d2260dae9df1bd4b626ed775d7b4e2b1c2ca42a057818c268e59c6eff94a",
+          "feature_count": 39,
+          "fold": "rolling_4",
+          "metrics": {
+            "excess_return_diagnostic": 0.02897083731454283,
+            "mean_return": 0.029354081704514097,
+            "positive_rate": 0.75,
+            "rank_ic": 0.12391392157597092,
+            "return_std": 0.028997957844135818,
+            "universe_return": 0.0003832443899712719,
+            "validation_weeks": [
+              "2026-05-25",
+              "2026-06-01",
+              "2026-06-08",
+              "2026-06-22"
+            ],
+            "weekly_rank_ic": [
+              0.011635469080474402,
+              0.16711596825474134,
+              0.3311084162621942,
+              -0.014204167293526252
+            ],
+            "weekly_returns": [
+              -0.012035829620435834,
+              0.02239641360938549,
+              0.06824602540582418,
+              0.03880971742328256
+            ],
+            "worst_return": -0.012035829620435834
+          },
+          "outer_train_scope_sha256": "fd642704ff76819be2b2697ed2ff47af1d5bc107cb2003e1a8d557c00594f23f",
+          "runtime": {
+            "accelerator": "cuda",
+            "checkpoint_train_seconds": 2.171036100015044,
+            "model_bytes": 77020,
+            "outer_train_refit_seconds": 0.2200318000977859,
+            "peak_vram_bytes": null,
+            "peak_vram_note": "XGBoost Python API does not expose allocator peak memory",
+            "predict_seconds": 0.004906899994239211,
+            "train_seconds": 2.39106790011283
+          },
+          "sample_scope_sha256": "f8b86724186c8ec34d54422b64895e38c6ec779f5161895ee5499c76e771f54b"
+        }
+      ],
+      "resource_contract_sha256": "2bf1bb2e0cc3f7ea850ae872d4fac490f5ef172954a2108e734b40fd5ea7ca22"
+    },
+    "cross_section_rank_identity_disabled": {
+      "aggregate": {
+        "mean_return": 0.0011941567457142807,
+        "model_bytes": 231816,
+        "positive_rate": 0.5,
+        "predict_seconds": 0.01886690012179315,
+        "rank_ic": 0.13171239571692972,
+        "return_std": 0.010619980916463328,
+        "train_seconds": 7.91409879992716,
+        "weekly_returns": [
+          -0.008798475190997124,
+          0.0041898837313055996,
+          -0.005347149446606636,
+          -0.004907944053411484,
+          0.012885913997888566,
+          -0.00437899911776185,
+          -0.011355934944003821,
+          -0.006344604305922985,
+          0.011426377575844526,
+          0.020285144913941622,
+          0.011795281084778253,
+          -0.013687006384134292,
+          -0.008223854703828692,
+          0.0015893914038315415,
+          0.019659772515296936,
+          0.0003187108552083373
+        ],
+        "worst_return": -0.013687006384134292
+      },
+      "folds": [
+        {
+          "categorical_identity": false,
+          "checkpoint": {
+            "best_iteration": 0,
+            "metric": "inner_validation_top5_return",
+            "num_iterations": 200,
+            "score": 0.006075,
+            "selection_rule": "max_inner_validation_top5_return_earliest_tie"
+          },
+          "checkpoint_train_scope_sha256": "9d4fa092abe444afd872339bb42195467bc02e3b52efd761a3dabd94b7f93c8e",
+          "checkpoint_validation_scope_sha256": "a845675df0d20cb332b4425497647199ff62624ddcd68d273c1fa3c0cf055d67",
+          "feature_count": 38,
+          "fold": "rolling_1",
+          "metrics": {
+            "excess_return_diagnostic": 0.0025391890357858785,
+            "mean_return": -0.003715921239927411,
+            "positive_rate": 0.25,
+            "rank_ic": 0.14984093603542784,
+            "return_std": 0.00480666024279955,
+            "universe_return": -0.00625511027571329,
+            "validation_weeks": [
+              "2026-01-26",
+              "2026-02-02",
+              "2026-02-09",
+              "2026-03-02"
+            ],
+            "weekly_rank_ic": [
+              0.18762478159832466,
+              0.23719826687209894,
+              0.003394438790560486,
+              0.17114625688072724
+            ],
+            "weekly_returns": [
+              -0.008798475190997124,
+              0.0041898837313055996,
+              -0.005347149446606636,
+              -0.004907944053411484
+            ],
+            "worst_return": -0.008798475190997124
+          },
+          "outer_train_scope_sha256": "bde7bb6d79f0b29b60709d6ab251e286cbba14861855b5432d703c1a7129e039",
+          "runtime": {
+            "accelerator": "cuda",
+            "checkpoint_train_seconds": 1.816314300056547,
+            "model_bytes": 4091,
+            "outer_train_refit_seconds": 0.027387699927203357,
+            "peak_vram_bytes": null,
+            "peak_vram_note": "XGBoost Python API does not expose allocator peak memory",
+            "predict_seconds": 0.0018778000958263874,
+            "train_seconds": 1.8437019999837503
+          },
+          "sample_scope_sha256": "9c7a5c552dc41b4381b9abce8c37469f8d42214203fa671d0d426a92925aa23d"
+        },
+        {
+          "categorical_identity": false,
+          "checkpoint": {
+            "best_iteration": 1,
+            "metric": "inner_validation_top5_return",
+            "num_iterations": 200,
+            "score": 0.01101,
+            "selection_rule": "max_inner_validation_top5_return_earliest_tie"
+          },
+          "checkpoint_train_scope_sha256": "bde7bb6d79f0b29b60709d6ab251e286cbba14861855b5432d703c1a7129e039",
+          "checkpoint_validation_scope_sha256": "9c7a5c552dc41b4381b9abce8c37469f8d42214203fa671d0d426a92925aa23d",
+          "feature_count": 38,
+          "fold": "rolling_2",
+          "metrics": {
+            "excess_return_diagnostic": 0.0032407571737144503,
+            "mean_return": -0.0022984060924500227,
+            "positive_rate": 0.25,
+            "rank_ic": 0.12521614853145532,
+            "return_std": 0.009128293827740724,
+            "universe_return": -0.005539163266164473,
+            "validation_weeks": [
+              "2026-03-09",
+              "2026-03-16",
+              "2026-03-23",
+              "2026-03-30"
+            ],
+            "weekly_rank_ic": [
+              0.1180027741067032,
+              0.2378468217603537,
+              0.04706168924757109,
+              0.0979533090111933
+            ],
+            "weekly_returns": [
+              0.012885913997888566,
+              -0.00437899911776185,
+              -0.011355934944003821,
+              -0.006344604305922985
+            ],
+            "worst_return": -0.011355934944003821
+          },
+          "outer_train_scope_sha256": "de861755c149c9fbb6d75e2d7cbad6bd9998b8630b976c3a1f47324361d46ff4",
+          "runtime": {
+            "accelerator": "cuda",
+            "checkpoint_train_seconds": 1.9364170999033377,
+            "model_bytes": 6142,
+            "outer_train_refit_seconds": 0.037889700033701956,
+            "peak_vram_bytes": null,
+            "peak_vram_note": "XGBoost Python API does not expose allocator peak memory",
+            "predict_seconds": 0.001916400040499866,
+            "train_seconds": 1.9743067999370396
+          },
+          "sample_scope_sha256": "bf6eabb92f453057df5df5d7e28cc7377a92d28fe0d29b49dd576be0c8f1a9a6"
+        },
+        {
+          "categorical_identity": false,
+          "checkpoint": {
+            "best_iteration": 129,
+            "metric": "inner_validation_top5_return",
+            "num_iterations": 200,
+            "score": 0.016898,
+            "selection_rule": "max_inner_validation_top5_return_earliest_tie"
+          },
+          "checkpoint_train_scope_sha256": "de861755c149c9fbb6d75e2d7cbad6bd9998b8630b976c3a1f47324361d46ff4",
+          "checkpoint_validation_scope_sha256": "bf6eabb92f453057df5df5d7e28cc7377a92d28fe0d29b49dd576be0c8f1a9a6",
+          "feature_count": 38,
+          "fold": "rolling_3",
+          "metrics": {
+            "excess_return_diagnostic": 0.00560214709569967,
+            "mean_return": 0.007454949297607527,
+            "positive_rate": 0.75,
+            "rank_ic": 0.06757671523082184,
+            "return_std": 0.012710300273735068,
+            "universe_return": 0.0018528022019078587,
+            "validation_weeks": [
+              "2026-04-13",
+              "2026-04-20",
+              "2026-05-11",
+              "2026-05-18"
+            ],
+            "weekly_rank_ic": [
+              -0.10526535675892518,
+              0.08572753995881145,
+              0.18584041100932652,
+              0.1040042667140746
+            ],
+            "weekly_returns": [
+              0.011426377575844526,
+              0.020285144913941622,
+              0.011795281084778253,
+              -0.013687006384134292
+            ],
+            "worst_return": -0.013687006384134292
+          },
+          "outer_train_scope_sha256": "fe5d201538ee387e48ec23109d518d9ff963f488fe862ae8dc9e1396242a0f96",
+          "runtime": {
+            "accelerator": "cuda",
+            "checkpoint_train_seconds": 1.581573799951002,
+            "model_bytes": 231816,
+            "outer_train_refit_seconds": 0.48774150002282113,
+            "peak_vram_bytes": null,
+            "peak_vram_note": "XGBoost Python API does not expose allocator peak memory",
+            "predict_seconds": 0.011812599957920611,
+            "train_seconds": 2.069315299973823
+          },
+          "sample_scope_sha256": "8fc6d2260dae9df1bd4b626ed775d7b4e2b1c2ca42a057818c268e59c6eff94a"
+        },
+        {
+          "categorical_identity": false,
+          "checkpoint": {
+            "best_iteration": 22,
+            "metric": "inner_validation_top5_return",
+            "num_iterations": 200,
+            "score": 0.009094,
+            "selection_rule": "max_inner_validation_top5_return_earliest_tie"
+          },
+          "checkpoint_train_scope_sha256": "fe5d201538ee387e48ec23109d518d9ff963f488fe862ae8dc9e1396242a0f96",
+          "checkpoint_validation_scope_sha256": "8fc6d2260dae9df1bd4b626ed775d7b4e2b1c2ca42a057818c268e59c6eff94a",
+          "feature_count": 38,
+          "fold": "rolling_4",
+          "metrics": {
+            "excess_return_diagnostic": 0.0029527606276557586,
+            "mean_return": 0.003336005017627031,
+            "positive_rate": 0.75,
+            "rank_ic": 0.18421578307001382,
+            "return_std": 0.010151975981012027,
+            "universe_return": 0.0003832443899712719,
+            "validation_weeks": [
+              "2026-05-25",
+              "2026-06-01",
+              "2026-06-08",
+              "2026-06-22"
+            ],
+            "weekly_rank_ic": [
+              0.07235437041280382,
+              0.26166367162980697,
+              0.33374148683295923,
+              0.06910360340448532
+            ],
+            "weekly_returns": [
+              -0.008223854703828692,
+              0.0015893914038315415,
+              0.019659772515296936,
+              0.0003187108552083373
+            ],
+            "worst_return": -0.008223854703828692
+          },
+          "outer_train_scope_sha256": "fd642704ff76819be2b2697ed2ff47af1d5bc107cb2003e1a8d557c00594f23f",
+          "runtime": {
+            "accelerator": "cuda",
+            "checkpoint_train_seconds": 1.9151450000936165,
+            "model_bytes": 48080,
+            "outer_train_refit_seconds": 0.11162969993893057,
+            "peak_vram_bytes": null,
+            "peak_vram_note": "XGBoost Python API does not expose allocator peak memory",
+            "predict_seconds": 0.0032601000275462866,
+            "train_seconds": 2.026774700032547
+          },
+          "sample_scope_sha256": "f8b86724186c8ec34d54422b64895e38c6ec779f5161895ee5499c76e771f54b"
+        }
+      ],
+      "resource_contract_sha256": "2bf1bb2e0cc3f7ea850ae872d4fac490f5ef172954a2108e734b40fd5ea7ca22"
+    },
+    "cross_section_robust_zscore_identity_disabled": {
+      "aggregate": {
+        "mean_return": -0.004159034498206892,
+        "model_bytes": 60936,
+        "positive_rate": 0.4375,
+        "predict_seconds": 0.010497900075279176,
+        "rank_ic": 0.07797698332541633,
+        "return_std": 0.017868959139397483,
+        "train_seconds": 7.35817230027169,
+        "weekly_returns": [
+          -0.0328977033495903,
+          -0.035564078390598296,
+          -0.0073301299475133416,
+          -0.025195893552154302,
+          0.02082877103239298,
+          -0.003902714140713215,
+          -0.0013901265803724528,
+          0.029724906757473947,
+          0.01128617264330387,
+          0.002343388786539435,
+          0.0034108720967196858,
+          -0.024518026411533354,
+          -0.01207960513420403,
+          -0.00482478755293414,
+          0.004717048816382885,
+          0.008847352955490351
+        ],
+        "worst_return": -0.035564078390598296
+      },
+      "folds": [
+        {
+          "categorical_identity": false,
+          "checkpoint": {
+            "best_iteration": 10,
+            "metric": "inner_validation_top5_return",
+            "num_iterations": 200,
+            "score": 0.011605,
+            "selection_rule": "max_inner_validation_top5_return_earliest_tie"
+          },
+          "checkpoint_train_scope_sha256": "9d4fa092abe444afd872339bb42195467bc02e3b52efd761a3dabd94b7f93c8e",
+          "checkpoint_validation_scope_sha256": "a845675df0d20cb332b4425497647199ff62624ddcd68d273c1fa3c0cf055d67",
+          "feature_count": 38,
+          "fold": "rolling_1",
+          "metrics": {
+            "excess_return_diagnostic": -0.01899184103425077,
+            "mean_return": -0.02524695130996406,
+            "positive_rate": 0.0,
+            "rank_ic": 0.0798349139362994,
+            "return_std": 0.011022615531243079,
+            "universe_return": -0.00625511027571329,
+            "validation_weeks": [
+              "2026-01-26",
+              "2026-02-02",
+              "2026-02-09",
+              "2026-03-02"
+            ],
+            "weekly_rank_ic": [
+              0.049460384521838624,
+              0.1093218249410574,
+              0.02966431020359518,
+              0.13089313607870648
+            ],
+            "weekly_returns": [
+              -0.0328977033495903,
+              -0.035564078390598296,
+              -0.0073301299475133416,
+              -0.025195893552154302
+            ],
+            "worst_return": -0.035564078390598296
+          },
+          "outer_train_scope_sha256": "bde7bb6d79f0b29b60709d6ab251e286cbba14861855b5432d703c1a7129e039",
+          "runtime": {
+            "accelerator": "cuda",
+            "checkpoint_train_seconds": 1.722124999971129,
+            "model_bytes": 25020,
+            "outer_train_refit_seconds": 0.06741590006276965,
+            "peak_vram_bytes": null,
+            "peak_vram_note": "XGBoost Python API does not expose allocator peak memory",
+            "predict_seconds": 0.0018917000852525234,
+            "train_seconds": 1.7895409000338987
+          },
+          "sample_scope_sha256": "9c7a5c552dc41b4381b9abce8c37469f8d42214203fa671d0d426a92925aa23d"
+        },
+        {
+          "categorical_identity": false,
+          "checkpoint": {
+            "best_iteration": 3,
+            "metric": "inner_validation_top5_return",
+            "num_iterations": 200,
+            "score": 0.005438,
+            "selection_rule": "max_inner_validation_top5_return_earliest_tie"
+          },
+          "checkpoint_train_scope_sha256": "bde7bb6d79f0b29b60709d6ab251e286cbba14861855b5432d703c1a7129e039",
+          "checkpoint_validation_scope_sha256": "9c7a5c552dc41b4381b9abce8c37469f8d42214203fa671d0d426a92925aa23d",
+          "feature_count": 38,
+          "fold": "rolling_2",
+          "metrics": {
+            "excess_return_diagnostic": 0.016854372533359786,
+            "mean_return": 0.011315209267195314,
+            "positive_rate": 0.5,
+            "rank_ic": 0.07184173798596347,
+            "return_std": 0.014339068754562334,
+            "universe_return": -0.005539163266164473,
+            "validation_weeks": [
+              "2026-03-09",
+              "2026-03-16",
+              "2026-03-23",
+              "2026-03-30"
+            ],
+            "weekly_rank_ic": [
+              0.10135292513617467,
+              0.10141148362177314,
+              0.14208772454160765,
+              -0.05748518135570159
+            ],
+            "weekly_returns": [
+              0.02082877103239298,
+              -0.003902714140713215,
+              -0.0013901265803724528,
+              0.029724906757473947
+            ],
+            "worst_return": -0.003902714140713215
+          },
+          "outer_train_scope_sha256": "de861755c149c9fbb6d75e2d7cbad6bd9998b8630b976c3a1f47324361d46ff4",
+          "runtime": {
+            "accelerator": "cuda",
+            "checkpoint_train_seconds": 1.845271100057289,
+            "model_bytes": 10790,
+            "outer_train_refit_seconds": 0.040214500040747225,
+            "peak_vram_bytes": null,
+            "peak_vram_note": "XGBoost Python API does not expose allocator peak memory",
+            "predict_seconds": 0.0016522000078111887,
+            "train_seconds": 1.8854856000980362
+          },
+          "sample_scope_sha256": "bf6eabb92f453057df5df5d7e28cc7377a92d28fe0d29b49dd576be0c8f1a9a6"
+        },
+        {
+          "categorical_identity": false,
+          "checkpoint": {
+            "best_iteration": 28,
+            "metric": "inner_validation_top5_return",
+            "num_iterations": 200,
+            "score": 0.016417,
+            "selection_rule": "max_inner_validation_top5_return_earliest_tie"
+          },
+          "checkpoint_train_scope_sha256": "de861755c149c9fbb6d75e2d7cbad6bd9998b8630b976c3a1f47324361d46ff4",
+          "checkpoint_validation_scope_sha256": "bf6eabb92f453057df5df5d7e28cc7377a92d28fe0d29b49dd576be0c8f1a9a6",
+          "feature_count": 38,
+          "fold": "rolling_3",
+          "metrics": {
+            "excess_return_diagnostic": -0.003722200423150449,
+            "mean_return": -0.0018693982212425906,
+            "positive_rate": 0.75,
+            "rank_ic": 0.037856796953143486,
+            "return_std": 0.013524590868838025,
+            "universe_return": 0.0018528022019078587,
+            "validation_weeks": [
+              "2026-04-13",
+              "2026-04-20",
+              "2026-05-11",
+              "2026-05-18"
+            ],
+            "weekly_rank_ic": [
+              -0.1396406631800545,
+              0.061656864053601386,
+              0.17061808533215825,
+              0.058792901606868814
+            ],
+            "weekly_returns": [
+              0.01128617264330387,
+              0.002343388786539435,
+              0.0034108720967196858,
+              -0.024518026411533354
+            ],
+            "worst_return": -0.024518026411533354
+          },
+          "outer_train_scope_sha256": "fe5d201538ee387e48ec23109d518d9ff963f488fe862ae8dc9e1396242a0f96",
+          "runtime": {
+            "accelerator": "cuda",
+            "checkpoint_train_seconds": 1.600553399999626,
+            "model_bytes": 60936,
+            "outer_train_refit_seconds": 0.12991940008942038,
+            "peak_vram_bytes": null,
+            "peak_vram_note": "XGBoost Python API does not expose allocator peak memory",
+            "predict_seconds": 0.004593399935401976,
+            "train_seconds": 1.7304728000890464
+          },
+          "sample_scope_sha256": "8fc6d2260dae9df1bd4b626ed775d7b4e2b1c2ca42a057818c268e59c6eff94a"
+        },
+        {
+          "categorical_identity": false,
+          "checkpoint": {
+            "best_iteration": 3,
+            "metric": "inner_validation_top5_return",
+            "num_iterations": 200,
+            "score": 0.002967,
+            "selection_rule": "max_inner_validation_top5_return_earliest_tie"
+          },
+          "checkpoint_train_scope_sha256": "fe5d201538ee387e48ec23109d518d9ff963f488fe862ae8dc9e1396242a0f96",
+          "checkpoint_validation_scope_sha256": "8fc6d2260dae9df1bd4b626ed775d7b4e2b1c2ca42a057818c268e59c6eff94a",
+          "feature_count": 38,
+          "fold": "rolling_4",
+          "metrics": {
+            "excess_return_diagnostic": -0.0012182421187875055,
+            "mean_return": -0.0008349977288162336,
+            "positive_rate": 0.5,
+            "rank_ic": 0.12237448442625892,
+            "return_std": 0.008169038409688844,
+            "universe_return": 0.0003832443899712719,
+            "validation_weeks": [
+              "2026-05-25",
+              "2026-06-01",
+              "2026-06-08",
+              "2026-06-22"
+            ],
+            "weekly_rank_ic": [
+              0.03860216385170429,
+              0.15909562933671398,
+              0.2681160169824333,
+              0.023684127534184155
+            ],
+            "weekly_returns": [
+              -0.01207960513420403,
+              -0.00482478755293414,
+              0.004717048816382885,
+              0.008847352955490351
+            ],
+            "worst_return": -0.01207960513420403
+          },
+          "outer_train_scope_sha256": "fd642704ff76819be2b2697ed2ff47af1d5bc107cb2003e1a8d557c00594f23f",
+          "runtime": {
+            "accelerator": "cuda",
+            "checkpoint_train_seconds": 1.9121519000036642,
+            "model_bytes": 11131,
+            "outer_train_refit_seconds": 0.040521100047044456,
+            "peak_vram_bytes": null,
+            "peak_vram_note": "XGBoost Python API does not expose allocator peak memory",
+            "predict_seconds": 0.002360600046813488,
+            "train_seconds": 1.9526730000507087
+          },
+          "sample_scope_sha256": "f8b86724186c8ec34d54422b64895e38c6ec779f5161895ee5499c76e771f54b"
+        }
+      ],
+      "resource_contract_sha256": "2bf1bb2e0cc3f7ea850ae872d4fac490f5ef172954a2108e734b40fd5ea7ca22"
+    },
+    "identity_disabled": {
+      "aggregate": {
+        "mean_return": 0.020972713732044214,
+        "model_bytes": 326696,
+        "positive_rate": 0.8125,
+        "predict_seconds": 0.03394770005252212,
+        "rank_ic": 0.11134726370512257,
+        "return_std": 0.027073128564717594,
+        "train_seconds": 8.353624899988063,
+        "weekly_returns": [
+          0.007187284482643008,
+          -0.006058294884860515,
+          -0.013631971925497055,
+          0.02861000448465347,
+          0.014408923499286175,
+          0.011720155365765095,
+          0.008281604293733836,
+          0.033747533336281776,
+          0.04791867360472679,
+          0.0015329922549426555,
+          0.06635869033634663,
+          0.019623039290308952,
+          0.00980590065009892,
+          -0.01756984503008425,
+          0.08401555530726909,
+          0.03961317464709282
+        ],
+        "worst_return": -0.01756984503008425
+      },
+      "folds": [
+        {
+          "categorical_identity": false,
+          "checkpoint": {
+            "best_iteration": 2,
+            "metric": "inner_validation_top5_return",
+            "num_iterations": 200,
+            "score": 0.010424,
+            "selection_rule": "max_inner_validation_top5_return_earliest_tie"
+          },
+          "checkpoint_train_scope_sha256": "9d4fa092abe444afd872339bb42195467bc02e3b52efd761a3dabd94b7f93c8e",
+          "checkpoint_validation_scope_sha256": "a845675df0d20cb332b4425497647199ff62624ddcd68d273c1fa3c0cf055d67",
+          "feature_count": 38,
+          "fold": "rolling_1",
+          "metrics": {
+            "excess_return_diagnostic": 0.010281865814948018,
+            "mean_return": 0.004026755539234727,
+            "positive_rate": 0.5,
+            "rank_ic": 0.06175669925562769,
+            "return_std": 0.01603015883923776,
+            "universe_return": -0.00625511027571329,
+            "validation_weeks": [
+              "2026-01-26",
+              "2026-02-02",
+              "2026-02-09",
+              "2026-03-02"
+            ],
+            "weekly_rank_ic": [
+              0.09381407801844437,
+              0.0003639052299454623,
+              -0.05172550113795257,
+              0.2045743149120735
+            ],
+            "weekly_returns": [
+              0.007187284482643008,
+              -0.006058294884860515,
+              -0.013631971925497055,
+              0.02861000448465347
+            ],
+            "worst_return": -0.013631971925497055
+          },
+          "outer_train_scope_sha256": "bde7bb6d79f0b29b60709d6ab251e286cbba14861855b5432d703c1a7129e039",
+          "runtime": {
+            "accelerator": "cuda",
+            "checkpoint_train_seconds": 1.5967592000961304,
+            "model_bytes": 8467,
+            "outer_train_refit_seconds": 0.03403489990159869,
+            "peak_vram_bytes": null,
+            "peak_vram_note": "XGBoost Python API does not expose allocator peak memory",
+            "predict_seconds": 0.007365299970842898,
+            "train_seconds": 1.630794099997729
+          },
+          "sample_scope_sha256": "9c7a5c552dc41b4381b9abce8c37469f8d42214203fa671d0d426a92925aa23d"
+        },
+        {
+          "categorical_identity": false,
+          "checkpoint": {
+            "best_iteration": 31,
+            "metric": "inner_validation_top5_return",
+            "num_iterations": 200,
+            "score": 0.023937,
+            "selection_rule": "max_inner_validation_top5_return_earliest_tie"
+          },
+          "checkpoint_train_scope_sha256": "bde7bb6d79f0b29b60709d6ab251e286cbba14861855b5432d703c1a7129e039",
+          "checkpoint_validation_scope_sha256": "9c7a5c552dc41b4381b9abce8c37469f8d42214203fa671d0d426a92925aa23d",
+          "feature_count": 38,
+          "fold": "rolling_2",
+          "metrics": {
+            "excess_return_diagnostic": 0.022578717389931193,
+            "mean_return": 0.01703955412376672,
+            "positive_rate": 1.0,
+            "rank_ic": 0.1205863345162297,
+            "return_std": 0.009887801515254698,
+            "universe_return": -0.005539163266164473,
+            "validation_weeks": [
+              "2026-03-09",
+              "2026-03-16",
+              "2026-03-23",
+              "2026-03-30"
+            ],
+            "weekly_rank_ic": [
+              0.11865441777649759,
+              0.20105775450957314,
+              0.19470350656989616,
+              -0.03207034079104805
+            ],
+            "weekly_returns": [
+              0.014408923499286175,
+              0.011720155365765095,
+              0.008281604293733836,
+              0.033747533336281776
+            ],
+            "worst_return": 0.008281604293733836
+          },
+          "outer_train_scope_sha256": "de861755c149c9fbb6d75e2d7cbad6bd9998b8630b976c3a1f47324361d46ff4",
+          "runtime": {
+            "accelerator": "cuda",
+            "checkpoint_train_seconds": 1.6602969999657944,
+            "model_bytes": 65391,
+            "outer_train_refit_seconds": 0.14464209997095168,
+            "peak_vram_bytes": null,
+            "peak_vram_note": "XGBoost Python API does not expose allocator peak memory",
+            "predict_seconds": 0.003848800086416304,
+            "train_seconds": 1.804939099936746
+          },
+          "sample_scope_sha256": "bf6eabb92f453057df5df5d7e28cc7377a92d28fe0d29b49dd576be0c8f1a9a6"
+        },
+        {
+          "categorical_identity": false,
+          "checkpoint": {
+            "best_iteration": 90,
+            "metric": "inner_validation_top5_return",
+            "num_iterations": 200,
+            "score": 0.025612,
+            "selection_rule": "max_inner_validation_top5_return_earliest_tie"
+          },
+          "checkpoint_train_scope_sha256": "de861755c149c9fbb6d75e2d7cbad6bd9998b8630b976c3a1f47324361d46ff4",
+          "checkpoint_validation_scope_sha256": "bf6eabb92f453057df5df5d7e28cc7377a92d28fe0d29b49dd576be0c8f1a9a6",
+          "feature_count": 38,
+          "fold": "rolling_3",
+          "metrics": {
+            "excess_return_diagnostic": 0.0320055466696734,
+            "mean_return": 0.033858348871581255,
+            "positive_rate": 1.0,
+            "rank_ic": 0.11846168102947463,
+            "return_std": 0.025007687049162383,
+            "universe_return": 0.0018528022019078587,
+            "validation_weeks": [
+              "2026-04-13",
+              "2026-04-20",
+              "2026-05-11",
+              "2026-05-18"
+            ],
+            "weekly_rank_ic": [
+              0.037903457441037125,
+              0.051717951982430684,
+              0.23495298944637236,
+              0.1492723252480583
+            ],
+            "weekly_returns": [
+              0.04791867360472679,
+              0.0015329922549426555,
+              0.06635869033634663,
+              0.019623039290308952
+            ],
+            "worst_return": 0.0015329922549426555
+          },
+          "outer_train_scope_sha256": "fe5d201538ee387e48ec23109d518d9ff963f488fe862ae8dc9e1396242a0f96",
+          "runtime": {
+            "accelerator": "cuda",
+            "checkpoint_train_seconds": 1.8262513000518084,
+            "model_bytes": 173064,
+            "outer_train_refit_seconds": 0.3196514999726787,
+            "peak_vram_bytes": null,
+            "peak_vram_note": "XGBoost Python API does not expose allocator peak memory",
+            "predict_seconds": 0.008634399971924722,
+            "train_seconds": 2.145902800024487
+          },
+          "sample_scope_sha256": "8fc6d2260dae9df1bd4b626ed775d7b4e2b1c2ca42a057818c268e59c6eff94a"
+        },
+        {
+          "categorical_identity": false,
+          "checkpoint": {
+            "best_iteration": 179,
+            "metric": "inner_validation_top5_return",
+            "num_iterations": 200,
+            "score": 0.038621,
+            "selection_rule": "max_inner_validation_top5_return_earliest_tie"
+          },
+          "checkpoint_train_scope_sha256": "fe5d201538ee387e48ec23109d518d9ff963f488fe862ae8dc9e1396242a0f96",
+          "checkpoint_validation_scope_sha256": "8fc6d2260dae9df1bd4b626ed775d7b4e2b1c2ca42a057818c268e59c6eff94a",
+          "feature_count": 38,
+          "fold": "rolling_4",
+          "metrics": {
+            "excess_return_diagnostic": 0.028582952003622875,
+            "mean_return": 0.028966196393594143,
+            "positive_rate": 0.75,
+            "rank_ic": 0.1445843400191583,
+            "return_std": 0.037671309199115946,
+            "universe_return": 0.0003832443899712719,
+            "validation_weeks": [
+              "2026-05-25",
+              "2026-06-01",
+              "2026-06-08",
+              "2026-06-22"
+            ],
+            "weekly_rank_ic": [
+              0.04915235122188295,
+              0.15183838750172876,
+              0.3481280614941045,
+              0.02921855985891681
+            ],
+            "weekly_returns": [
+              0.00980590065009892,
+              -0.01756984503008425,
+              0.08401555530726909,
+              0.03961317464709282
+            ],
+            "worst_return": -0.01756984503008425
+          },
+          "outer_train_scope_sha256": "fd642704ff76819be2b2697ed2ff47af1d5bc107cb2003e1a8d557c00594f23f",
+          "runtime": {
+            "accelerator": "cuda",
+            "checkpoint_train_seconds": 2.1359767999965698,
+            "model_bytes": 326696,
+            "outer_train_refit_seconds": 0.6360121000325307,
+            "peak_vram_bytes": null,
+            "peak_vram_note": "XGBoost Python API does not expose allocator peak memory",
+            "predict_seconds": 0.014099200023338199,
+            "train_seconds": 2.7719889000291005
+          },
+          "sample_scope_sha256": "f8b86724186c8ec34d54422b64895e38c6ec779f5161895ee5499c76e771f54b"
+        }
+      ],
+      "resource_contract_sha256": "2bf1bb2e0cc3f7ea850ae872d4fac490f5ef172954a2108e734b40fd5ea7ca22"
+    },
+    "raw_ordered_identity": {
+      "aggregate": {
+        "mean_return": 0.024883521004085196,
+        "model_bytes": 363037,
+        "positive_rate": 0.6875,
+        "predict_seconds": 0.03127240028697997,
+        "rank_ic": 0.09364006367808896,
+        "return_std": 0.03370862579846309,
+        "train_seconds": 8.228263499913737,
+        "weekly_returns": [
+          0.0251152066513896,
+          -0.0062781602144241335,
+          0.0583373962319456,
+          -0.02112555839121342,
+          0.016401140158995985,
+          -0.0014347076416015626,
+          -0.009889135509729386,
+          0.002752048522233963,
+          0.033829976432025434,
+          0.023737187776714564,
+          0.03610832616686821,
+          0.0364358127117157,
+          0.09720843420363963,
+          -0.01173920468427241,
+          0.09267382659018039,
+          0.026003747060894967
+        ],
+        "worst_return": -0.02112555839121342
+      },
+      "folds": [
+        {
+          "categorical_identity": false,
+          "checkpoint": {
+            "best_iteration": 1,
+            "metric": "inner_validation_top5_return",
+            "num_iterations": 200,
+            "score": 0.027621,
+            "selection_rule": "max_inner_validation_top5_return_earliest_tie"
+          },
+          "checkpoint_train_scope_sha256": "9d4fa092abe444afd872339bb42195467bc02e3b52efd761a3dabd94b7f93c8e",
+          "checkpoint_validation_scope_sha256": "a845675df0d20cb332b4425497647199ff62624ddcd68d273c1fa3c0cf055d67",
+          "feature_count": 39,
+          "fold": "rolling_1",
+          "metrics": {
+            "excess_return_diagnostic": 0.020267331345137703,
+            "mean_return": 0.014012221069424414,
+            "positive_rate": 0.5,
+            "rank_ic": 0.007892807282949693,
+            "return_std": 0.030554707330008438,
+            "universe_return": -0.00625511027571329,
+            "validation_weeks": [
+              "2026-01-26",
+              "2026-02-02",
+              "2026-02-09",
+              "2026-03-02"
+            ],
+            "weekly_rank_ic": [
+              0.03672166063718529,
+              -0.21177284912798733,
+              0.07179947196516906,
+              0.13482294565743175
+            ],
+            "weekly_returns": [
+              0.0251152066513896,
+              -0.0062781602144241335,
+              0.0583373962319456,
+              -0.02112555839121342
+            ],
+            "worst_return": -0.02112555839121342
+          },
+          "outer_train_scope_sha256": "bde7bb6d79f0b29b60709d6ab251e286cbba14861855b5432d703c1a7129e039",
+          "runtime": {
+            "accelerator": "cuda",
+            "checkpoint_train_seconds": 1.9316007000161335,
+            "model_bytes": 6314,
+            "outer_train_refit_seconds": 0.030374799971468747,
+            "peak_vram_bytes": null,
+            "peak_vram_note": "XGBoost Python API does not expose allocator peak memory",
+            "predict_seconds": 0.001077700057066977,
+            "train_seconds": 1.9619754999876022
+          },
+          "sample_scope_sha256": "9c7a5c552dc41b4381b9abce8c37469f8d42214203fa671d0d426a92925aa23d"
+        },
+        {
+          "categorical_identity": false,
+          "checkpoint": {
+            "best_iteration": 1,
+            "metric": "inner_validation_top5_return",
+            "num_iterations": 200,
+            "score": 0.014012,
+            "selection_rule": "max_inner_validation_top5_return_earliest_tie"
+          },
+          "checkpoint_train_scope_sha256": "bde7bb6d79f0b29b60709d6ab251e286cbba14861855b5432d703c1a7129e039",
+          "checkpoint_validation_scope_sha256": "9c7a5c552dc41b4381b9abce8c37469f8d42214203fa671d0d426a92925aa23d",
+          "feature_count": 39,
+          "fold": "rolling_2",
+          "metrics": {
+            "excess_return_diagnostic": 0.007496499648639223,
+            "mean_return": 0.00195733638247475,
+            "positive_rate": 0.5,
+            "rank_ic": 0.08796623862486765,
+            "return_std": 0.009501314302160837,
+            "universe_return": -0.005539163266164473,
+            "validation_weeks": [
+              "2026-03-09",
+              "2026-03-16",
+              "2026-03-23",
+              "2026-03-30"
+            ],
+            "weekly_rank_ic": [
+              0.10838519162767131,
+              0.15049300366111187,
+              0.057096492518376764,
+              0.03589026669231058
+            ],
+            "weekly_returns": [
+              0.016401140158995985,
+              -0.0014347076416015626,
+              -0.009889135509729386,
+              0.002752048522233963
+            ],
+            "worst_return": -0.009889135509729386
+          },
+          "outer_train_scope_sha256": "de861755c149c9fbb6d75e2d7cbad6bd9998b8630b976c3a1f47324361d46ff4",
+          "runtime": {
+            "accelerator": "cuda",
+            "checkpoint_train_seconds": 1.6448385999538004,
+            "model_bytes": 6449,
+            "outer_train_refit_seconds": 0.03302450000774115,
+            "peak_vram_bytes": null,
+            "peak_vram_note": "XGBoost Python API does not expose allocator peak memory",
+            "predict_seconds": 0.001813200069591403,
+            "train_seconds": 1.6778630999615416
+          },
+          "sample_scope_sha256": "bf6eabb92f453057df5df5d7e28cc7377a92d28fe0d29b49dd576be0c8f1a9a6"
+        },
+        {
+          "categorical_identity": false,
+          "checkpoint": {
+            "best_iteration": 198,
+            "metric": "inner_validation_top5_return",
+            "num_iterations": 200,
+            "score": 0.014914,
+            "selection_rule": "max_inner_validation_top5_return_earliest_tie"
+          },
+          "checkpoint_train_scope_sha256": "de861755c149c9fbb6d75e2d7cbad6bd9998b8630b976c3a1f47324361d46ff4",
+          "checkpoint_validation_scope_sha256": "bf6eabb92f453057df5df5d7e28cc7377a92d28fe0d29b49dd576be0c8f1a9a6",
+          "feature_count": 39,
+          "fold": "rolling_3",
+          "metrics": {
+            "excess_return_diagnostic": 0.03067502356992312,
+            "mean_return": 0.03252782577183098,
+            "positive_rate": 1.0,
+            "rank_ic": 0.11873902364244852,
+            "return_std": 0.005173568828772854,
+            "universe_return": 0.0018528022019078587,
+            "validation_weeks": [
+              "2026-04-13",
+              "2026-04-20",
+              "2026-05-11",
+              "2026-05-18"
+            ],
+            "weekly_rank_ic": [
+              0.06175448187325064,
+              -0.003530961469921028,
+              0.2490400442494654,
+              0.16769252991699907
+            ],
+            "weekly_returns": [
+              0.033829976432025434,
+              0.023737187776714564,
+              0.03610832616686821,
+              0.0364358127117157
+            ],
+            "worst_return": 0.023737187776714564
+          },
+          "outer_train_scope_sha256": "fe5d201538ee387e48ec23109d518d9ff963f488fe862ae8dc9e1396242a0f96",
+          "runtime": {
+            "accelerator": "cuda",
+            "checkpoint_train_seconds": 1.7003444000147283,
+            "model_bytes": 363037,
+            "outer_train_refit_seconds": 0.6488597999559715,
+            "peak_vram_bytes": null,
+            "peak_vram_note": "XGBoost Python API does not expose allocator peak memory",
+            "predict_seconds": 0.012488100095652044,
+            "train_seconds": 2.3492041999707
+          },
+          "sample_scope_sha256": "8fc6d2260dae9df1bd4b626ed775d7b4e2b1c2ca42a057818c268e59c6eff94a"
+        },
+        {
+          "categorical_identity": false,
+          "checkpoint": {
+            "best_iteration": 195,
+            "metric": "inner_validation_top5_return",
+            "num_iterations": 200,
+            "score": 0.032528,
+            "selection_rule": "max_inner_validation_top5_return_earliest_tie"
+          },
+          "checkpoint_train_scope_sha256": "fe5d201538ee387e48ec23109d518d9ff963f488fe862ae8dc9e1396242a0f96",
+          "checkpoint_validation_scope_sha256": "8fc6d2260dae9df1bd4b626ed775d7b4e2b1c2ca42a057818c268e59c6eff94a",
+          "feature_count": 39,
+          "fold": "rolling_4",
+          "metrics": {
+            "excess_return_diagnostic": 0.05065345640263938,
+            "mean_return": 0.05103670079261065,
+            "positive_rate": 0.75,
+            "rank_ic": 0.15996218516209,
+            "return_std": 0.045915526491151534,
+            "universe_return": 0.0003832443899712719,
+            "validation_weeks": [
+              "2026-05-25",
+              "2026-06-01",
+              "2026-06-08",
+              "2026-06-22"
+            ],
+            "weekly_rank_ic": [
+              0.09091750514868521,
+              0.1641960831111682,
+              0.35904018880225813,
+              0.025694963586248423
+            ],
+            "weekly_returns": [
+              0.09720843420363963,
+              -0.01173920468427241,
+              0.09267382659018039,
+              0.026003747060894967
+            ],
+            "worst_return": -0.01173920468427241
+          },
+          "outer_train_scope_sha256": "fd642704ff76819be2b2697ed2ff47af1d5bc107cb2003e1a8d557c00594f23f",
+          "runtime": {
+            "accelerator": "cuda",
+            "checkpoint_train_seconds": 1.5861761999549344,
+            "model_bytes": 360411,
+            "outer_train_refit_seconds": 0.6530445000389591,
+            "peak_vram_bytes": null,
+            "peak_vram_note": "XGBoost Python API does not expose allocator peak memory",
+            "predict_seconds": 0.01589340006466955,
+            "train_seconds": 2.2392206999938935
+          },
+          "sample_scope_sha256": "f8b86724186c8ec34d54422b64895e38c6ec779f5161895ee5499c76e771f54b"
+        }
+      ],
+      "resource_contract_sha256": "2bf1bb2e0cc3f7ea850ae872d4fac490f5ef172954a2108e734b40fd5ea7ca22"
+    }
+  },
+  "nested_selection_contract": {
+    "checkpoint_metric": "inner_validation_top5_return",
+    "outer_validation": "prediction and metrics only for the same fold; walk-forward history may include earlier folds in later-fold training",
+    "refit": "selected rounds on complete outer-train"
+  },
+  "pareto_contract": {
+    "baseline": "raw_ordered_identity",
+    "maximize": [
+      "mean_return",
+      "worst_return",
+      "positive_rate",
+      "rank_ic"
+    ],
+    "minimize": [
+      "return_std",
+      "train_seconds",
+      "predict_seconds",
+      "model_bytes"
+    ],
+    "required_but_unavailable": [
+      "peak_vram_bytes"
+    ]
+  },
+  "primary_metric": "absolute_top5_return",
+  "production_config_changed": false,
+  "resource_contract": {
+    "device": "cuda",
+    "inner_validation_weeks": 4,
+    "max_rounds": 200,
+    "nthread": 8,
+    "outer_folds": 4,
+    "seed": 42,
+    "top_k": 5,
+    "tree_method": "hist"
+  },
+  "resource_contract_sha256": "2bf1bb2e0cc3f7ea850ae872d4fac490f5ef172954a2108e734b40fd5ea7ca22",
+  "runtime_environment": {
+    "logical_cpu_count": 16,
+    "platform": "Windows",
+    "python": "3.10.19",
+    "xgboost": "3.2.0"
+  },
+  "sample_calendar_policy": "full_monday_friday",
+  "schema_version": 1,
+  "synthetic": false
+}
