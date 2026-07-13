@@ -1,2 +1,3 @@
 {"iteration":1,"phase":"real_smoke_audit","status":"hold","summary":"真实 E0/E2/E3 smoke 完成运行性筛选，但不满足晋升门禁","evidence":[".agents/loops/loop-008/evidence/real-structure-smoke.json"]}
 {"iteration":2,"phase":"e1_representation_nested","status":"hold","summary":"五种表示完成四折 nested walk-forward；无完整 Pareto 胜出，生产配置不变","evidence":[".agents/loops/loop-008/evidence/e1-representation-nested.json"]}
+{"iteration":3,"phase":"nested_neural_structure_comparison","status":"invalidated","summary":"full 运行完成但 XGBoost split-local 特征历史破坏公平性；报告保留为失败证据，不作模型结论","evidence":[".agents/loops/loop-008/evidence/e0-e3-structure-nested-invalid-preprocessing.json"]}

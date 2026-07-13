@@ -15,7 +15,9 @@ from ...features.baseline import date_group_sizes, preprocess_stock_data_samples
 from ...features.windows import feature_num_for_window
 from ...portfolio.postprocess import DEFAULT_PORTFOLIO_CONFIG, select_portfolio
 from ...utils.runtime_split import load_market_data
+from ...utils.submission import validate_result_file
 from ...utils.validation import build_validation_plan
+from ..spine import metric_schema, primary_portfolio_score
 from .loss import (
     lambdarankic_objective,
     topk_return_metrics,
@@ -62,6 +64,12 @@ def choose_top5_iteration(validation_top5: list[float]) -> dict:
     selection = choose_best_iteration(validation_top5, 'validation_top5_return')
     selection['top5_return'] = selection['score']
     return selection
+
+
+def select_primary_checkpoint(evals_result: dict) -> dict:
+    """正式 XGBoost checkpoint 只按比赛绝对 Top5 收益选择。"""
+    values = [float(value) for value in evals_result['validation']['top5_return']]
+    return choose_best_iteration(values, 'validation_top5_return')
 
 
 def target_range(df: pd.DataFrame) -> tuple[str, str]:
@@ -155,8 +163,7 @@ class XGBoostRankModel:
             callbacks=[TqdmTrainingCallback(num_boost_round, f'train {name}')],
         )
 
-        validation_top5_excess_values = [float(value) for value in evals_result['validation']['top5_excess_return']]
-        selection = choose_best_iteration(validation_top5_excess_values, 'validation_top5_excess_return')
+        selection = select_primary_checkpoint(evals_result)
         best_iteration = selection['best_iteration']
         iteration_range = (0, best_iteration + 1)
         val_pred = booster.predict(dval, iteration_range=iteration_range)
@@ -175,8 +182,8 @@ class XGBoostRankModel:
             json.dump(evals_result, f, ensure_ascii=False, indent=2)
 
         print(f'saved {name}: {model_path}')
-        print(f'{name} best iteration by validation top5 excess: {best_iteration}')
-        print(f"{name} best validation top5 excess return: {selection['score']:.6f}")
+        print(f'{name} best iteration by validation top5 return: {best_iteration}')
+        print(f"{name} best validation top5 return: {selection['score']:.6f}")
         print(f'{name} validation RankIC: {val_rank_ic:.6f}')
         print(f"{name} validation pred top5 return avg: {val_top5['pred_top5_return_avg']:.6f}")
         print(f"{name} validation pred top5 excess return avg: {val_top5['pred_top5_excess_return_avg']:.6f}")
@@ -206,7 +213,7 @@ class XGBoostRankModel:
             'best_selection_score': selection['score'],
             'best_selection': selection,
             'validation_rank_ic': val_rank_ic,
-            'validation_score': val_top5['pred_top5_excess_return_avg'],
+            'validation_score': primary_portfolio_score(val_top5),
             'validation_top10': val_top10,
             'validation_top5': val_top5,
             'holdout_test_rank_ic': holdout_rank_ic,
@@ -263,6 +270,7 @@ class XGBoostRankModel:
             'validation_score': best_model['validation_score'],
             'holdout_test_rank_ic': best_model['holdout_test_rank_ic'],
             'holdout_test_top5': best_model['holdout_test_top5'],
+            'metric_schema': metric_schema(),
         }
         with open(self.output_dir / 'metadata.json', 'w', encoding='utf-8') as f:
             json.dump(metadata, f, ensure_ascii=False, indent=2)
@@ -312,7 +320,7 @@ class XGBoostRankModel:
                 f.write(f"{model['name']} holdout test pred top5 group returns: {model['holdout_test_top5']['pred_top5_group_returns']}\n")
                 f.write(f"{model['name']} holdout test pred top5 excess group returns: {model['holdout_test_top5']['pred_top5_excess_group_returns']}\n")
                 f.write('\n')
-            f.write(f"Best validation top5 excess model: {best_model['name']}\n")
+            f.write(f"Best validation top5 return model: {best_model['name']}\n")
         return best_model
 
     def train(self) -> float:
@@ -347,7 +355,7 @@ class XGBoostRankModel:
             models.append(self.train_one(name, input_window, feature_type, feature_num, train_df, val_df, holdout_df, features))
 
         best_model = self.write_train_outputs(models, stock_ids, validation_plan, holdout_fold, bindings)
-        print(f"best validation top5 excess model: {best_model['name']} ({best_model['validation_score']:.6f})")
+        print(f"best validation top5 return model: {best_model['name']} ({best_model['validation_score']:.6f})")
         return best_model['validation_score']
 
     def configured_models(self, metadata: dict) -> list[dict]:
@@ -444,6 +452,7 @@ class XGBoostRankModel:
             'stock_id': selected['stock_id'].tolist(),
             'weight': selected['final_weight'].round(10).tolist(),
         }).to_csv(output_path, index=False)
+        validate_result_file(output_path)
 
         overlap_count = int(top10['stock_id'].duplicated().sum())
         if DEFAULT_PORTFOLIO_CONFIG.union_top_k_by_model:

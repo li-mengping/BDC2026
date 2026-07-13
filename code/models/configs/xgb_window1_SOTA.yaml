@@ -1,7 +1,7 @@
 # 当前 window=1 SOTA：旧 window_01+xsec all_window，强正则 XGBoost pairwise。
 name: xgb_window1_SOTA
 family: xgboost
-enabled: true
+enabled: false
 output_dir: ./model/xgboost
 num_boost_round: 220
 features:

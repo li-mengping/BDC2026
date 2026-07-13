@@ -13,7 +13,7 @@ class PortfolioConfig:
     weight_strategy: str = 'equal'
     model_subset: tuple[str, ...] | None = None
     union_top_k_by_model: tuple[tuple[str, int], ...] | None = (
-        ('xgb_rank_pairwise', 10),
+        ('xgb_rank_pairwise', 5),
     )
     recall_model: str | None = None
     recall_top_k: int | None = None
@@ -44,6 +44,8 @@ def select_portfolio(
     portfolio_config: PortfolioConfig = DEFAULT_PORTFOLIO_CONFIG,
 ) -> tuple[pd.DataFrame, pd.DataFrame, pd.DataFrame]:
     top10, candidates = build_candidate_pool(scored, model_names, portfolio_config)
+    if is_direct_equal_weight_topk(candidates, portfolio_config):
+        return direct_equal_weight_topk(top10, candidates, portfolio_config)
     candidates = candidates.copy()
     candidates['mu'] = consensus_mu(
         candidates['consensus_score'].to_numpy(),
@@ -94,6 +96,40 @@ def select_portfolio(
     selected['final_rank'] = np.arange(1, len(selected) + 1)
     candidates = candidates.drop(columns=['candidate_index'])
     selected = selected.drop(columns=['candidate_index'])
+    return top10, candidates, selected
+
+
+def is_direct_equal_weight_topk(candidates: pd.DataFrame, portfolio_config: PortfolioConfig) -> bool:
+    """判断候选池是否已经等于最终单模型 TopK，无需风险优化。"""
+    union = portfolio_config.union_top_k_by_model
+    return bool(
+        union
+        and len(union) == 1
+        and union[0][1] == portfolio_config.final_k
+        and len(candidates) == portfolio_config.final_k
+        and portfolio_config.weight_strategy == 'equal'
+    )
+
+
+def direct_equal_weight_topk(
+    top10: pd.DataFrame,
+    candidates: pd.DataFrame,
+    portfolio_config: PortfolioConfig,
+) -> tuple[pd.DataFrame, pd.DataFrame, pd.DataFrame]:
+    """单模型 direct Top5 等权直通，保持原输出列与确定性排序。"""
+    candidates = candidates.copy().sort_values(
+        ['consensus_score', 'best_model_rank', 'stock_id'],
+        ascending=[False, True, True],
+    ).reset_index(drop=True)
+    weight = 1.0 / portfolio_config.final_k
+    candidates['mu'] = np.nan
+    candidates['selection_weight'] = weight
+    candidates['selection_rank'] = np.arange(1, len(candidates) + 1)
+    candidates['portfolio_vol_contrib'] = np.nan
+    selected = candidates.copy()
+    selected['final_weight'] = weight
+    selected['final_vol_contrib'] = np.nan
+    selected['final_rank'] = np.arange(1, len(selected) + 1)
     return top10, candidates, selected
 
 

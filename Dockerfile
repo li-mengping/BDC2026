@@ -1,42 +1,16 @@
-ARG PYTHON_IMAGE=python:3.12-slim-bookworm
+ARG PYTHON_IMAGE=python:3.10-slim-bookworm@sha256:ff7161e2b8e2a56fc6a62a6099ff8feb72f1a6dbae9860cdcb9a6c65cf4c6be9
 FROM ${PYTHON_IMAGE}
 
-# Install build dependencies
-RUN apt-get update && apt-get install -y \
-    gcc \
-    g++ \
-    make \
-    wget \
-    tar \
-    && rm -rf /var/lib/apt/lists/*
-
-# Install ta-lib C library
-# Source: http://prdownloads.sourceforge.net/ta-lib/ta-lib-0.4.0-src.tar.gz
-RUN wget http://prdownloads.sourceforge.net/ta-lib/ta-lib-0.4.0-src.tar.gz && \
-    tar -xzf ta-lib-0.4.0-src.tar.gz && \
-    cd ta-lib && \
-    ./configure --prefix=/usr && \
-    make -j1 && \
-    make install && \
-    cd .. && \
-    rm -rf ta-lib ta-lib-0.4.0-src.tar.gz
-
-# Install uv
-RUN pip install --no-cache-dir uv
+RUN pip install --no-cache-dir uv==0.10.6
 
 # Set working directory
 WORKDIR /app
 
-# # Install dependency files
 COPY pyproject.toml uv.lock ./
-RUN uv sync --frozen
+RUN uv sync --frozen --no-dev
 
 # Copy the application code
 COPY . .
 ENV PATH="/app/.venv/bin:$PATH"
 
-# Set environment to use the virtual environment
-ENV LD_LIBRARY_PATH="/usr/lib:/usr/local/lib"
-
-# Keep container running idle; execute train/predict manually via docker exec.
 CMD ["sleep", "infinity"]

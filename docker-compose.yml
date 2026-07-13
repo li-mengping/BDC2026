@@ -1,15 +1,14 @@
-services:  
+services:
   app:
     image: bdc2026:latest
     pull_policy: never
     volumes:
       - ./data:/app/data
-      - ./test/output:/app/output
+      - ./output:/app/output
       - ./temp:/app/temp
     working_dir: /app
-    # 先临时替换命令，验证GPU是否能访问
-    command: /bin/bash /app/data/run.sh
-    # 核心配置：指定NVIDIA运行时+暴露GPU
+    command: /bin/bash -lc "/app/init.sh && /app/train.sh && /app/test.sh"
+    network_mode: none
     runtime: nvidia
     environment:
       - NVIDIA_VISIBLE_DEVICES=all
@@ -21,7 +20,6 @@ services:
             - driver: nvidia
               count: 1
               capabilities: [gpu]
-    privileged: true
     mem_limit: 16g
     memswap_limit: 16g
     cpus: 10.0

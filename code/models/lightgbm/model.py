@@ -14,6 +14,7 @@ from ..ranking_common import (
     select_best_iteration,
     train_family,
 )
+from ..spine import primary_portfolio_score
 
 
 class LightGBMLambdaRankModel:
@@ -50,7 +51,7 @@ class LightGBMLambdaRankModel:
             callbacks=[lgb.log_evaluation(period=20)],
         )
 
-        selection, validation_top5_excess_values = select_best_iteration(
+        selection, validation_top5_values = select_best_iteration(
             lambda iteration: booster.predict(val_data.x, num_iteration=iteration + 1),
             val_data.raw_label,
             val_data.groups,
@@ -70,11 +71,11 @@ class LightGBMLambdaRankModel:
         model_path = model_dir / f'{artifact}{artifact_ext}'
         booster.save_model(str(model_path))
         with open(model_dir / f'{artifact}_evals.json', 'w', encoding='utf-8') as f:
-            json.dump({'validation_top5_excess_return': validation_top5_excess_values}, f, ensure_ascii=False, indent=2)
+            json.dump({'validation_top5_return': validation_top5_values}, f, ensure_ascii=False, indent=2)
 
         print(f'saved {name}: {model_path}')
-        print(f'{name} best iteration by validation top5 excess: {best_iteration}')
-        print(f"{name} best validation top5 excess return: {selection['score']:.6f}")
+        print(f'{name} best iteration by validation top5 return: {best_iteration}')
+        print(f"{name} best validation top5 return: {selection['score']:.6f}")
         print(f'{name} validation RankIC: {val_rank_ic:.6f}')
         print(f"{name} validation pred top5 return avg: {val_top5['pred_top5_return_avg']:.6f}")
         print(f"{name} validation pred top5 excess return avg: {val_top5['pred_top5_excess_return_avg']:.6f}")
@@ -99,7 +100,7 @@ class LightGBMLambdaRankModel:
             'best_selection_score': selection['score'],
             'best_selection': selection,
             'validation_rank_ic': val_rank_ic,
-            'validation_score': val_top5['pred_top5_excess_return_avg'],
+            'validation_score': primary_portfolio_score(val_top5),
             'validation_top10': val_top10,
             'validation_top5': val_top5,
             'holdout_test_rank_ic': holdout_rank_ic,

@@ -13,11 +13,26 @@ wheels/
 output
 model
 data/*.csv
+!data/hs300_stock_list.csv
 .DS_Store
 
 .vscode
 
+# ATDD 生成物
+acceptance-pipeline/ir/
+generated-acceptance-tests/
+
+# Agent 临时产物
+.agents/cache/
+.agents/tmp/
+
+# 本地恢复源（仅用于校验，不是规范工作树）
+/.agents/.agents/
+/BDC2026-test/
+
+# 可再生实验临时目录
+temp/
+
 *.zip
 
 *.tar
-

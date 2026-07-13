@@ -1,0 +1,1156 @@
+{
+  "claim_boundary": "four-fold nested walk-forward evidence; not an independent final holdout",
+  "config": {
+    "data_cutoff": "2026-06-29",
+    "folds": 4,
+    "hidden_dim": 32,
+    "history_days": 60,
+    "history_weeks": 12,
+    "inner_validation_weeks": 4,
+    "label_mode": "t1_open_to_t5_open",
+    "learning_rate": 0.001,
+    "mode": "full",
+    "neural_epochs": 30,
+    "num_heads": 4,
+    "sample_calendar_policy": "full_monday_friday",
+    "seed": 42,
+    "sequence_features": [
+      "open_to_previous_close",
+      "close_to_open",
+      "high_to_open",
+      "low_to_open",
+      "close_to_previous_close",
+      "log_volume_change",
+      "log_amount_change",
+      "turnover_fraction"
+    ],
+    "top_k": 5,
+    "xgb_rounds": 200
+  },
+  "config_sha256": "658e30ff8264fa4b2b2fe5884a8687eab836205c3200824c4355ed027655af9f",
+  "data": {
+    "data_scope": "manifest-verified rows strictly before 2026-06-29; no post-cutoff or synthetic rows",
+    "date_max": "2026-06-26",
+    "file": "data/stock_data.csv",
+    "manifest": "data/manifest.json",
+    "non_price_missing_rows": {
+      "成交量": 276,
+      "成交额": 276,
+      "换手率": 276
+    },
+    "rows": 250233,
+    "sha256": "04d7e4da6a9d4915c61d635d1ab24d29e92c00363f4250c01dade8f35f6ccd87"
+  },
+  "data_kind": "real_frozen_market",
+  "effect_evidence": true,
+  "feature_contract": {
+    "close_to_open": "close[t] / open[t] - 1",
+    "close_to_previous_close": "close[t] / close[t-1] - 1; first row is 0",
+    "high_to_open": "high[t] / open[t] - 1",
+    "history": "12 contiguous full Monday-Friday weeks / 60 rows, strictly before target week",
+    "log_amount_change": "log1p(amount[t]) - log1p(amount[t-1]); first row is 0",
+    "log_volume_change": "log1p(volume[t]) - log1p(volume[t-1]); first row is 0",
+    "low_to_open": "low[t] / open[t] - 1",
+    "missing_non_price": "within-sequence forward fill using past rows only; leading missing values become 0",
+    "missing_price": "rejected",
+    "normalization": "fixed clipping to [-5, 5]; no validation or future statistics are fitted",
+    "open_to_previous_close": "open[t] / close[t-1] - 1; first row is 0",
+    "turnover_fraction": "turnover[t] / 100"
+  },
+  "folds": [
+    {
+      "inner_train_end_inclusive": "2025-12-15",
+      "inner_train_rows": 35035,
+      "inner_train_weeks": 118,
+      "inner_validation_end_inclusive": "2026-01-19",
+      "inner_validation_rows": 1196,
+      "inner_validation_start": "2025-12-22",
+      "inner_validation_weeks": 4,
+      "name": "rolling_1",
+      "outer_train_end_exclusive": "2026-01-26",
+      "outer_train_rows": 36231,
+      "outer_train_start": "2023-01-09",
+      "outer_train_weeks": 122,
+      "outer_validation_end_exclusive": "2026-03-09",
+      "outer_validation_rows": 1196,
+      "outer_validation_start": "2026-01-26",
+      "outer_validation_weeks": 4,
+      "split_sha256": {
+        "inner_train": "271b7dff2797ffa2bb5b287a4858fc37ba273257bfece361d185eb0765820eef",
+        "inner_validation": "deefa059b6e2d1a9467acdd311cb913893fd78dffa4c9378d3f7c6c06ec16640",
+        "outer_train": "29fefcf14bf25b9abb63bc624a76b549247e89f55fd11820344bc43668701be6",
+        "outer_validation": "fc18054eb7c6bf1092b4a91e10e5823b5917b48c247673a359b146fe1a2bdae5"
+      }
+    },
+    {
+      "inner_train_end_inclusive": "2026-01-19",
+      "inner_train_rows": 36231,
+      "inner_train_weeks": 122,
+      "inner_validation_end_inclusive": "2026-03-02",
+      "inner_validation_rows": 1196,
+      "inner_validation_start": "2026-01-26",
+      "inner_validation_weeks": 4,
+      "name": "rolling_2",
+      "outer_train_end_exclusive": "2026-03-09",
+      "outer_train_rows": 37427,
+      "outer_train_start": "2023-01-09",
+      "outer_train_weeks": 126,
+      "outer_validation_end_exclusive": "2026-04-13",
+      "outer_validation_rows": 1198,
+      "outer_validation_start": "2026-03-09",
+      "outer_validation_weeks": 4,
+      "split_sha256": {
+        "inner_train": "29fefcf14bf25b9abb63bc624a76b549247e89f55fd11820344bc43668701be6",
+        "inner_validation": "fc18054eb7c6bf1092b4a91e10e5823b5917b48c247673a359b146fe1a2bdae5",
+        "outer_train": "cba9ab3935473c49a5d40ebe3d1387827375aca220882312c5772c465d7a9b85",
+        "outer_validation": "63111c47cf1f735d197a6581d78f66c493eef571dfe8ee16420110004497e186"
+      }
+    },
+    {
+      "inner_train_end_inclusive": "2026-03-02",
+      "inner_train_rows": 37427,
+      "inner_train_weeks": 126,
+      "inner_validation_end_inclusive": "2026-03-30",
+      "inner_validation_rows": 1198,
+      "inner_validation_start": "2026-03-09",
+      "inner_validation_weeks": 4,
+      "name": "rolling_3",
+      "outer_train_end_exclusive": "2026-04-13",
+      "outer_train_rows": 38625,
+      "outer_train_start": "2023-01-09",
+      "outer_train_weeks": 130,
+      "outer_validation_end_exclusive": "2026-05-25",
+      "outer_validation_rows": 1200,
+      "outer_validation_start": "2026-04-13",
+      "outer_validation_weeks": 4,
+      "split_sha256": {
+        "inner_train": "cba9ab3935473c49a5d40ebe3d1387827375aca220882312c5772c465d7a9b85",
+        "inner_validation": "63111c47cf1f735d197a6581d78f66c493eef571dfe8ee16420110004497e186",
+        "outer_train": "37d0aea032ca49997c153b29a0d9c903291520c320dafb31db7b7e16f50ae182",
+        "outer_validation": "7759ce8c0e11ceb14ea609b414b6343fd4db04485599862868eed8e87ade5de4"
+      }
+    },
+    {
+      "inner_train_end_inclusive": "2026-03-30",
+      "inner_train_rows": 38625,
+      "inner_train_weeks": 130,
+      "inner_validation_end_inclusive": "2026-05-18",
+      "inner_validation_rows": 1200,
+      "inner_validation_start": "2026-04-13",
+      "inner_validation_weeks": 4,
+      "name": "rolling_4",
+      "outer_train_end_exclusive": "2026-05-25",
+      "outer_train_rows": 39825,
+      "outer_train_start": "2023-01-09",
+      "outer_train_weeks": 134,
+      "outer_validation_end_exclusive": "2026-06-29",
+      "outer_validation_rows": 1200,
+      "outer_validation_start": "2026-05-25",
+      "outer_validation_weeks": 4,
+      "split_sha256": {
+        "inner_train": "37d0aea032ca49997c153b29a0d9c903291520c320dafb31db7b7e16f50ae182",
+        "inner_validation": "7759ce8c0e11ceb14ea609b414b6343fd4db04485599862868eed8e87ade5de4",
+        "outer_train": "6c9d314f74fecffcc3869351241c92f117929d9171f3f5a2caf48b4f686b64ea",
+        "outer_validation": "d5f4eb027e9788230ade0adf546648bd9f87e14463977847475993c0c251d72b"
+      }
+    }
+  ],
+  "git": {
+    "commit": "04208e5b545d714b7327e12141d99c18f1980f64",
+    "working_tree_dirty": true
+  },
+  "mode": "full",
+  "models": {
+    "e0_clean_room_official_contract_transformer": {
+      "aggregate": {
+        "mean_return": 0.00187543135980377,
+        "model_bytes": 52612,
+        "peak_vram_bytes": 67811840,
+        "positive_rate": 0.4375,
+        "predict_seconds": 0.03580520011018962,
+        "rank_ic": 0.033646507885836396,
+        "return_std": 0.030568358283340206,
+        "train_seconds": 194.50127410003915,
+        "weekly_returns": [
+          -0.000489296019077301,
+          0.0138788225594908,
+          -0.016565909422934056,
+          0.0073554678820073605,
+          -0.001159036159515381,
+          -0.054891308397054674,
+          -0.005744703859090805,
+          0.009767766715958715,
+          0.030776448920369147,
+          -0.0017211837228387594,
+          -0.019324128329753876,
+          0.022415018081665038,
+          -0.015749255591072143,
+          0.006168504245579243,
+          -0.03441275898367167,
+          0.08970245383679867
+        ],
+        "worst_return": -0.054891308397054674
+      },
+      "folds": [
+        {
+          "checkpoint": {
+            "best_epoch": 3,
+            "best_iteration": 2,
+            "metric": "inner_validation_top5_return",
+            "metric_history": [
+              0.003989594872109592,
+              -0.004560248740017414,
+              0.02228502281941474,
+              -0.006075691315345467,
+              0.00693656865041703,
+              0.01770710905548185,
+              0.01507220689964015,
+              0.008222957261023112,
+              0.007132151236874051,
+              0.010627595338155516,
+              0.002561432242509909,
+              0.005553835304453969,
+              0.0013932394620496777,
+              0.0040676729113329185,
+              0.00747774367337115,
+              0.00747774367337115,
+              0.007918657670961692,
+              0.006568549439543857,
+              0.006568549439543857,
+              0.006568549439543857,
+              0.01088820244767703,
+              0.012785743881249801,
+              0.011231104243779554,
+              0.014753890299471096,
+              0.018866963946493346,
+              0.02094927591388114,
+              0.017631513747619468,
+              0.010719078956753949,
+              0.01367703010910191,
+              0.007054543486447074
+            ],
+            "num_iterations": 30,
+            "score": 0.02228502281941474,
+            "selection_rule": "max_inner_validation_top5_return_earliest_tie"
+          },
+          "metrics": {
+            "excess_return_diagnostic": 0.007299881525584991,
+            "mean_return": 0.001044771249871701,
+            "positive_rate": 0.5,
+            "rank_ic": 0.15811938122816402,
+            "return_std": 0.011369116073226392,
+            "universe_return": -0.00625511027571329,
+            "validation_weeks": [
+              "2026-01-26",
+              "2026-02-02",
+              "2026-02-09",
+              "2026-03-02"
+            ],
+            "weekly_rank_ic": [
+              0.15998628087474756,
+              0.3317618010819061,
+              -0.06539817117220517,
+              0.20612761412820754
+            ],
+            "weekly_returns": [
+              -0.000489296019077301,
+              0.0138788225594908,
+              -0.016565909422934056,
+              0.0073554678820073605
+            ],
+            "worst_return": -0.016565909422934056
+          },
+          "runtime": {
+            "accelerator": "NVIDIA GeForce RTX 3090",
+            "checkpoint_train_seconds": 32.38495640002657,
+            "model_bytes": 52612,
+            "outer_train_refit_seconds": 3.1665185999590904,
+            "peak_vram_bytes": 67719680,
+            "predict_seconds": 0.00931950006633997,
+            "train_seconds": 35.55147499998566
+          }
+        },
+        {
+          "checkpoint": {
+            "best_epoch": 11,
+            "best_iteration": 10,
+            "metric": "inner_validation_top5_return",
+            "metric_history": [
+              -0.0057441973825916644,
+              -0.004675087449140847,
+              0.001044771249871701,
+              0.0007566536776721482,
+              -0.005235127243213356,
+              -0.00581790586002171,
+              -0.0024400220718234777,
+              -0.00752672569360584,
+              -0.002808601665310561,
+              -0.0010639763670042155,
+              0.0013997531728819012,
+              -0.01486687248107046,
+              -0.009495459427125753,
+              -0.01225581665057689,
+              -0.019109523179940878,
+              -0.019109523179940878,
+              -0.02110129117500037,
+              -0.021180051821283997,
+              -0.020995827275328338,
+              -0.020995827275328338,
+              -0.020995827275328338,
+              -0.020995827275328338,
+              -0.02342852947767824,
+              -0.02342852947767824,
+              -0.025932709308108315,
+              -0.025842607481172307,
+              -0.024777305097086356,
+              -0.025966096174670383,
+              -0.02582841573166661,
+              -0.023631883779307826
+            ],
+            "num_iterations": 30,
+            "score": 0.0013997531728819012,
+            "selection_rule": "max_inner_validation_top5_return_earliest_tie"
+          },
+          "metrics": {
+            "excess_return_diagnostic": -0.007467657158761064,
+            "mean_return": -0.013006820424925536,
+            "positive_rate": 0.25,
+            "rank_ic": 0.07142013194861314,
+            "return_std": 0.02482992388802588,
+            "universe_return": -0.005539163266164473,
+            "validation_weeks": [
+              "2026-03-09",
+              "2026-03-16",
+              "2026-03-23",
+              "2026-03-30"
+            ],
+            "weekly_rank_ic": [
+              0.10762142606067214,
+              0.024796312000322132,
+              0.08207421455355243,
+              0.07118857517990589
+            ],
+            "weekly_returns": [
+              -0.001159036159515381,
+              -0.054891308397054674,
+              -0.005744703859090805,
+              0.009767766715958715
+            ],
+            "worst_return": -0.054891308397054674
+          },
+          "runtime": {
+            "accelerator": "NVIDIA GeForce RTX 3090",
+            "checkpoint_train_seconds": 31.51554870000109,
+            "model_bytes": 52612,
+            "outer_train_refit_seconds": 12.399152899975888,
+            "peak_vram_bytes": 67719680,
+            "predict_seconds": 0.00801989994943142,
+            "train_seconds": 43.91470159997698
+          }
+        },
+        {
+          "checkpoint": {
+            "best_epoch": 29,
+            "best_iteration": 28,
+            "metric": "inner_validation_top5_return",
+            "metric_history": [
+              -0.0014053534949198367,
+              -0.0064594148658215994,
+              -0.006685046103666537,
+              -0.005130745304632002,
+              0.00237557147629559,
+              0.0011988302925601598,
+              -0.0016576153691858055,
+              0.0034874530509114263,
+              -0.00655335176270455,
+              -0.008570083114318547,
+              -0.013006820424925536,
+              -0.012218692048918456,
+              -0.01847633961588144,
+              -0.021287478879094122,
+              -0.027841970697045325,
+              -0.026301389338914304,
+              -0.022517013503238557,
+              -0.022642408637329935,
+              -0.02457982376217842,
+              -0.012098661751952018,
+              -0.014939410367514935,
+              -0.014939410367514935,
+              -0.006859060039278119,
+              -0.012423189950641244,
+              -0.003710120916366578,
+              -0.0028395051136612896,
+              -0.0010105466004461045,
+              0.003949938761070372,
+              0.007641116110607983,
+              0.007641116110607983
+            ],
+            "num_iterations": 30,
+            "score": 0.007641116110607983,
+            "selection_rule": "max_inner_validation_top5_return_earliest_tie"
+          },
+          "metrics": {
+            "excess_return_diagnostic": 0.006183736535452529,
+            "mean_return": 0.008036538737360387,
+            "positive_rate": 0.5,
+            "rank_ic": -0.013664194800742924,
+            "return_std": 0.019796864861346398,
+            "universe_return": 0.0018528022019078587,
+            "validation_weeks": [
+              "2026-04-13",
+              "2026-04-20",
+              "2026-05-11",
+              "2026-05-18"
+            ],
+            "weekly_rank_ic": [
+              0.021780771156176493,
+              -0.02620453865001874,
+              -0.0136801611219007,
+              -0.03655285058722875
+            ],
+            "weekly_returns": [
+              0.030776448920369147,
+              -0.0017211837228387594,
+              -0.019324128329753876,
+              0.022415018081665038
+            ],
+            "worst_return": -0.019324128329753876
+          },
+          "runtime": {
+            "accelerator": "NVIDIA GeForce RTX 3090",
+            "checkpoint_train_seconds": 34.170315099996515,
+            "model_bytes": 52612,
+            "outer_train_refit_seconds": 33.53835769998841,
+            "peak_vram_bytes": 67811840,
+            "predict_seconds": 0.010694200056605041,
+            "train_seconds": 67.70867279998492
+          }
+        },
+        {
+          "checkpoint": {
+            "best_epoch": 10,
+            "best_iteration": 9,
+            "metric": "inner_validation_top5_return",
+            "metric_history": [
+              -0.003800373675767332,
+              0.011747302731964736,
+              0.010185628640465438,
+              0.008826444154692581,
+              0.01445313427466317,
+              0.01711019977228716,
+              0.01491922299246653,
+              0.012898193683940917,
+              0.014539492883341155,
+              0.02490951125146239,
+              0.022925011883489787,
+              0.022715461696498095,
+              0.009521803027018905,
+              0.014367477549239994,
+              0.01313979325350374,
+              0.01370808044448495,
+              0.013871757220476866,
+              0.003407705016434192,
+              0.008948700944893062,
+              0.0020612574880942694,
+              0.008601069229189306,
+              0.008054881053976715,
+              0.00487227818230167,
+              0.008456988784018904,
+              0.008456988784018904,
+              0.006079428142402321,
+              0.006079428142402321,
+              0.008036538737360387,
+              0.008036538737360387,
+              0.014063711848575623
+            ],
+            "num_iterations": 30,
+            "score": 0.02490951125146239,
+            "selection_rule": "max_inner_validation_top5_return_earliest_tie"
+          },
+          "metrics": {
+            "excess_return_diagnostic": 0.011043991486937256,
+            "mean_return": 0.011427235876908526,
+            "positive_rate": 0.5,
+            "rank_ic": -0.08128928683268866,
+            "return_std": 0.04741975016373952,
+            "universe_return": 0.0003832443899712719,
+            "validation_weeks": [
+              "2026-05-25",
+              "2026-06-01",
+              "2026-06-08",
+              "2026-06-22"
+            ],
+            "weekly_rank_ic": [
+              -0.2002518918276578,
+              0.13145126755881334,
+              -0.04647854224966676,
+              -0.20987798081224343
+            ],
+            "weekly_returns": [
+              -0.015749255591072143,
+              0.006168504245579243,
+              -0.03441275898367167,
+              0.08970245383679867
+            ],
+            "worst_return": -0.03441275898367167
+          },
+          "runtime": {
+            "accelerator": "NVIDIA GeForce RTX 3090",
+            "checkpoint_train_seconds": 35.21058549999725,
+            "model_bytes": 52612,
+            "outer_train_refit_seconds": 12.115839200094342,
+            "peak_vram_bytes": 67811840,
+            "predict_seconds": 0.007771600037813187,
+            "train_seconds": 47.32642470009159
+          }
+        }
+      ]
+    },
+    "e2_causal_tcn": {
+      "aggregate": {
+        "mean_return": -0.0017498295797849991,
+        "model_bytes": 26628,
+        "peak_vram_bytes": 40642560,
+        "positive_rate": 0.4375,
+        "predict_seconds": 0.02705999999307096,
+        "rank_ic": -0.003165854790746575,
+        "return_std": 0.032461805509299745,
+        "train_seconds": 121.40554919990245,
+        "weekly_returns": [
+          -0.01324545443058014,
+          0.07760874591767788,
+          -0.01058624591678381,
+          -0.006144980993121862,
+          0.03520206399261951,
+          -0.017138032615184783,
+          0.00047602192498743536,
+          0.01041346900165081,
+          0.01579932738095522,
+          0.006955414498224855,
+          0.0447020560503006,
+          -0.04972479417920113,
+          -0.04743500037584454,
+          -0.02718762047588825,
+          -0.020382617274299263,
+          -0.027309625782072543
+        ],
+        "worst_return": -0.04972479417920113
+      },
+      "folds": [
+        {
+          "checkpoint": {
+            "best_epoch": 25,
+            "best_iteration": 24,
+            "metric": "inner_validation_top5_return",
+            "metric_history": [
+              0.01693354013841599,
+              0.013020676327869296,
+              0.01415838750544…5557 tokens truncated…5849023796285,
+              -0.2290053129503056
+            ],
+            "weekly_returns": [
+              -0.010037988191470504,
+              -0.014965540985576809,
+              -0.04772387316916138,
+              -0.016138442605733872
+            ],
+            "worst_return": -0.04772387316916138
+          },
+          "runtime": {
+            "accelerator": "NVIDIA GeForce RTX 3090",
+            "checkpoint_train_seconds": 23.640882699983194,
+            "model_bytes": 33412,
+            "outer_train_refit_seconds": 0.768583899945952,
+            "peak_vram_bytes": 91011072,
+            "predict_seconds": 0.005972699960693717,
+            "train_seconds": 24.409466599929146
+          }
+        }
+      ]
+    },
+    "naive_60d_momentum": {
+      "aggregate": {
+        "mean_return": -0.002204108662044747,
+        "model_bytes": 0,
+        "peak_vram_bytes": 0,
+        "positive_rate": 0.5,
+        "predict_seconds": 0.017655099974945188,
+        "rank_ic": 0.0515586569192492,
+        "return_std": 0.04437281794121478,
+        "train_seconds": 0.0,
+        "weekly_returns": [
+          -0.06067209988832474,
+          -0.0742371290922165,
+          0.036566344648599626,
+          -0.05263288049027324,
+          -0.041042403969913724,
+          -0.04163564145565033,
+          -0.021441886201500893,
+          0.018868071585893632,
+          0.011842919141054153,
+          0.018077106773853303,
+          -0.010236438363790512,
+          0.021723797544836998,
+          0.06571052346262149,
+          0.025555057637393474,
+          0.08753536492586136,
+          -0.01924644485116005
+        ],
+        "worst_return": -0.0742371290922165
+      },
+      "folds": [
+        {
+          "metrics": {
+            "excess_return_diagnostic": -0.03148883092984042,
+            "mean_return": -0.037743941205553716,
+            "positive_rate": 0.25,
+            "rank_ic": -0.08271919085617323,
+            "return_std": 0.04359229381285081,
+            "universe_return": -0.00625511027571329,
+            "validation_weeks": [
+              "2026-01-26",
+              "2026-02-02",
+              "2026-02-09",
+              "2026-03-02"
+            ],
+            "weekly_rank_ic": [
+              -0.07316118659216957,
+              -0.3058189490696056,
+              0.13816925074994113,
+              -0.09006587851285887
+            ],
+            "weekly_returns": [
+              -0.06067209988832474,
+              -0.0742371290922165,
+              0.036566344648599626,
+              -0.05263288049027324
+            ],
+            "worst_return": -0.0742371290922165
+          },
+          "runtime": {
+            "accelerator": "cpu",
+            "model_bytes": 0,
+            "peak_vram_bytes": 0,
+            "predict_seconds": 0.0039160000160336494,
+            "train_seconds": 0.0
+          }
+        },
+        {
+          "metrics": {
+            "excess_return_diagnostic": -0.015773801744128357,
+            "mean_return": -0.021312965010292832,
+            "positive_rate": 0.25,
+            "rank_ic": -0.05144374909869189,
+            "return_std": 0.02458045088165448,
+            "universe_return": -0.005539163266164473,
+            "validation_weeks": [
+              "2026-03-09",
+              "2026-03-16",
+              "2026-03-23",
+              "2026-03-30"
+            ],
+            "weekly_rank_ic": [
+              -0.09928625588035203,
+              -0.25398678098666155,
+              0.1886927590920526,
+              -0.041194718619806565
+            ],
+            "weekly_returns": [
+              -0.041042403969913724,
+              -0.04163564145565033,
+              -0.021441886201500893,
+              0.018868071585893632
+            ],
+            "worst_return": -0.04163564145565033
+          },
+          "runtime": {
+            "accelerator": "cpu",
+            "model_bytes": 0,
+            "peak_vram_bytes": 0,
+            "predict_seconds": 0.003689400036819279,
+            "train_seconds": 0.0
+          }
+        },
+        {
+          "metrics": {
+            "excess_return_diagnostic": 0.008499044072080627,
+            "mean_return": 0.010351846273988486,
+            "positive_rate": 0.75,
+            "rank_ic": 0.11231203662397829,
+            "return_std": 0.01240062184044041,
+            "universe_return": 0.0018528022019078587,
+            "validation_weeks": [
+              "2026-04-13",
+              "2026-04-20",
+              "2026-05-11",
+              "2026-05-18"
+            ],
+            "weekly_rank_ic": [
+              -0.040202603039349596,
+              0.1681223447445846,
+              0.25171252016973794,
+              0.06961588462094023
+            ],
+            "weekly_returns": [
+              0.011842919141054153,
+              0.018077106773853303,
+              -0.010236438363790512,
+              0.021723797544836998
+            ],
+            "worst_return": -0.010236438363790512
+          },
+          "runtime": {
+            "accelerator": "cpu",
+            "model_bytes": 0,
+            "peak_vram_bytes": 0,
+            "predict_seconds": 0.005784399923868477,
+            "train_seconds": 0.0
+          }
+        },
+        {
+          "metrics": {
+            "excess_return_diagnostic": 0.0395053809037078,
+            "mean_return": 0.039888625293679064,
+            "positive_rate": 0.75,
+            "rank_ic": 0.22808553100788362,
+            "return_std": 0.040741225759102294,
+            "universe_return": 0.0003832443899712719,
+            "validation_weeks": [
+              "2026-05-25",
+              "2026-06-01",
+              "2026-06-08",
+              "2026-06-22"
+            ],
+            "weekly_rank_ic": [
+              0.26306951358881026,
+              0.1578128996573111,
+              0.28525821690146347,
+              0.20620149388394968
+            ],
+            "weekly_returns": [
+              0.06571052346262149,
+              0.025555057637393474,
+              0.08753536492586136,
+              -0.01924644485116005
+            ],
+            "worst_return": -0.01924644485116005
+          },
+          "runtime": {
+            "accelerator": "cpu",
+            "model_bytes": 0,
+            "peak_vram_bytes": 0,
+            "predict_seconds": 0.004265299998223782,
+            "train_seconds": 0.0
+          }
+        }
+      ]
+    },
+    "xgboost_rank_pairwise": {
+      "aggregate": {
+        "mean_return": 0.009348888495878782,
+        "model_bytes": 126734,
+        "peak_vram_bytes": null,
+        "positive_rate": 0.6875,
+        "predict_seconds": 0.01326340006198734,
+        "rank_ic": 0.0738559482080807,
+        "return_std": 0.020885041166919846,
+        "train_seconds": 7.3840157999657094,
+        "weekly_returns": [
+          0.0251152066513896,
+          -0.014875472337007523,
+          0.0583373962319456,
+          -0.02112555839121342,
+          0.005358131229877472,
+          0.003657347522675991,
+          0.024057022109627724,
+          0.02153144795447588,
+          0.008531361166387797,
+          0.014540754351764917,
+          0.0375460340641439,
+          -0.013571590930223466,
+          -0.01602457999251783,
+          0.006135193828959018,
+          0.018695151060819627,
+          -0.008325628587044775
+        ],
+        "worst_return": -0.02112555839121342
+      },
+      "folds": [
+        {
+          "checkpoint": {
+            "best_iteration": 1,
+            "metric": "inner_validation_top5_return",
+            "num_iterations": 200,
+            "score": 0.029518,
+            "selected_rounds": 2,
+            "selection_rule": "max_inner_validation_top5_return_earliest_tie"
+          },
+          "feature_count": 39,
+          "metrics": {
+            "excess_return_diagnostic": 0.018118003314491857,
+            "mean_return": 0.011862893038778565,
+            "positive_rate": 0.5,
+            "rank_ic": -0.013634478976218632,
+            "return_std": 0.03216629203784866,
+            "universe_return": -0.00625511027571329,
+            "validation_weeks": [
+              "2026-01-26",
+              "2026-02-02",
+              "2026-02-09",
+              "2026-03-02"
+            ],
+            "weekly_rank_ic": [
+              0.021713183119790654,
+              -0.15689804382636388,
+              0.009845150408986791,
+              0.07080179439271192
+            ],
+            "weekly_returns": [
+              0.0251152066513896,
+              -0.014875472337007523,
+              0.0583373962319456,
+              -0.02112555839121342
+            ],
+            "worst_return": -0.02112555839121342
+          },
+          "runtime": {
+            "accelerator": "cuda",
+            "checkpoint_train_seconds": 1.7339994000503793,
+            "model_bytes": 5729,
+            "outer_train_refit_seconds": 0.027479499927721918,
+            "peak_vram_bytes": null,
+            "peak_vram_note": "XGBoost Python API does not expose allocator peak memory",
+            "predict_seconds": 0.001379900029860437,
+            "train_seconds": 1.7614788999781013
+          },
+          "sample_rows": {
+            "inner_train": 35035,
+            "inner_validation": 1196,
+            "outer_train": 36231,
+            "outer_validation": 1196
+          }
+        },
+        {
+          "checkpoint": {
+            "best_iteration": 64,
+            "metric": "inner_validation_top5_return",
+            "num_iterations": 200,
+            "score": 0.014799,
+            "selected_rounds": 65,
+            "selection_rule": "max_inner_validation_top5_return_earliest_tie"
+          },
+          "feature_count": 39,
+          "metrics": {
+            "excess_return_diagnostic": 0.019190150470328737,
+            "mean_return": 0.013650987204164265,
+            "positive_rate": 1.0,
+            "rank_ic": 0.06810364920000231,
+            "return_std": 0.009206404270731964,
+            "universe_return": -0.005539163266164473,
+            "validation_weeks": [
+              "2026-03-09",
+              "2026-03-16",
+              "2026-03-23",
+              "2026-03-30"
+            ],
+            "weekly_rank_ic": [
+              0.09776934199877171,
+              0.09764229653310519,
+              0.1518067076239269,
+              -0.07480374935579458
+            ],
+            "weekly_returns": [
+              0.005358131229877472,
+              0.003657347522675991,
+              0.024057022109627724,
+              0.02153144795447588
+            ],
+            "worst_return": 0.003657347522675991
+          },
+          "runtime": {
+            "accelerator": "cuda",
+            "checkpoint_train_seconds": 1.6825411999598145,
+            "model_bytes": 124193,
+            "outer_train_refit_seconds": 0.2258797000395134,
+            "peak_vram_bytes": null,
+            "peak_vram_note": "XGBoost Python API does not expose allocator peak memory",
+            "predict_seconds": 0.0050760000012815,
+            "train_seconds": 1.908420899999328
+          },
+          "sample_rows": {
+            "inner_train": 36231,
+            "inner_validation": 1196,
+            "outer_train": 37427,
+            "outer_validation": 1198
+          }
+        },
+        {
+          "checkpoint": {
+            "best_iteration": 66,
+            "metric": "inner_validation_top5_return",
+            "num_iterations": 200,
+            "score": 0.018166,
+            "selected_rounds": 67,
+            "selection_rule": "max_inner_validation_top5_return_earliest_tie"
+          },
+          "feature_count": 39,
+          "metrics": {
+            "excess_return_diagnostic": 0.009908837461110428,
+            "mean_return": 0.011761639663018287,
+            "positive_rate": 0.75,
+            "rank_ic": 0.1104901200785209,
+            "return_std": 0.018198665778994337,
+            "universe_return": 0.0018528022019078587,
+            "validation_weeks": [
+              "2026-04-13",
+              "2026-04-20",
+              "2026-05-11",
+              "2026-05-18"
+            ],
+            "weekly_rank_ic": [
+              0.050324977097259235,
+              0.0349511628865737,
+              0.23242295964824308,
+              0.12426138068200758
+            ],
+            "weekly_returns": [
+              0.008531361166387797,
+              0.014540754351764917,
+              0.0375460340641439,
+              -0.013571590930223466
+            ],
+            "worst_return": -0.013571590930223466
+          },
+          "runtime": {
+            "accelerator": "cuda",
+            "checkpoint_train_seconds": 1.7323403999907896,
+            "model_bytes": 126734,
+            "outer_train_refit_seconds": 0.23064109997358173,
+            "peak_vram_bytes": null,
+            "peak_vram_note": "XGBoost Python API does not expose allocator peak memory",
+            "predict_seconds": 0.005081400042399764,
+            "train_seconds": 1.9629814999643713
+          },
+          "sample_rows": {
+            "inner_train": 37427,
+            "inner_validation": 1198,
+            "outer_train": 38625,
+            "outer_validation": 1200
+          }
+        },
+        {
+          "checkpoint": {
+            "best_iteration": 9,
+            "metric": "inner_validation_top5_return",
+            "num_iterations": 200,
+            "score": 0.028635,
+            "selected_rounds": 10,
+            "selection_rule": "max_inner_validation_top5_return_earliest_tie"
+          },
+          "feature_count": 39,
+          "metrics": {
+            "excess_return_diagnostic": -0.00026321031241726203,
+            "mean_return": 0.00012003407755401029,
+            "positive_rate": 0.5,
+            "rank_ic": 0.1304645025300182,
+            "return_std": 0.013352854555231672,
+            "universe_return": 0.0003832443899712719,
+            "validation_weeks": [
+              "2026-05-25",
+              "2026-06-01",
+              "2026-06-08",
+              "2026-06-22"
+            ],
+            "weekly_rank_ic": [
+              0.11357774371004985,
+              0.11889123324334622,
+              0.27371903078548887,
+              0.0156700023811879
+            ],
+            "weekly_returns": [
+              -0.01602457999251783,
+              0.006135193828959018,
+              0.018695151060819627,
+              -0.008325628587044775
+            ],
+            "worst_return": -0.01602457999251783
+          },
+          "runtime": {
+            "accelerator": "cuda",
+            "checkpoint_train_seconds": 1.6959536999929696,
+            "model_bytes": 20582,
+            "outer_train_refit_seconds": 0.05518080003093928,
+            "peak_vram_bytes": null,
+            "peak_vram_note": "XGBoost Python API does not expose allocator peak memory",
+            "predict_seconds": 0.0017260999884456396,
+            "train_seconds": 1.751134500023909
+          },
+          "sample_rows": {
+            "inner_train": 38625,
+            "inner_validation": 1200,
+            "outer_train": 39825,
+            "outer_validation": 1200
+          }
+        }
+      ]
+    }
+  },
+  "nested_selection_contract": {
+    "checkpoint_metric": "absolute mean Top5 return on inner validation",
+    "inner_validation": "last four target weeks of each complete outer-train",
+    "naive_momentum": "no training or checkpoint selection",
+    "neural_refit": "fresh model with the same seed; selected epochs on complete outer-train",
+    "outer_validation": "same-fold prediction and metrics only; never checkpoint input",
+    "xgboost_refit": "fresh booster with the same seed; selected rounds on complete outer-train"
+  },
+  "official_baseline_contract": {
+    "equivalence_boundary": "not source, preprocessing, checkpoint, or published-score parity",
+    "implementation": "clean_room_from_public_structure_and_scoring_contract",
+    "source_id": "EXT-001"
+  },
+  "pareto": {
+    "baseline": "xgboost_rank_pairwise",
+    "frontier_observed_dimensions": [
+      "xgboost_rank_pairwise",
+      "naive_60d_momentum",
+      "e0_clean_room_official_contract_transformer",
+      "e2_causal_tcn",
+      "e3_cross_stock_attention"
+    ],
+    "maximize": [
+      "mean_return",
+      "worst_return",
+      "positive_rate",
+      "rank_ic"
+    ],
+    "minimize": [
+      "return_std",
+      "train_seconds",
+      "predict_seconds",
+      "model_bytes"
+    ],
+    "models": {
+      "e0_clean_room_official_contract_transformer": {
+        "baseline": false,
+        "baseline_regressions": [
+          "mean_return",
+          "worst_return",
+          "positive_rate",
+          "rank_ic",
+          "return_std",
+          "train_seconds",
+          "predict_seconds"
+        ],
+        "baseline_strict_improvements": [
+          "model_bytes"
+        ],
+        "complete_pareto_improvement_over_baseline": false,
+        "dominated_by": [],
+        "eligible_for_promotion": false,
+        "nondominated_observed_dimensions": true,
+        "promote": false,
+        "reason": "benchmark evidence never mutates production configuration",
+        "resource_complete": true,
+        "resource_gap": []
+      },
+      "e2_causal_tcn": {
+        "baseline": false,
+        "baseline_regressions": [
+          "mean_return",
+          "worst_return",
+          "positive_rate",
+          "rank_ic",
+          "return_std",
+          "train_seconds",
+          "predict_seconds"
+        ],
+        "baseline_strict_improvements": [
+          "model_bytes"
+        ],
+        "complete_pareto_improvement_over_baseline": false,
+        "dominated_by": [],
+        "eligible_for_promotion": false,
+        "nondominated_observed_dimensions": true,
+        "promote": false,
+        "reason": "benchmark evidence never mutates production configuration",
+        "resource_complete": true,
+        "resource_gap": []
+      },
+      "e3_cross_stock_attention": {
+        "baseline": false,
+        "baseline_regressions": [
+          "mean_return",
+          "worst_return",
+          "positive_rate",
+          "rank_ic",
+          "return_std",
+          "train_seconds",
+          "predict_seconds"
+        ],
+        "baseline_strict_improvements": [
+          "model_bytes"
+        ],
+        "complete_pareto_improvement_over_baseline": false,
+        "dominated_by": [],
+        "eligible_for_promotion": false,
+        "nondominated_observed_dimensions": true,
+        "promote": false,
+        "reason": "benchmark evidence never mutates production configuration",
+        "resource_complete": true,
+        "resource_gap": []
+      },
+      "naive_60d_momentum": {
+        "baseline": false,
+        "baseline_regressions": [
+          "mean_return",
+          "worst_return",
+          "positive_rate",
+          "rank_ic",
+          "return_std",
+          "predict_seconds"
+        ],
+        "baseline_strict_improvements": [
+          "train_seconds",
+          "model_bytes"
+        ],
+        "complete_pareto_improvement_over_baseline": false,
+        "dominated_by": [],
+        "eligible_for_promotion": false,
+        "nondominated_observed_dimensions": true,
+        "promote": false,
+        "reason": "benchmark evidence never mutates production configuration",
+        "resource_complete": true,
+        "resource_gap": []
+      },
+      "xgboost_rank_pairwise": {
+        "baseline": true,
+        "baseline_regressions": [],
+        "baseline_strict_improvements": [],
+        "complete_pareto_improvement_over_baseline": false,
+        "dominated_by": [],
+        "eligible_for_promotion": false,
+        "nondominated_observed_dimensions": true,
+        "promote": false,
+        "reason": "benchmark evidence never mutates production configuration",
+        "resource_complete": false,
+        "resource_gap": [
+          "peak_vram_bytes"
+        ]
+      }
+    },
+    "required_resource": [
+      "peak_vram_bytes"
+    ]
+  },
+  "production_config_changed": false,
+  "runtime_environment": {
+    "cuda_available": true,
+    "logical_cpu_count": 16,
+    "platform": "Windows",
+    "python": "3.10.19",
+    "torch": "2.6.0+cu124",
+    "xgboost": "3.2.0"
+  },
+  "schema_version": 2,
+  "synthetic": false
+}

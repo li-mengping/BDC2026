@@ -5,33 +5,22 @@ from pathlib import Path
 import numpy as np
 import pandas as pd
 
+from ..models.spine import MarketPanel
+from .data_manifest import REQUIRED_COLUMNS, validate_data_manifest
 from .stock import (
     StockData,
     StockWeek,
+    complete_week_starts,
     normalize_date_series,
     normalize_stock_id_series,
 )
 
 
-REQUIRED_COLUMNS = {
-    '股票代码',
-    '日期',
-    '开盘',
-    '收盘',
-    '最高',
-    '最低',
-    '成交量',
-    '成交额',
-    '振幅',
-    '涨跌额',
-    '换手率',
-    '涨跌幅',
-}
-
-
 def load_market_data(config: dict) -> pd.DataFrame:
     """读取行情数据，并做最小字段校验。"""
     path = Path(config['data_path']) / config['full_data_file']
+    manifest_path = Path(config['data_path']) / config['data_manifest_file']
+    validate_data_manifest(path, manifest_path)
     df = pd.read_csv(path, dtype={'股票代码': str})
     missing = REQUIRED_COLUMNS - set(df.columns)
     if missing:
@@ -40,7 +29,20 @@ def load_market_data(config: dict) -> pd.DataFrame:
     # 统一主键格式，后续所有模块只处理规范数据。
     df['股票代码'] = normalize_stock_id_series(df['股票代码'])
     df['日期'] = normalize_date_series(df['日期'])
-    return df.sort_values(['股票代码', '日期']).reset_index(drop=True)
+    validate_data_cutoff(df, config['data_cutoff'])
+    return MarketPanel.from_frame(df).frame
+
+
+def validate_data_cutoff(df: pd.DataFrame, cutoff) -> None:
+    """训练和特征行情必须严格早于比赛目标期的数据截止日。"""
+    cutoff_date = pd.Timestamp(cutoff).normalize()
+    dates = pd.to_datetime(df['日期'], errors='coerce').dt.normalize()
+    if dates.isna().any():
+        raise ValueError('invalid dates while checking data cutoff')
+    leaked = dates >= cutoff_date
+    if leaked.any():
+        first = dates[leaked].min()
+        raise ValueError(f'data cutoff violation: found row at {first.date()} (cutoff {cutoff_date.date()})')
 
 
 def build_prediction_samples(
@@ -51,7 +53,10 @@ def build_prediction_samples(
 ) -> tuple[tuple[str, tuple[StockWeek, ...]], ...]:
     """只在预测输入范围内构造 StockWeek 对象。"""
     frame = df[(df['日期'] >= input_start) & (df['日期'] < test_date)].copy()
-    return prediction_samples_from_weeks(build_stock_weeks(frame), input_start, test_date, input_window)
+    eligible = complete_week_starts(df[df['日期'] < test_date]['日期'].unique())
+    return prediction_samples_from_weeks(
+        build_stock_weeks(frame), input_start, test_date, input_window, eligible,
+    )
 
 
 def prediction_samples_from_weeks(
@@ -59,12 +64,19 @@ def prediction_samples_from_weeks(
     input_start: pd.Timestamp,
     test_date: pd.Timestamp,
     input_window: int,
+    eligible_week_starts=None,
 ) -> tuple[tuple[str, tuple[StockWeek, ...]], ...]:
     """从已构造的周对象中切出预测窗口。"""
     samples = []
+    expected = None
+    if eligible_week_starts is not None:
+        eligible = pd.DatetimeIndex(eligible_week_starts)
+        expected = tuple(pd.Timestamp(value).normalize() for value in eligible[eligible < test_date][-input_window:])
     for stock_id, weeks in stock_weeks.items():
         history_weeks = tuple(week for week in weeks if input_start <= week.start_date < test_date)
-        if len(history_weeks) == input_window:
+        if len(history_weeks) == input_window and (
+            expected is None or tuple(week.start_date for week in history_weeks) == expected
+        ):
             samples.append((stock_id, history_weeks))
 
     if not samples:
@@ -78,15 +90,19 @@ def stock_data_from_weeks(
     start_date: pd.Timestamp,
     end_date: pd.Timestamp,
     input_window: int,
+    eligible_week_starts=None,
 ) -> tuple[StockData, ...]:
     """从临时周对象生成训练/验证 StockData。"""
     samples = []
+    expected_history = _expected_history_by_target(eligible_week_starts, input_window)
     for stock_id, weeks in stock_weeks.items():
         for idx in range(input_window, len(weeks)):
             future_week = weeks[idx]
             if start_date <= future_week.start_date < end_date:
                 history_weeks = weeks[idx - input_window:idx]
-                samples.append(StockData(stock_id, history_weeks, future_week))
+                history_dates = tuple(week.start_date for week in history_weeks)
+                if expected_history is None or history_dates == expected_history.get(future_week.start_date):
+                    samples.append(StockData(stock_id, history_weeks, future_week))
 
     if not samples:
         raise ValueError('empty stock data samples')
@@ -101,8 +117,9 @@ def build_stock_data_samples(
     input_window: int,
 ) -> tuple[StockData, ...]:
     """只把样本区间及其历史窗口转换成 StockData。"""
+    eligible = complete_week_starts(df[df['日期'] < end_date]['日期'].unique())
     week_index = complete_stock_week_index(df[df['日期'] < end_date])
-    selected_keys = select_sample_week_keys(week_index, start_date, end_date, input_window)
+    selected_keys = select_sample_week_keys(week_index, start_date, end_date, input_window, eligible)
     if not selected_keys:
         raise ValueError('empty stock data samples')
 
@@ -110,7 +127,7 @@ def build_stock_data_samples(
     frame = add_week_start(df[df['日期'] < end_date])
     frame = frame.merge(key_df, on=['股票代码', '_week_start'], how='inner')
     stock_weeks = build_stock_weeks(frame)
-    return stock_data_from_weeks(stock_weeks, start_date, end_date, input_window)
+    return stock_data_from_weeks(stock_weeks, start_date, end_date, input_window, eligible)
 
 
 def select_sample_week_keys(
@@ -118,16 +135,35 @@ def select_sample_week_keys(
     start_date: pd.Timestamp,
     end_date: pd.Timestamp,
     input_window: int,
+    eligible_week_starts=None,
 ) -> set[tuple[str, pd.Timestamp]]:
     """选择目标周和对应历史窗口的周键。"""
     selected: set[tuple[str, pd.Timestamp]] = set()
+    expected_history = _expected_history_by_target(eligible_week_starts, input_window)
     for stock_id, stock_weeks in week_index.groupby('股票代码', sort=True):
         week_starts = tuple(stock_weeks['week_start'])
         for idx, week_start_date in enumerate(week_starts):
             if start_date <= week_start_date < end_date and idx >= input_window:
+                history = week_starts[idx - input_window:idx]
+                if expected_history is not None and history != expected_history.get(week_start_date):
+                    continue
                 for history_idx in range(idx - input_window, idx + 1):
                     selected.add((stock_id, week_starts[history_idx]))
     return selected
+
+
+def _expected_history_by_target(eligible_week_starts, input_window: int):
+    """预计算每个目标周对应的连续历史周，避免逐样本重复解析日历。"""
+    if eligible_week_starts is None:
+        return None
+    eligible = tuple(
+        pd.Timestamp(value).normalize()
+        for value in pd.DatetimeIndex(eligible_week_starts).sort_values().unique()
+    )
+    return {
+        eligible[index]: eligible[index - input_window:index]
+        for index in range(input_window, len(eligible))
+    }
 
 
 def build_stock_weeks(df: pd.DataFrame) -> dict[str, tuple[StockWeek, ...]]:
@@ -181,8 +217,15 @@ def build_train_returns(
 ) -> np.ndarray:
     """按训练目标周范围快速计算未来周收益分布。"""
     complete_weeks = complete_stock_week_index(df)
+    eligible = complete_week_starts(df['日期'].unique())
+    eligible_positions = pd.Series(np.arange(len(eligible), dtype=np.int64), index=eligible)
+    complete_weeks['eligible_position'] = complete_weeks['week_start'].map(eligible_positions)
+    prior_position = complete_weeks.groupby('股票代码', sort=False)['eligible_position'].shift(input_window)
+    complete_weeks['history_contiguous'] = (
+        complete_weeks['eligible_position'] - prior_position == input_window
+    )
     selected = complete_weeks[
-        (complete_weeks['week_index'] >= input_window)
+        complete_weeks['history_contiguous']
         & (complete_weeks['week_start'] >= start_date)
         & (complete_weeks['week_start'] < end_date)
     ].copy()
@@ -190,7 +233,7 @@ def build_train_returns(
         bad = selected.loc[selected['start_open'] <= 1e-12].iloc[0]
         raise ValueError(f"{bad['股票代码']} invalid week open")
     returns = (
-        selected['end_close'].astype(float) - selected['start_open'].astype(float)
+        selected['end_open'].astype(float) - selected['start_open'].astype(float)
     ) / selected['start_open'].astype(float)
     return returns.to_numpy(dtype=np.float64)
 
@@ -224,16 +267,16 @@ def complete_stock_week_index(df: pd.DataFrame) -> pd.DataFrame:
         .first()
         .rename('start_open')
     )
-    friday_close = (
+    friday_open = (
         frame[frame['_weekday'] == 4]
-        .groupby(group_cols, sort=True)['收盘']
-        .last()
-        .rename('end_close')
+        .groupby(group_cols, sort=True)['开盘']
+        .first()
+        .rename('end_open')
     )
-    complete_weeks = complete_weeks.join(monday_open).join(friday_close).dropna(subset=['start_open', 'end_close'])
+    complete_weeks = complete_weeks.join(monday_open).join(friday_open).dropna(subset=['start_open', 'end_open'])
     complete_weeks['week_index'] = complete_weeks.groupby(level=0).cumcount()
     complete_weeks = complete_weeks.reset_index().rename(columns={'_week_start': 'week_start'})
-    return complete_weeks[['股票代码', 'week_start', 'week_index', 'start_open', 'end_close']]
+    return complete_weeks[['股票代码', 'week_start', 'week_index', 'start_open', 'end_open']]
 
 
 def add_week_start(df: pd.DataFrame) -> pd.DataFrame:

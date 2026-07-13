@@ -5,19 +5,13 @@ from dataclasses import dataclass
 import numpy as np
 import pandas as pd
 
+from ..models.spine import FoldSpec
 from .runtime_split import build_prediction_samples, build_stock_data_samples, build_train_returns
+from .runtime_split import validate_data_cutoff
 from .stock import StockData, StockWeek, complete_week_starts, normalize_date, week_start
 
 
-@dataclass(frozen=True)
-class ValidationFold:
-    """一个训练验证时间块。"""
-
-    name: str
-    train_start: pd.Timestamp
-    train_end: pd.Timestamp
-    validation_start: pd.Timestamp
-    validation_end: pd.Timestamp
+ValidationFold = FoldSpec
 
 
 @dataclass(frozen=True)
@@ -151,6 +145,13 @@ class ValidationPlan:
 
 def build_validation_plan(df: pd.DataFrame, config: dict) -> ValidationPlan:
     """按配置生成唯一验证计划。"""
+    if config.get('label_mode') != 't1_open_to_t5_open':
+        raise ValueError(f"unsupported label_mode: {config.get('label_mode')!r}")
+    if config.get('sample_calendar_policy') != 'full_monday_friday':
+        raise ValueError(
+            f"unsupported sample_calendar_policy: {config.get('sample_calendar_policy')!r}"
+        )
+    validate_data_cutoff(df, config['data_cutoff'])
     start_date = normalize_date(config['start_date'])
     test_date = week_start(config['test_date'])
     validation_config = config['validation']

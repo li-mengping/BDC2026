@@ -4,6 +4,8 @@ from dataclasses import dataclass
 
 import pandas as pd
 
+from ..models.spine import EvaluationWindow
+
 
 @dataclass(frozen=True)
 class StockWeek:
@@ -30,12 +32,11 @@ class StockWeek:
         return self.start_date + pd.Timedelta(days=4)
 
     def get_return(self) -> float:
-        """计算周一开盘到周五收盘收益。"""
-        start_open = float(self.frame.iloc[0]['开盘'])
-        end_close = float(self.frame.iloc[-1]['收盘'])
-        if start_open <= 1e-12:
-            raise ValueError(f'{self.stock_id} invalid week open')
-        return (end_close - start_open) / start_open
+        """按比赛口径计算第1到第5个有序评估交易日的开盘收益。"""
+        frame = self.frame.copy()
+        if '日期' not in frame.columns:
+            frame['日期'] = pd.date_range(self.start_date, periods=5, freq='D')
+        return EvaluationWindow.from_frame(frame).return_value
 
     def to_frame(self) -> pd.DataFrame:
         """返回周内行情副本。"""
@@ -75,6 +76,25 @@ def complete_week_starts(dates) -> pd.DatetimeIndex:
         if week_dates == {start_date + pd.Timedelta(days=i) for i in range(5)}
     ]
     return pd.DatetimeIndex(sorted(starts))
+
+
+def has_contiguous_history(
+    history_weeks,
+    target_week_start,
+    eligible_week_starts,
+) -> bool:
+    """历史必须恰好覆盖目标周之前的连续可用训练周，不能跨股票缺周。"""
+    eligible = pd.DatetimeIndex(pd.to_datetime(eligible_week_starts)).normalize().sort_values().unique()
+    target = normalize_date(target_week_start)
+    target_pos = int(eligible.searchsorted(target, side='left'))
+    history_dates = tuple(
+        normalize_date(getattr(week, 'start_date', week))
+        for week in history_weeks
+    )
+    if target_pos >= len(eligible) or eligible[target_pos] != target or target_pos < len(history_dates):
+        return False
+    expected = tuple(pd.Timestamp(value).normalize() for value in eligible[target_pos - len(history_dates):target_pos])
+    return history_dates == expected
 
 
 def normalize_stock_id_series(series: pd.Series) -> pd.Series:

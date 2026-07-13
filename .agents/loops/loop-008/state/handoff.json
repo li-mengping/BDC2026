@@ -1,26 +1,25 @@
 {
   "schema_version": "2",
   "loop_id": "loop-008",
-  "from": "model-architect",
-  "to": "experiment-runner",
-  "summary": "E0/E2/E3 与 XGBoost 已统一为折内 checkpoint、完整 outer-train 重训和同折 outer-only 评估",
+  "from": "experiment-runner",
+  "to": "skeptic-reviewer",
+  "summary": "共享因果特征修复后的 E0/E2/E3 full 已完成；XGBoost 与 E1 周收益及选轮完全一致，请独立审查结构结论",
   "inputs": [
-    "code/experiments/real_structure_benchmark.py",
-    ".agents/loops/loop-008/evidence/e1-representation-nested.json"
+    ".agents/loops/loop-008/evidence/e0-e3-structure-nested.json",
+    ".agents/loops/loop-008/evidence/e0-e3-structure-nested-invalid-preprocessing.json"
   ],
   "outputs": [
-    ".agents/loops/loop-008/evidence/e0-e3-structure-nested.json"
+    ".agents/loops/loop-008/state/experiment-decisions.jsonl"
   ],
   "verification": [
-    "python -m pytest tests/test_real_structure_benchmark.py tests/test_neural_experiments.py -q"
+    "python .agents/agentctl.py loop validate --id loop-008"
   ],
   "limitations": [
-    "clean-room E0 仅复现公开结构契约；full 运行预算为30 epoch上限，rolling 不是独立 holdout"
+    "clean-room E0 不等价官方源码；XGBoost 峰值显存不可得；报告生成于 dirty worktree"
   ],
-  "next_action": "运行四折 nested 结构比较并登记实际显存、时间和 Pareto",
+  "next_action": "独立确认 XGBoost 对账、Pareto 与 E0/E2/E3 reject/hold 决策",
   "evidence": [
-    "code/experiments/real_structure_benchmark.py",
-    "tests/test_real_structure_benchmark.py"
+    ".agents/loops/loop-008/evidence/e0-e3-structure-nested.json"
   ],
-  "created_at": "2026-07-12T09:06:56+00:00"
+  "created_at": "2026-07-12T10:34:13+00:00"
 }

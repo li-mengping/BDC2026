@@ -3,7 +3,6 @@
 import json
 import os
 import random
-from dataclasses import dataclass
 from pathlib import Path
 from typing import Callable
 
@@ -16,19 +15,13 @@ from ..features.baseline import date_group_sizes, preprocess_stock_data_samples,
 from ..features.windows import feature_num_for_window
 from ..portfolio.postprocess import PortfolioConfig, select_portfolio
 from ..utils.runtime_split import load_market_data
+from ..utils.submission import validate_result_file
 from ..utils.validation import build_validation_plan
 from .xgboost.loss import average_ranks, rank_ic_score, topk_return_metrics
+from .spine import RankDataset, metric_schema
 
 
-@dataclass(frozen=True)
-class RankData:
-    """保留同一份排序样本的原始收益标签和分级相关性标签。"""
-
-    frame: pd.DataFrame
-    x: np.ndarray
-    raw_label: np.ndarray
-    relevance: np.ndarray
-    groups: list[int]
+RankData = RankDataset
 
 
 def set_seed(seed: int) -> None:
@@ -107,13 +100,13 @@ def select_best_iteration(
     num_boost_round: int,
     desc: str,
 ) -> tuple[dict, list[float]]:
-    """逐轮预测验证集，并按 validation Top5 超额收益选最佳迭代。"""
+    """逐轮预测验证集，并按比赛绝对 Top5 收益选最佳迭代。"""
     values = []
     for iteration in tqdm(range(num_boost_round), desc=desc, unit='round', dynamic_ncols=True):
         pred = predict_iteration(iteration)
         top5 = topk_return_metrics(pred, raw_label, groups, top_k=5)
-        values.append(float(top5['pred_top5_excess_return_avg']))
-    selection = choose_best_iteration(values, 'validation_top5_excess_return')
+        values.append(float(top5['pred_top5_return_avg']))
+    selection = choose_best_iteration(values, 'validation_top5_return')
     return selection, values
 
 
@@ -199,6 +192,7 @@ def write_train_outputs(output_dir: Path, model_type: str, family_config: dict, 
         'validation_score': best_model['validation_score'],
         'holdout_test_rank_ic': best_model['holdout_test_rank_ic'],
         'holdout_test_top5': best_model['holdout_test_top5'],
+        'metric_schema': metric_schema(),
     }
     with open(output_dir / 'metadata.json', 'w', encoding='utf-8') as f:
         json.dump(metadata, f, ensure_ascii=False, indent=2)
@@ -235,7 +229,7 @@ def write_train_outputs(output_dir: Path, model_type: str, family_config: dict, 
             f.write(f"{model['name']} holdout test pred top5 excess return min: {model['holdout_test_top5']['pred_top5_excess_return_min']:.8f}\n")
             f.write(f"{model['name']} holdout test pred top5 excess positive rate: {model['holdout_test_top5']['pred_top5_excess_positive_rate']:.8f}\n")
             f.write(f"{model['name']} holdout test pred top5 precision avg: {model['holdout_test_top5']['pred_top5_precision_avg']:.8f}\n\n")
-        f.write(f"Best validation top5 excess model: {best_model['name']}\n")
+        f.write(f"Best validation top5 return model: {best_model['name']}\n")
     return best_model
 
 
@@ -317,6 +311,7 @@ def write_prediction_outputs(latest, models, family_config, validation_plan, raw
         'stock_id': selected['stock_id'].tolist(),
         'weight': selected['final_weight'].round(10).tolist(),
     }).to_csv(output_path, index=False)
+    validate_result_file(output_path)
 
     topk_description = ','.join(f'{name}:{top_k}' for name, top_k in portfolio_config.union_top_k_by_model)
     print(f"Prediction: target={validation_plan.test_date.date()} | universe={len(latest)}")
@@ -354,7 +349,7 @@ def train_family(model_type: str, family_config: dict, train_one: Callable, outp
         models.append(train_one(name, input_window, feature_type, feature_num, train_df, val_df, holdout_df, features))
 
     best_model = write_train_outputs(output_dir, model_type, family_config, models, stock_ids, validation_plan, holdout_fold, bindings)
-    print(f"best validation top5 excess model: {best_model['name']} ({best_model['validation_score']:.6f})")
+    print(f"best validation top5 return model: {best_model['name']} ({best_model['validation_score']:.6f})")
     return best_model['validation_score']
 
 

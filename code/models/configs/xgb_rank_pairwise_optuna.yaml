@@ -1,0 +1,30 @@
+# 滚动 Optuna 候选；未通过 holdout 门禁前保持禁用。
+name: xgb_rank_pairwise_optuna
+family: xgboost
+enabled: false
+output_dir: ./model/xgboost
+num_boost_round: 160
+features:
+  input_window: 12
+  feature_type: "39"
+params:
+  device: cuda
+  booster: gbtree
+  objective: rank:pairwise
+  tree_method: hist
+  max_depth: 6
+  eta: 0.03556211334079357
+  subsample: 0.7637017332034828
+  colsample_bytree: 0.6727299868828402
+  min_child_weight: 10.485387725194622
+  lambda: 55.67734622861562
+  alpha: 0.8324426408004217
+  max_delta_step: 0.36680901970686763
+  seed: 42
+  verbosity: 1
+validation:
+  source: .agents/loops/loop-001/evidence/xgb_optuna.json
+  rolling_mean: 0.03671808117916167
+  rolling_worst: 0.02875237117413919
+  holdout_top5_excess: 0.028392
+  status: candidate_holdout_regression

@@ -1,0 +1,60 @@
+{
+  "schema_version": 1,
+  "evidence_version": "1.0.0",
+  "created_at_utc": "2026-07-13T04:44:03.1200105Z",
+  "loop_id": "loop-008",
+  "goal_id": "bdc2026-correction-v2",
+  "claim": "The canonical dev worktree has been restored to the latest locally available Loop-008 implementation and state, with the frozen market-data baseline reproduced exactly.",
+  "source": {
+    "kind": "local-recovery-snapshot",
+    "path": "BDC2026-test",
+    "canonical": false,
+    "base_commit": "7c9cff695caf48dc145e6d46496af39ebc8a3f10"
+  },
+  "data": {
+    "file": "data/stock_data.csv",
+    "manifest": "data/manifest.json",
+    "bytes": 28555122,
+    "sha256": "04d7e4da6a9d4915c61d635d1ab24d29e92c00363f4250c01dade8f35f6ccd87",
+    "rows": 250233,
+    "stock_count": 300,
+    "date_min": "2023-01-03",
+    "date_max": "2026-06-26"
+  },
+  "verification": [
+    {
+      "command": "py -3.12 code/utils/data_manifest.py validate --data data/stock_data.csv --manifest data/manifest.json",
+      "result": "passed"
+    },
+    {
+      "command": "py -3.12 -m pytest tests -q",
+      "result": "91 passed, 343 warnings"
+    },
+    {
+      "command": "powershell -NoProfile -ExecutionPolicy Bypass -File ./run-acceptance-tests.ps1",
+      "result": "11 passed"
+    },
+    {
+      "command": "py -3.12 .agents/agentctl.py doctor",
+      "result": "valid; active_goal=bdc2026-correction-v2; current_loop=loop-008"
+    },
+    {
+      "command": "py -3.12 .agents/agentctl.py loop validate --id loop-008",
+      "result": "valid; status=active"
+    },
+    {
+      "command": "py -3.12 .agents/agentctl.py goal audit --id bdc2026-correction-v2",
+      "result": "valid; status=active"
+    }
+  ],
+  "changes_after_snapshot_sync": [
+    "run-acceptance-tests.ps1 selects Python 3.12 by default and propagates failures",
+    "data/get_stock_data.py performs O(1) in-memory resume-range checks and uses the known first and last trading dates",
+    "local recovery sources are excluded from Git and Docker contexts"
+  ],
+  "limitations": [
+    "This is a single-agent recovery audit and is not an independent skeptic review.",
+    "Historical Loop-008 experiment metrics were restored and hash-registered, not retrained in this recovery run.",
+    "The raw frozen CSV remains intentionally ignored by Git and is verified through data/manifest.json."
+  ]
+}

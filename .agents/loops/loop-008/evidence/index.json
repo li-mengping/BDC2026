@@ -16,6 +16,21 @@
       "path": ".agents/loops/loop-008/evidence/e1-representation-nested.json",
       "kind": "real-market-nested-rolling",
       "sha256": "89310a7a709858c1013424ef401015ff0d8a44643fdd603f0911dd4d08ded6e4"
+    },
+    {
+      "path": ".agents/loops/loop-008/evidence/e0-e3-structure-nested-invalid-preprocessing.json",
+      "kind": "invalidated-real-market-run",
+      "sha256": "f7ad72316eda6d508f8de95888cf78556f099ad6728947383a0a8cc35dde0b06"
+    },
+    {
+      "path": ".agents/loops/loop-008/evidence/e0-e3-structure-nested.json",
+      "kind": "real-market-nested-structure",
+      "sha256": "2d739d9d7a5476431115c5429b61c80bd1f83c47c75098cbdef0d34f57944086"
+    },
+    {
+      "path": ".agents/loops/loop-008/evidence/worktree-recovery-v1.json",
+      "kind": "worktree-recovery",
+      "sha256": "d88aad1e826ce7020b56a8812f8cb3b2ee45509f1a84b4b65835fe25d46ac5e0"
     }
   ]
 }

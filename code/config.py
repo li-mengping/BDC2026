@@ -109,6 +109,11 @@ config = {
     # 数据路径固定，训练和预测使用同一份全量行情。
     'data_path': './data',
     'full_data_file': 'stock_data.csv',
+    'data_manifest_file': 'manifest.json',
+    'label_mode': 't1_open_to_t5_open',
+    # 比赛公式与训练样本日历是两个独立契约。
+    'sample_calendar_policy': 'full_monday_friday',
+    'data_cutoff': '2026-06-29',
 
     # 模型配置来源。
     'model_config_dir': str(MODEL_CONFIG_DIR),

@@ -1,0 +1,35 @@
+{
+  "schema_version": 1,
+  "created_at_utc": "2026-07-13T04:40:22.765876+00:00",
+  "source": "baostock frozen hs300 constituent snapshot",
+  "data": {
+    "file": "stock_data.csv",
+    "bytes": 28555122,
+    "sha256": "04d7e4da6a9d4915c61d635d1ab24d29e92c00363f4250c01dade8f35f6ccd87",
+    "md5": "67ca879c3e545e6a86048ab2ca0148fb",
+    "rows": 250233,
+    "stock_count": 300,
+    "date_min": "2023-01-03",
+    "date_max": "2026-06-26",
+    "required_columns": [
+      "开盘",
+      "成交量",
+      "成交额",
+      "振幅",
+      "换手率",
+      "收盘",
+      "日期",
+      "最低",
+      "最高",
+      "涨跌幅",
+      "涨跌额",
+      "股票代码"
+    ]
+  },
+  "constituents": {
+    "file": "hs300_stock_list.csv",
+    "bytes": 10451,
+    "sha256": "900f28eadf7a1d1a14d6319f4935540ccb7af4cf43e53158399fa16ada6c415d",
+    "md5": "74b69305f813ec9bcf4ec57051cad5ad"
+  }
+}
