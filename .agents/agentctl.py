@@ -35,6 +35,7 @@ TRANSITIONS = {
 }
 COMMIT_FIELDS = ("Agent-Task:", "Agent-Decision:", "Agent-Limitation:", "Agent-Harness:", "Agent-Skills:", "Agent-Verification:", "Agent-Feedback:")
 OPEN_GOAL_STATES = {"planned", "active", "evidence_ready", "validated", "blocked"}
+KNOWN_CORRUPTED_EVIDENCE_KIND = "corrupted-legacy-evidence"
 
 
 def now() -> str:
@@ -116,6 +117,22 @@ def repo_file(value: str) -> Path:
     except ValueError as exc:
         raise SystemExit(f"路径逃逸仓库: {value}") from exc
     return path
+
+
+def validate_indexed_evidence_content(entries: list[dict[str, Any]]) -> list[str]:
+    """解析机器可读证据；已知损坏的历史文件必须显式标记并对外报告。"""
+    known_corrupted: list[str] = []
+    for entry in entries:
+        relative = entry["path"]
+        if entry.get("kind") == KNOWN_CORRUPTED_EVIDENCE_KIND:
+            known_corrupted.append(relative)
+            continue
+        path = repo_file(relative)
+        if path.suffix == ".json":
+            read_json(path)
+        elif path.suffix == ".jsonl":
+            read_jsonl(path)
+    return known_corrupted
 
 
 def schema_errors(value: Any, schema: dict[str, Any], location: str = "$") -> list[str]:
@@ -278,6 +295,7 @@ def loop_validate(args: argparse.Namespace) -> None:
         evidence_path = repo_file(entry["path"])
         if hashlib.sha256(evidence_path.read_bytes()).hexdigest() != entry["sha256"]: mismatched.append(entry["path"])
     if mismatched: raise SystemExit("证据索引 SHA-256 不匹配: " + ", ".join(mismatched))
+    known_corrupted = validate_indexed_evidence_content(index["entries"])
     indexed = {entry["path"] for entry in index["entries"]}
     orphaned = []
     for evidence_path in (path / "evidence").rglob("*"):
@@ -294,7 +312,12 @@ def loop_validate(args: argparse.Namespace) -> None:
         state_file = path / "state" / filename
         if state_file.is_file():
             for value in read_jsonl(state_file): validate_with_schema(value, schema_name)
-    print(json.dumps({"loop": args.id, "valid": True, "status": state.get("status")}, ensure_ascii=False))
+    print(json.dumps({
+        "loop": args.id,
+        "valid": True,
+        "status": state.get("status"),
+        "known_corrupted_evidence": known_corrupted,
+    }, ensure_ascii=False))
 
 
 def experiment_register(args: argparse.Namespace) -> None:

@@ -1,0 +1,92 @@
+{
+  "schema_version": 1,
+  "review_version": "1.0.0",
+  "created_at_utc": "2026-07-13T05:44:59.4639995Z",
+  "loop_id": "loop-008",
+  "goal_id": "bdc2026-correction-v2",
+  "reviewer_role": "skeptic-reviewer",
+  "independence": "non-independent",
+  "verdict": "blocked",
+  "summary": "Loop-008 model promotion and release acceptance are blocked by corrupted canonical evidence, holdout contamination in E1 direction selection, non-recoverable historical Git provenance, and missing offline release verification.",
+  "verified_facts": [
+    "Frozen data has 250233 rows and 300 stocks, ends on 2026-06-26, and matches SHA-256 04d7e4da6a9d4915c61d635d1ab24d29e92c00363f4250c01dade8f35f6ccd87.",
+    "The dataset has no duplicate stock-date keys, invalid dates, non-finite price rows, non-positive opens, or rows at or after 2026-06-29.",
+    "XGBoost weekly returns, checkpoint rounds, aggregate return, and RankIC reconcile exactly between E1 and the recovered E0-E3 report.",
+    "Targeted competition, structure, data, submission, and harness tests passed."
+  ],
+  "findings": [
+    {
+      "id": "REV-008-001",
+      "severity": "blocking",
+      "category": "evidence-integrity",
+      "finding": "Two canonical E0-E3 JSON files contain literal output-truncation markers and cannot be parsed.",
+      "affected": [
+        ".agents/loops/loop-008/evidence/e0-e3-structure-nested-invalid-preprocessing.json",
+        ".agents/loops/loop-008/evidence/e0-e3-structure-nested.json"
+      ],
+      "resolution": "Preserve them as corrupted legacy evidence and use explicitly unverified recovered-v1 copies for audit only."
+    },
+    {
+      "id": "REV-008-002",
+      "severity": "blocking",
+      "category": "holdout-contamination",
+      "finding": "rolling_4 is the configured final four-week holdout but was included in E1 and E0-E3 direction aggregates.",
+      "impact": "Removing rolling_4 changes the E1 primary mean-return winner from raw_ordered_identity to identity_disabled.",
+      "resolution": "Use rolling_1 through rolling_3 for direction selection and rolling_4 for report-only metrics."
+    },
+    {
+      "id": "REV-008-003",
+      "severity": "blocking",
+      "category": "provenance",
+      "finding": "Recovered reports record dirty worktrees and Git commits that are absent from the repository; the original snapshot index hashes also do not match the complete recovered files.",
+      "impact": "Historical metrics are useful for diagnosis but cannot be promoted to validated reproducibility evidence."
+    },
+    {
+      "id": "REV-008-004",
+      "severity": "blocking",
+      "category": "release",
+      "finding": "Docker is unavailable, dist is absent, and offline double-run, determinism, bundle size, runtime, and model hash gates have not been executed."
+    }
+  ],
+  "holdout_safe_model_review": {
+    "e1": {
+      "evidence": ".agents/loops/loop-008/evidence/e1-representation-nested-reviewed-v1.json",
+      "decision": "hold",
+      "provisional_selection_winner": "identity_disabled",
+      "promotion": false
+    },
+    "e0_clean_room_official_contract_transformer": {
+      "decision": "baseline-only",
+      "reason": "Does not establish official source, preprocessing, checkpoint, or published-score parity."
+    },
+    "e2_causal_tcn": {
+      "decision": "reject-promotion",
+      "selection_mean_return": 0.007859799219295383,
+      "baseline_mean_return": 0.016165794407910047
+    },
+    "e3_cross_stock_attention": {
+      "decision": "reject-promotion",
+      "selection_mean_return": -0.0025513469280364614,
+      "baseline_mean_return": 0.016165794407910047
+    },
+    "production_config_changed": false
+  },
+  "evidence_sources": [
+    ".agents/loops/loop-008/evidence/e1-representation-nested.json",
+    ".agents/loops/loop-008/evidence/e1-representation-nested-reviewed-v1.json",
+    ".agents/loops/loop-008/evidence/e0-e3-structure-nested-invalid-preprocessing-recovered-v1.json",
+    ".agents/loops/loop-008/evidence/e0-e3-structure-nested-recovered-v1.json",
+    ".agents/loops/loop-008/evidence/worktree-recovery-v1.json"
+  ],
+  "verification": [
+    "py -3.12 -m pytest tests/test_evaluation_contract.py tests/test_real_structure_benchmark.py tests/test_stock.py tests/test_data_manifest.py tests/test_submission.py tests/test_agent_harness.py -q: 51 passed",
+    "py -3.12 -m pytest tests/test_evidence_integrity_v1.py tests/test_agent_harness.py -q: 18 passed",
+    "py -3.12 .agents/agentctl.py loop validate --id loop-008: valid with two explicitly reported corrupted legacy evidence files"
+  ],
+  "next_actions": [
+    "Change experiment reporting so rolling_4 is never included in direction-selection aggregates.",
+    "Rerun E1 and E0-E3 from a clean committed worktree with offline execution and new registered evidence.",
+    "Perform an independent skeptic review of the clean rerun.",
+    "Only then execute Docker release verification and consider production configuration changes."
+  ]
+}

@@ -1,0 +1,133 @@
+{
+  "schema_version": 1,
+  "evidence_version": "1.0.0",
+  "created_at_utc": "2026-07-13T05:44:59.4639995Z",
+  "loop_id": "loop-008",
+  "kind": "derived-holdout-safe-review",
+  "source": {
+    "path": ".agents/loops/loop-008/evidence/e1-representation-nested.json",
+    "sha256": "89310a7a709858c1013424ef401015ff0d8a44643fdd603f0911dd4d08ded6e4",
+    "operation": "metrics-only re-aggregation; no training or prediction rerun"
+  },
+  "policy": {
+    "selection_folds": ["rolling_1", "rolling_2", "rolling_3"],
+    "selection_weeks": 12,
+    "report_only_holdout_fold": "rolling_4",
+    "report_only_holdout_weeks": ["2026-05-25", "2026-06-01", "2026-06-08", "2026-06-22"]
+  },
+  "models": {
+    "categorical_identity": {
+      "selection": {
+        "mean_return": 0.012167852163353624,
+        "worst_return": -0.02204033304005861,
+        "positive_rate": 0.5833333333333334,
+        "return_std": 0.02371348610513568,
+        "rank_ic": 0.059833661228735874,
+        "train_seconds": 6.794246400007978,
+        "predict_seconds": 0.013097799965180457,
+        "model_bytes": 168604,
+        "peak_vram_bytes": null
+      },
+      "report_only_holdout": {
+        "mean_return": 0.029354081704514097,
+        "worst_return": -0.012035829620435834,
+        "positive_rate": 0.75,
+        "return_std": 0.028997957844135818,
+        "rank_ic": 0.12391392157597092
+      }
+    },
+    "cross_section_rank_identity_disabled": {
+      "selection": {
+        "mean_return": 0.0004802073217433642,
+        "worst_return": -0.013687006384134292,
+        "positive_rate": 0.4166666666666667,
+        "return_std": 0.010676401968598396,
+        "rank_ic": 0.11421126659923501,
+        "train_seconds": 5.887324099894613,
+        "predict_seconds": 0.015606800094246864,
+        "model_bytes": 231816,
+        "peak_vram_bytes": null
+      },
+      "report_only_holdout": {
+        "mean_return": 0.003336005017627031,
+        "worst_return": -0.008223854703828692,
+        "positive_rate": 0.75,
+        "return_std": 0.010151975981012027,
+        "rank_ic": 0.18421578307001382
+      }
+    },
+    "cross_section_robust_zscore_identity_disabled": {
+      "selection": {
+        "mean_return": -0.005267046754670446,
+        "worst_return": -0.035564078390598296,
+        "positive_rate": 0.4166666666666667,
+        "return_std": 0.01996441267553489,
+        "rank_ic": 0.06317781629180212,
+        "train_seconds": 5.405499300220981,
+        "predict_seconds": 0.008137300028465688,
+        "model_bytes": 60936,
+        "peak_vram_bytes": null
+      },
+      "report_only_holdout": {
+        "mean_return": -0.0008349977288162336,
+        "worst_return": -0.01207960513420403,
+        "positive_rate": 0.5,
+        "return_std": 0.008169038409688844,
+        "rank_ic": 0.12237448442625892
+      }
+    },
+    "identity_disabled": {
+      "selection": {
+        "mean_return": 0.01830821951152757,
+        "worst_return": -0.013631971925497055,
+        "positive_rate": 0.8333333333333334,
+        "return_std": 0.021813568185401748,
+        "rank_ic": 0.10026823826711068,
+        "train_seconds": 5.581635999958962,
+        "predict_seconds": 0.019848500029183924,
+        "model_bytes": 173064,
+        "peak_vram_bytes": null
+      },
+      "report_only_holdout": {
+        "mean_return": 0.028966196393594143,
+        "worst_return": -0.01756984503008425,
+        "positive_rate": 0.75,
+        "return_std": 0.037671309199115946,
+        "rank_ic": 0.1445843400191583
+      }
+    },
+    "raw_ordered_identity": {
+      "selection": {
+        "mean_return": 0.016165794407910047,
+        "worst_return": -0.02112555839121342,
+        "positive_rate": 0.6666666666666666,
+        "return_std": 0.022545251945481355,
+        "rank_ic": 0.07153268985008861,
+        "train_seconds": 5.989042799919844,
+        "predict_seconds": 0.015379000222310424,
+        "model_bytes": 363037,
+        "peak_vram_bytes": null
+      },
+      "report_only_holdout": {
+        "mean_return": 0.05103670079261065,
+        "worst_return": -0.01173920468427241,
+        "positive_rate": 0.75,
+        "return_std": 0.045915526491151534,
+        "rank_ic": 0.15996218516209
+      }
+    }
+  },
+  "review": {
+    "selection_performance_winner": "identity_disabled",
+    "mean_return_winner_changes_when_holdout_is_removed": true,
+    "complete_pareto_improvement": false,
+    "promotion_eligible": false,
+    "reason": "identity_disabled improves every selection performance metric, train time, and model size versus raw_ordered_identity, but prediction time regresses and peak VRAM is unavailable",
+    "production_config_changed": false
+  },
+  "limitations": [
+    "Derived from historical evidence generated on a dirty worktree whose recorded commit is not present in this repository.",
+    "No training, prediction, or resource measurement was rerun.",
+    "The review is non-independent."
+  ]
+}

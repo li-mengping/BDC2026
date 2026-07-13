@@ -19,18 +19,38 @@
     },
     {
       "path": ".agents/loops/loop-008/evidence/e0-e3-structure-nested-invalid-preprocessing.json",
-      "kind": "invalidated-real-market-run",
+      "kind": "corrupted-legacy-evidence",
       "sha256": "f7ad72316eda6d508f8de95888cf78556f099ad6728947383a0a8cc35dde0b06"
     },
     {
       "path": ".agents/loops/loop-008/evidence/e0-e3-structure-nested.json",
-      "kind": "real-market-nested-structure",
+      "kind": "corrupted-legacy-evidence",
       "sha256": "2d739d9d7a5476431115c5429b61c80bd1f83c47c75098cbdef0d34f57944086"
     },
     {
       "path": ".agents/loops/loop-008/evidence/worktree-recovery-v1.json",
       "kind": "worktree-recovery",
       "sha256": "d88aad1e826ce7020b56a8812f8cb3b2ee45509f1a84b4b65835fe25d46ac5e0"
+    },
+    {
+      "path": ".agents/loops/loop-008/evidence/e0-e3-structure-nested-invalid-preprocessing-recovered-v1.json",
+      "kind": "recovered-unverified-invalidated-real-market-run",
+      "sha256": "66ef962f6ea1015c6021844b0baae52091a0fc3a12b76389e50e2cf7f9cd94af"
+    },
+    {
+      "path": ".agents/loops/loop-008/evidence/e0-e3-structure-nested-recovered-v1.json",
+      "kind": "recovered-unverified-real-market-nested-structure",
+      "sha256": "72f5de27e2ab6e9f2a5e6c57c2f398ce55d08e1357ad99845788e44277b3ba56"
+    },
+    {
+      "path": ".agents/loops/loop-008/evidence/e1-representation-nested-reviewed-v1.json",
+      "kind": "derived-holdout-safe-review",
+      "sha256": "e1510af65af7c844d8afeca1df4bd6e16ff08cff7d63320577ce1e5b7670d09e"
+    },
+    {
+      "path": ".agents/loops/loop-008/evidence/skeptic-review-v1.json",
+      "kind": "skeptic-review",
+      "sha256": "506f596e80fa17eb5f9da81843e47cb69fbe236369dd19a0355ecdca078b75f2"
     }
   ]
 }
