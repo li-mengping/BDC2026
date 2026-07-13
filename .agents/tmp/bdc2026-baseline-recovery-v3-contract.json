@@ -1,0 +1,71 @@
+{
+  "id": "bdc2026-baseline-recovery-v3",
+  "title": "BDC2026 reproducible baseline recovery V3",
+  "objective": "Restore a provenance-aware, rerunnable BDC2026 baseline in the formal dev worktree by reconciling the BDC2026-test snapshot, frozen-data manifest, executable entrypoints, tests, V2 state, and evidence without rewriting historical loops.",
+  "success_criteria": [
+    "Every restored or modified formal-repository file has documented provenance and explicit user approval",
+    "The frozen market CSV matches the declared cutoff, schema, row count, stock count, MD5, and SHA-256, or a newly generated manifest records a separately approved replacement dataset",
+    "XGBoost train and predict entrypoints execute offline against the frozen data and produce a schema-valid Top5 result",
+    "Unit and generated acceptance tests pass for label endpoints, full-week policy, cutoff, missing weeks, duplicate keys, holdout isolation, and submission schema",
+    "The clean-room Transformer, XGBoost, and naive baselines can be compared on identical folds with absolute portfolio return as the primary metric",
+    "Goal, Loop, handoff, evidence index, reflection, and audit state can be recovered by a fresh agent using repository-relative paths",
+    "No historical Loop-001 through Loop-008 conclusion is rewritten"
+  ],
+  "verification": [
+    {
+      "command": "python .agents/agentctl.py doctor",
+      "pass_criteria": "Harness is valid and reports the V3 recovery Goal and new recovery Loop"
+    },
+    {
+      "command": "python -m pytest tests generated-acceptance-tests -q",
+      "pass_criteria": "All unit and generated acceptance tests pass without network access"
+    },
+    {
+      "command": "python .agents/scripts/data_manifest.py",
+      "pass_criteria": "Frozen data and constituent files match the approved manifest and cutoff"
+    },
+    {
+      "command": "bash train.sh && bash test.sh",
+      "pass_criteria": "Offline baseline training and prediction complete and output/result.csv passes schema validation"
+    },
+    {
+      "command": "python .agents/agentctl.py loop validate --id loop-009",
+      "pass_criteria": "Loop state, handoff, evidence paths, and indexed hashes are valid"
+    }
+  ],
+  "constraints": [
+    "Do not read market data on or after 2026-06-29 for training, validation, feature generation, or selection",
+    "Do not modify an existing file without explicit user approval of the target and intended change",
+    "Do not train or predict with network access",
+    "Do not overwrite production configuration during recovery",
+    "Use repository-relative paths and record the real executor for every handoff",
+    "Do not commit raw CSV, models, output, temp, dist, or release bundles",
+    "Treat BDC2026-test as a recovery source, not as validated evidence by itself"
+  ],
+  "non_goals": [
+    "No model-family promotion during baseline recovery",
+    "No unbounded HPO or NAS",
+    "No claim of global optimality or superiority to the official implementation",
+    "No rewriting of Loop-001 through Loop-008",
+    "No remote push or release until the corresponding gate and user authorization are satisfied"
+  ],
+  "blockers": [
+    "The approved frozen market CSV cannot be recovered or regenerated with traceable source and hashes",
+    "Recovery-source semantic differences cannot be attributed or safely reimplemented",
+    "Offline entrypoint or acceptance validation cannot run within the declared environment",
+    "A required existing-file change is not approved by the user"
+  ],
+  "iteration_priority": [
+    "Recover and verify frozen data provenance",
+    "Reconcile code provenance and restore minimum executable entrypoints",
+    "Restore test and acceptance gates",
+    "Reproduce XGBoost and naive baselines",
+    "Reconcile V2 evidence and only then resume structure experiments",
+    "Run release verification after baseline validation"
+  ],
+  "final_audit": {
+    "status": "pending",
+    "findings": [],
+    "evidence": []
+  }
+}
